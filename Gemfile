@@ -7,6 +7,8 @@ gem 'rails', '3.1.0'
 
 gem 'sqlite3'
 
+gem 'admin_base', :git => 'git@github.com:provideal/admin_base.git'
+gem 'stylr', :git => 'git@github.com:provideal/stylr.git'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -17,6 +19,7 @@ group :assets do
 end
 
 gem 'jquery-rails'
+gem 'mathjax-rails'
 
 # Use unicorn as the web server
 # gem 'unicorn'

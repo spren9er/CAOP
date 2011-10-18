@@ -7,8 +7,42 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
+  <% content_for(:metabar) do %>
+  <% end %>
 
-<%= yield %>
+  <% content_for(:topbar) do %>
+    <h1>CAOP</h1>
+    <ul class="menu">
+      <%= menu_item :item => "polynomials", :label => "Orthogonal Polynomials", :url => polynomials_path() %></li>
+      <%= menu_item :item => "qpolynomials", :label => "q-Orthogonal Polynomials", :url => qpolynomials_path() %></li>
+    </ul>
 
+    <ul class="menu secondary">
+      <li class="raw"><form><input type="text" placeholder="Search"></form></li>
+      <li class="dropdown">
+        <%= link_to "Settings", "#", :class => "dropdown-toggle" %>
+        <ul class="dropdown-menu">
+          <li><%= link_to "Settings", root_path %></li>
+          <li><%= link_to "Settings", "#" %></li>
+          <li class="divider"></li>
+          <li><%= link_to "Foo", "#" %></li>
+        </ul>
+      </li>
+    </ul>
+  <% end %>
+
+  <% content_for(:sidebar) do %>
+    <%= render :partial => 'sidebar' %>
+  <% end %>
+
+  <% content_for(:footer) do %>
+    <a href="http://www.mathematik.uni-kassel.de" target="_blank"><%= image_tag "unilogo.png" %></a>
+  <% end %>
+
+  <% content_for(:flash) do %>
+    <% flash.each do |name, msg| %><div class="flash_<%= name %>"><%= msg %></div><% end %>
+  <% end %>
+
+  <%= render :template => 'layouts/admin_base/application' %>  
 </body>
 </html>

@@ -1,0 +1,54 @@
+/*
+ * This is a manifest file that'll automatically include all the stylesheets available in this directory
+ * and any sub-directories. You're free to add application-wide styles to this file and they'll appear at
+ * the top of the compiled file, but it's generally better to create a new file per style scope.
+ *= require_self
+ *= require_tree . 
+*/
+
+@import "compass/css3/box-shadow";
+@import "compass/css3/border-radius";
+@import "admin_base";
+@import "stylr";
+
+@include admin_base();
+
+#mainarea-wrapper {
+  margin-bottom: 15px;
+
+  #mainarea {
+    #sidebar {
+      @include float-left;
+      width: $sidebar-width;
+
+      ul.navigation {
+        margin-top: 6px;
+
+        a {
+          display: block;
+          text-decoration: none;
+          color: $main-text-color;
+          font-size: 100%;
+          padding: 5px;
+        
+          &.active {
+            $background-color: darken($main-background-color, 5%);
+            background-color: $background-color;
+
+            &:hover {
+              background-color: $background-color;
+            }
+          }
+
+          &:hover {
+            background-color: darken($main-background-color, 5%);
+          }
+        }
+      }
+    }
+  }
+}
+
+#topbar-wrapper #topbar .menu li.active a{
+  color: darken(#ff0000, 10%);
+}
