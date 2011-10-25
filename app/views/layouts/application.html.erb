@@ -5,13 +5,14 @@
   <%= stylesheet_link_tag    "application" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
+  <%= mathjax_tag %>
 </head>
 <body>
   <% content_for(:metabar) do %>
   <% end %>
 
   <% content_for(:topbar) do %>
-    <h1>CAOP</h1>
+    <h1><%= link_to "CAOP", root_path %></h1>
     <ul class="menu">
       <%= menu_item :item => "polynomials", :label => "Orthogonal Polynomials", :url => polynomials_path() %></li>
       <%= menu_item :item => "qpolynomials", :label => "q-Orthogonal Polynomials", :url => qpolynomials_path() %></li>

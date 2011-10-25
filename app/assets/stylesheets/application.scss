@@ -13,6 +13,8 @@
 
 @include admin_base();
 
+$caop-main-color: #2659d3;
+
 #mainarea-wrapper {
   margin-bottom: 15px;
 
@@ -34,6 +36,7 @@
           &.active {
             $background-color: darken($main-background-color, 5%);
             background-color: $background-color;
+            color: #efefef;
 
             &:hover {
               background-color: $background-color;
@@ -46,9 +49,64 @@
         }
       }
     }
+    
+    #pagearea {
+      #page {
+        width: 95%;
+        padding: 15px;
+        
+        h3 {
+          margin: 15px 0 0 0;
+        }
+        
+        p {
+         margin: 10px 0 15px 0;
+        }
+        
+        a {
+          color: $caop-main-color;
+          
+          &:hover {
+            color: darken($caop-main-color, 10%);
+          }
+          
+          &:visited {
+            color: lighten($caop-main-color, 10%);
+          }
+        }
+      }
+    }
   }
 }
 
-#topbar-wrapper #topbar .menu li.active a{
-  color: darken(#ff0000, 10%);
+#topbar-wrapper #topbar {
+  h1 {
+    a {
+      color: #dedede;          
+    }
+    margin-bottom: 10px;
+  }
+  
+  .menu li {
+    a {
+      margin: 0 10px;
+      color: #dedede;
+    }
+
+    &.active {
+      background-color: lighten($topbar-background-color, 10%);
+      
+      a {
+        color: #ffffff;
+      }
+    }
+  } 
+}
+
+form.simple_form, form.form {
+  @include stylr-form;
+}
+
+.button {
+  @include stylr-button;
 }

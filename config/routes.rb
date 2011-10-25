@@ -1,9 +1,4 @@
 CAOP::Application.routes.draw do
-  match 'calculate' => 'maple/calculate'
-  
-  resources :polynomials
-  resources :qpolynomials
-
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -60,7 +55,12 @@ CAOP::Application.routes.draw do
   # This is a legacy wild controller route that's not recommended for RESTful applications.
   # Note: This route will make all actions in every controller accessible via GET requests.
   # match ':controller(/:action(/:id(.:format)))'
+
+  match 'compute' => 'maple#compute'
   
+  resources :polynomials
+  resources :qpolynomials
+    
   mathjax 'mathjax'
   
   root :to => 'application#index'

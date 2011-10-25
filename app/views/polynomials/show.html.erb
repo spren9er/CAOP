@@ -1,0 +1,24 @@
+<h2><%= @polynomial.name %> Polynomials</h2>
+
+
+<h3>Definition</h3>
+
+<p>The <%= @polynomial.name %> polynomials are defined as</p>
+
+\[<%= @polynomial.definition %>\]
+
+
+<h3>Differential and Recurrence Equations</h3>
+
+<%= form_tag polynomial_path(@polynomial), :class => 'form' do %>
+  <% @polynomial.parameters.each do |parameter| %>
+  <p>
+    <%= parameter.name %>
+    <%= text_field_tag parameter.name, parameter.name %>
+  </p>
+  <% end %>
+  
+  <%= submit_tag 'Submit', :class => 'button' %>
+<% end %>
+
+

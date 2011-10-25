@@ -1,14 +1,16 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.1.0'
-
-# Bundle edge Rails instead:
-# gem 'rails',     :git => 'git://github.com/rails/rails.git'
-
-gem 'sqlite3'
+gem 'mongoid', '~> 2.3'
+gem 'bson_ext', '~> 1.4'
 
 gem 'admin_base', :git => 'git@github.com:provideal/admin_base.git'
 gem 'stylr', :git => 'git@github.com:provideal/stylr.git'
+
+gem 'simple_form'
+
+gem 'mathjax-rails'
+
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -19,7 +21,6 @@ group :assets do
 end
 
 gem 'jquery-rails'
-gem 'mathjax-rails'
 
 # Use unicorn as the web server
 # gem 'unicorn'
