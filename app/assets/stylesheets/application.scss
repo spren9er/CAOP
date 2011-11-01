@@ -30,7 +30,7 @@ $caop-main-color: #2659d3;
           display: block;
           text-decoration: none;
           color: $main-text-color;
-          font-size: 100%;
+          font-size: 110%;
           padding: 5px;
         
           &.active {
@@ -109,4 +109,17 @@ form.simple_form, form.form {
 
 .button {
   @include stylr-button;
+}
+
+.result_wrapper {
+  @include border-radius(7px);
+  @include box-shadow(#ccc 0 1px 1px inset);
+  border: 1px solid #ddd;
+  width: 80px;
+  height: 48px;
+  background-color: #dedede;
+  padding: 10px;
+  margin: 15px auto;
+  text-align: center;
+  opacity: 0.3;
 }

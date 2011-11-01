@@ -56,9 +56,9 @@ CAOP::Application.routes.draw do
   # Note: This route will make all actions in every controller accessible via GET requests.
   # match ':controller(/:action(/:id(.:format)))'
 
-  match 'compute' => 'maple#compute'
-  
-  resources :polynomials
+  resources :polynomials do
+    get 'compute', :on => :member
+  end
   resources :qpolynomials
     
   mathjax 'mathjax'

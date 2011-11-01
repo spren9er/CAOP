@@ -10,7 +10,17 @@ class PolynomialsController < ApplicationController
   def show
     nonq = Category.where(sid: 'polynomials').first
     @polynomials = nonq.polynomials
-    @polynomial = Polynomial.find params[:id]
+    @polynomial = Polynomial.where(sid: params[:id]).first
+    
+    respond_to do |format|
+      format.html
+      format.js 
+    end
+  end
+  
+  def compute
+    @polynomial = Polynomial.where(sid: params[:id]).first
+    render :text => @polynomial.compute({'a' => 1, 'b' => 2})  
   end
   
   private

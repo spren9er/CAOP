@@ -37,7 +37,7 @@ jacobi = Polynomial.new({
   name:       'Jacobi',
   sid:        'jacobi',
   definition: 'P_n^{(a,b)}(x) = \frac{(a+1)_n}{n!} {}_2F_1 \left(\left. {-n, n+a+b+1 \atop a+1} \; \right| \frac{1-x}{2} \right)',
-  maple:      '',
+  maple:      'pochhammer(-n,k)*pochhammer(n+a+b+1,k)/pochhammer(a+1,k)/k!*((1-x)/2)^k',
 })
 jacobi.parameters.create(name: 'a', lower_bound: -1, upper_bound: Float::MAX)
 jacobi.parameters.create(name: 'b', lower_bound: -1, upper_bound: Float::MAX)
@@ -51,7 +51,7 @@ charlier = Polynomial.new({
   name:       'Charlier',
   sid:        'charlier',
   definition: 'C_n(x,a) = {}_2F_0 \left(\left. {-n, -x \atop -} \; \right| -\frac{1}{a} \right)',
-  maple:      '',
+  maple:      'pochhammer(-n,k)*pochhammer(-x,k)/k!*(-1/a)^k',
 })
 charlier.parameters.create(name: 'a', lower_bound: 0, upper_bound: Float::MAX)
 charlier.category = polynomials
@@ -64,7 +64,7 @@ hermite = Polynomial.new({
   name:       'Hermite',
   sid:        'hermite',
   definition: 'H_n(x) = (2x)^n {}_2F_0 \left(\left. {-n/2, -(n-1)/2 \atop -} \; \right| -\frac{1}{x^2} \right)',
-  maple:      '',
+  maple:      'pochhammer(-n/2,k)*pochhammer(-(n-1)/2,k)*(-1/x^2)^k',
 })
 hermite.category = polynomials
 hermite.save
