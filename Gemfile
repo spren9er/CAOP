@@ -8,7 +8,6 @@ gem 'admin_base', :git => 'git@github.com:provideal/admin_base.git'
 gem 'stylr', :git => 'git@github.com:provideal/stylr.git'
 
 gem 'simple_form'
-gem 'stalker'
 gem 'mathjax-rails'
 
 
