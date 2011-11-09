@@ -11,9 +11,9 @@ class PolynomialsController < ApplicationController
     nonq = Category.where(sid: 'polynomials').first
     @polynomials = nonq.polynomials
     @polynomial = Polynomial.where(sid: params[:id]).first
-    
+
     respond_to do |format|
-      format.html
+      format.html 
       format.js 
     end
   end

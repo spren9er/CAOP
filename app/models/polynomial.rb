@@ -21,12 +21,12 @@ class Polynomial
           subs << "#{param.name} = #{parameters[param.name]}"
         end
       end
-      subs_command = "term := subs(#{subs.join(', ')}, term):\n"
+      subs_command = "term := subs(#{subs.join(', ')}, term):\n" if subs.present?
     end
     
     # put input in file
     input = "term := #{self.maple}:\n"
-    # input += subs_command if subs_command.present?
+    input += subs_command if subs_command.present?
     
     if type[:receq]
       input += "latex(sumrecursion(term, k, S(n)));"

@@ -10,7 +10,7 @@
 
 <h3>Parameters</h3>
 
-<%= form_tag polynomial_path(@polynomial), :remote => true, :class => 'form' do %>
+<%= form_tag polynomial_path(@polynomial.sid), :remote => true, :method => 'get', :class => 'form' do %>
   <% @polynomial.parameters.each do |parameter| %>
   <p>
     <%= parameter.name %>
@@ -18,66 +18,19 @@
   </p>
   <% end %>
 
-  <%= submit_tag 'Submit', :class => 'button', :id => 'ajax_compute' %>
+  <%= submit_tag 'Submit', :class => 'button' %>
 <% end %>
 
 
 <h3>Differential Equation</h3>
 
 <div class="result_wrapper" id="diffeq_wrapper">
-  <div class="result" id="diffeq"><%= image_tag 'spinner.gif' %></div>
+  <div class="result" id="diffeq"></div>
 </div>
 
 
 <h3>Recurrence Equation</h3>
 
 <div class="result_wrapper" id="receq_wrapper">
-  <div class="result" id="receq"><%= image_tag 'spinner.gif' %></div>
+  <div class="result" id="receq"></div>
 </div>
-
-
-<script type="text/javascript" charset="utf-8">
-$(function(){
-  var compute = function(){
-    // compute recurrence equation
-    $.ajax({
-      url: "<%= compute_polynomial_path(@polynomial.sid, :type => {:receq => true}) %>",
-      success: function(data) {
-        $("#receq_wrapper").animate({
-          opacity: 1.0,
-          width: '100%'
-        }, 1000, function(){
-          $("#receq_wrapper").html('\\[' + data + '\\]');        
-          MathJax.Hub.Typeset();  
-        });
-      }, 
-      error: function(data) {
-        $("#receq").html("An error occurred!");        
-      }
-    });
-    
-    // compute difference/differential equation
-    $.ajax({
-      url: "<%= compute_polynomial_path(@polynomial.sid, :type => {:diffeq => true}) %>",
-      success: function(data) {
-        $("#diffeq_wrapper").animate({
-          opacity: 1.0,
-          width: '100%'
-        }, 1000, function(){
-          $("#diffeq_wrapper").html('\\[' + data + '\\]');        
-          MathJax.Hub.Typeset();  
-        });
-      }, 
-      error: function(data) {
-        $("#diffeq").html("An error occurred!");        
-      }
-    });    
-  };
-
-  $("#ajax_compute").click(function(){
-    compute();
-  });
-});
-</script>
-
-\[<%#= @polynomial.compute({'a' => 1, 'b' => 2}) %>\]
