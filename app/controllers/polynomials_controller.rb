@@ -23,7 +23,8 @@ class PolynomialsController < ApplicationController
   
   def compute
     @polynomial = Polynomial.where(sid: params[:id]).first
-    render :text => @polynomial.compute(params[:parameters], params[:type], params[:factor])  
+    input, output = @polynomial.compute(params[:parameters], params[:type], params[:factor])
+    render :text => input + "---" + output   
   end  
   
   private

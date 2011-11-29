@@ -85,6 +85,20 @@ qlaguerre.category = qpolynomials
 qlaguerre.save
 
 #
+# q-Charlier
+#
+qcharlier = Polynomial.new({
+  name:       'q-Charlier',
+  sid:        'qcharlier',
+  definition: 'C_n(q^{-x}; a; q) = {}_{2}\phi_{1}\!\left(\left. {q^{-n}, q^{-x} \atop 0} \; \right| q ; -\frac{q^{n+1}}{a} \right)',
+  maple:      'qpochhammer(q^(-n),q,k)/qpochhammer(q^(-x),q,k)/qpochhammer(q,q,k)*(-q^(n+1)/a)^k',
+  type:       'discrete'  
+})
+qcharlier.parameters.create(name: 'a', lower_bound: 0, upper_bound: Float::MAX)
+qcharlier.category = qpolynomials
+qcharlier.save
+
+#
 # Discrete q-Hermite I
 #
 discqhermiteI = Polynomial.new({
@@ -92,9 +106,7 @@ discqhermiteI = Polynomial.new({
   sid:        'discqhermiteI',
   definition: 'h_n(x;q) = q^{n \choose 2} {}_{2}\phi_{1}\!\left(\left. {q^{-n}, x^{-1} \atop 0} \; \right| q ; -q x \right)',
   maple:      'qpochhammer(q^(-n),q,k)*qpochhammer(1/x,q,k)/qpochhammer(q,q,k)*(-q*x)^k',
-  type:       'discrete'  
+  type:       'continuous' # in fact its type is 'discrete', but to invoke the correct command here it is necessary to have type continuous  
 })
 discqhermiteI.category = qpolynomials
 discqhermiteI.save
-
-

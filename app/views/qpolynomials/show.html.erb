@@ -29,14 +29,45 @@
   <div class="result" id="diffeq"></div>
 </div>
 
+<div class="computation_wrapper">
+  <%= button_tag 'Show Maple', :class => 'computation_button', :id => 'diffeq_computation_submit' %>
+  <pre id="diffeq_computation" class="computation" style="display: none"></pre>
+</div>
+
 <h3><%= @receq %></h3>
 
 <div class="result_wrapper" id="receq_wrapper">
   <div class="result" id="receq"></div>
 </div>
 
+<div class="computation_wrapper">
+  <%= button_tag 'Show Maple', :class => 'computation_button', :id => 'receq_computation_submit' %>
+  <pre id="receq_computation" class="computation" style="display: none"></pre>
+</div>
+
+
 <script type="text/javascript" charset="utf-8">
 $(function(){
   $("#submit").click();
+  
+  var diffeq_flip = 0;
+  $("#diffeq_computation_submit").bind('click', function(){
+    $("#diffeq_computation").toggle(diffeq_flip++ % 2 == 0);
+    if (diffeq_flip % 2 == 0) {
+      $(this).html('Show Maple');            
+    } else {
+      $(this).html('Hide Maple');      
+    }
+  });
+  
+  var receq_flip = 0;
+  $("#receq_computation_submit").bind('click', function(){
+    $("#receq_computation").toggle(receq_flip++ % 2 == 0);
+    if (receq_flip % 2 == 0) {
+      $(this).html('Show Maple');            
+    } else {
+      $(this).html('Hide Maple');      
+    }
+  });
 });
 </script>
