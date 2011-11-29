@@ -58,8 +58,11 @@ CAOP::Application.routes.draw do
 
   resources :polynomials do
     get 'compute', :on => :member
+  
   end
-  resources :qpolynomials
+  resources :qpolynomials do
+    get 'compute', :on => :member
+  end
     
   mathjax 'mathjax'
   

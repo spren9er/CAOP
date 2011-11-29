@@ -115,20 +115,21 @@ form.simple_form, form.form {
   @include border-radius(7px);
   @include box-shadow(#ccc 0 1px 1px inset);
   border: 1px solid #ddd;
-  width: 80px;
+  width: 100%;
   height: 48px;
   background-color: #dedede;
   padding: 10px;
   margin: 15px auto;
   text-align: center;
-  opacity: 0.3;
+  opacity: 0.5;
 }
 
 .result {
   line-height: 18px;
+  overflow: scroll;
 //  padding-top: 7px;
 }
 
 .MathJax_Display {
-  overflow: scroll;
+//  overflow: scroll;
 }

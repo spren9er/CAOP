@@ -16,15 +16,9 @@
     <%= parameter.name %>
     <%= text_field_tag parameter.name, parameter.name %>
     <%= parameter.boundaries %>
-  </p>  
+  </p>
   <% end %>
 
-  <p>
-    &nbsp;&nbsp;
-    <%= text_field_tag 'factor', '' %>
-    factor
-  </p>
-  
   <%= submit_tag 'Submit', :class => 'button', :id => 'submit' %>
 <% end %>
 

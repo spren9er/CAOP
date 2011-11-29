@@ -1,12 +1,3 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
-
-
 ###
 #
 #  CATEGORIES
@@ -38,6 +29,7 @@ jacobi = Polynomial.new({
   sid:        'jacobi',
   definition: 'P_n^{(a,b)}(x) = \frac{(a+1)_n}{n!} {}_2F_1 \left(\left. {-n, n+a+b+1 \atop a+1} \; \right| \frac{1-x}{2} \right)',
   maple:      'pochhammer(-n,k)*pochhammer(n+a+b+1,k)/pochhammer(a+1,k)/k!*((1-x)/2)^k',
+  type:       'continuous'
 })
 jacobi.parameters.create(name: 'a', lower_bound: -1, upper_bound: Float::MAX)
 jacobi.parameters.create(name: 'b', lower_bound: -1, upper_bound: Float::MAX)
@@ -52,6 +44,7 @@ charlier = Polynomial.new({
   sid:        'charlier',
   definition: 'C_n(x,a) = {}_2F_0 \left(\left. {-n, -x \atop -} \; \right| -\frac{1}{a} \right)',
   maple:      'pochhammer(-n,k)*pochhammer(-x,k)/k!*(-1/a)^k',
+  type:       'discrete'
 })
 charlier.parameters.create(name: 'a', lower_bound: 0, upper_bound: Float::MAX)
 charlier.category = polynomials
@@ -65,8 +58,43 @@ hermite = Polynomial.new({
   sid:        'hermite',
   definition: 'H_n(x) = (2x)^n {}_2F_0 \left(\left. {-n/2, -(n-1)/2 \atop -} \; \right| -\frac{1}{x^2} \right)',
   maple:      'pochhammer(-n/2,k)*pochhammer(-(n-1)/2,k)*(-1/x^2)^k',
+  type:       'continuous' 
 })
 hermite.category = polynomials
 hermite.save
+
+
+###
+#
+#  Q-ORTHOGONAL POLYNOMIALS
+#
+###
+
+#
+# q-Laguerre
+#
+qlaguerre = Polynomial.new({
+  name:       'q-Laguerre',
+  sid:        'qlaguerre',
+  definition: 'L_n^{(a)}(x) = \frac{(q^{a+1};q)_n}{(q;q)_n} {}_{1}\phi_{1}\!\left(\left. {q^{-n} \atop q^{a+1}} \; \right| q ; -q^{n+a+1}x \right)',
+  maple:      'qpochhammer(q^(-n),q,k)/qpochhammer(q^(a+1),q,k)/qpochhammer(q,q,k)*(-q^(n+a+1)*x)^k*(-1)^k*q^binomial(k,2)',
+  type:       'continuous'
+})
+qlaguerre.parameters.create(name: 'a', lower_bound: -1, upper_bound: Float::MAX)
+qlaguerre.category = qpolynomials
+qlaguerre.save
+
+#
+# Discrete q-Hermite I
+#
+discqhermiteI = Polynomial.new({
+  name:       'Discrete q-Hermite I',
+  sid:        'discqhermiteI',
+  definition: 'h_n(x;q) = q^{n \choose 2} {}_{2}\phi_{1}\!\left(\left. {q^{-n}, x^{-1} \atop 0} \; \right| q ; -q x \right)',
+  maple:      'qpochhammer(q^(-n),q,k)*qpochhammer(1/x,q,k)/qpochhammer(q,q,k)*(-q*x)^k',
+  type:       'discrete'  
+})
+discqhermiteI.category = qpolynomials
+discqhermiteI.save
 
 

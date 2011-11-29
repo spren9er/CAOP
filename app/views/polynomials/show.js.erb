@@ -2,23 +2,6 @@ $("#diffeq").html("<%= escape_javascript(image_tag('spinner.gif')) %>");
 $("#receq").html("<%= escape_javascript(image_tag('spinner.gif')) %>");
 
 var compute = function(){
-  // compute recurrence equation
-  $.ajax({
-    url: "<%= compute_polynomial_path(@polynomial.sid, :type => {:receq => true}, :parameters => params) %>",
-    success: function(data) {
-      $("#receq_wrapper").animate({
-        opacity: 1.0,
-        width: '100%'
-      }, 1000, function(){
-        $("#receq").html('\\[' + data + '\\]');        
-        MathJax.Hub.Typeset();  
-      });
-    }, 
-    error: function(data) {
-      $("#receq").html("An error occurred!");        
-    }
-  });
-  
   // compute difference/differential equation
   $.ajax({
     url: "<%= compute_polynomial_path(@polynomial.sid, :type => {:diffeq => true}, :parameters => params) %>",
@@ -35,6 +18,23 @@ var compute = function(){
       $("#diffeq").html("An error occurred!");        
     }
   });    
+  
+  // compute recurrence equation
+  $.ajax({
+    url: "<%= compute_polynomial_path(@polynomial.sid, :type => {:receq => true}, :parameters => params) %>",
+    success: function(data) {
+      $("#receq_wrapper").animate({
+        opacity: 1.0,
+        width: '100%'
+      }, 1000, function(){
+        $("#receq").html('\\[' + data + '\\]');        
+        MathJax.Hub.Typeset();  
+      });
+    }, 
+    error: function(data) {
+      $("#receq").html("An error occurred!");        
+    }
+  });  
 };
 
 compute();

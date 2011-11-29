@@ -1,5 +1,12 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
-
 en:
-  hello: "Hello world"
+  qorthogonal_polynomials: 'q-Orthogonal Polynomials'
+  qdifferential_equation: 'q-Differential Equation'
+  qdifference_equation: 'q-Difference Equation'
+  qrecurrence_equation: 'q-Recurrence Equation'
+  orthogonal_polynomials: 'Orthogonal Polynomials'
+  differential_equation: 'Differential Equation'
+  difference_equation: 'Difference Equation'
+  recurrence_equation: 'Recurrence Equation'
+  definition: 'Definition'
+  parameters: 'Parameters'
+  settings: 'Settings'
