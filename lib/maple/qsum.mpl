@@ -2127,7 +2127,7 @@ end:
 
 qsumrecursion:= proc()
 	local arg,lo,hi,F,q,k,srange,S,n,rec,K,N,RK,constRN,RN,myrange,\
-		restore_vars,info;
+		restore_vars,info,coe,i;
 	global _qsumrecursion_proof, _qsumrecursion_local_explicit_range;
 	option `Copyright (c) 1997 by Harald Boeing & Wolfram Koepf.`;
 	# Assign all Variables from F, q,...,hi
@@ -2171,6 +2171,15 @@ qsumrecursion:= proc()
 		ERROR(rec); 
 	fi;
 	assign(info, copy(_qsumrecursion_proof));
+
+   ##################################################
+   # modification for CAOP (only positive shifts)
+   ##################################################
+   
+   k:=-min(subs(n=0,map(op,indets(lhs(rec),function))));
+   rec:=subs(n=n+k,rec);
+   coe:=map(factor@qsimpcomb,[seq(coeff(lhs(rec),S(n+i)),i=0..k)]);
+   rec:=add(coe[i+1]*S(n+i),i=0..k)=0;
 
 	RETURN(rec);
 end:
@@ -2401,9 +2410,9 @@ end: # qfasenmyer
 	#qdiffstring:= cat(`D[`,args[nargs],`][`);
 	qdiffstring:= cat(`D`,args[nargs],`[`);
 	for j in [args[2..nargs-2]] do
-		qdiffstring:= cat(qdiffstring,j,`,`);
+		qdiffstring:= cat(qdiffstring,convert(j,string),`,`); # modification due to CAOP
 	od;
-	qdiffstring:= cat(qdiffstring, args[nargs-1],`](`,convert(f,string),`)`);
+	qdiffstring:= cat(qdiffstring, convert(args[nargs-1],string),`](`,convert(f,string),`)`); # modification due to CAOP
 	parse(qdiffstring);
 end:
 

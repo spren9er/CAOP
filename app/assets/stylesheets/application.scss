@@ -112,12 +112,12 @@ form.simple_form, form.form {
 }
 
 .result_wrapper {
-  @include border-radius(7px);
-  @include box-shadow(#ccc 0 1px 1px inset);
-  border: 1px solid #ddd;
+  @include border-radius(3px);
+//  @include box-shadow(#ccc 0 1px 1px inset);
+  border: 1px solid #ccc;
   width: 100%;
   height: 48px;
-  background-color: #dedede;
+  background-color: #e1e1e1;
   padding: 10px 0;
   margin: 15px auto;
   text-align: center;
@@ -142,4 +142,8 @@ form.simple_form, form.form {
 .computation_button {
   @include stylr-button;
   margin-bottom: 15px;
+}
+
+.secondary {
+  display: none !important;
 }
