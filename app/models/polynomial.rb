@@ -13,22 +13,24 @@ class Polynomial
   # MAPLE_PATH = 'usr/local/maple12/bin'
   MAPLE_PATH = '/Library/Frameworks/Maple.framework/Versions/15/bin'
   
-  def compute(parameters = nil, equation_type, factor)
+  def compute(params = nil, equation_type, factor)
     op = operator[0]
     
     # mixin parameters
-    if parameters.present?
-      # subs = []
-      (self.parameters.map(&:name) + ['n','x']).inject([]) do |r, subs|
-        subs << "#{fixparam} = #{varparam}" if fixparam != varparam
+    if params.present?
+      subs = (self.parameters.map(&:name) + ['n','x']).inject([]) do |set, param_name|
+        fixparam = param_name
+        varparam = params[param_name]        
+        set << ["#{fixparam} = #{varparam}"] if fixparam != varparam
+        set
       end
-      # (self.parameters.map(&:name) + ['n','x']).each do |param_name|
-      #   fixparam = param_name
-      #   varparam = parameters[param_name]
-      #   subs << "#{fixparam} = #{varparam}" if fixparam != varparam
-      # end
       subs_command = "term := subs(#{subs.join(', ')}, term):\n" if subs.present?
     end
+    
+    # special values
+    n = params['n']
+    x = params['x']
+    
     
     # put input in file
     input = "term := #{self.maple}:\n"
@@ -36,14 +38,14 @@ class Polynomial
 
     # choose appropriate commands
     case [category.sid, type, equation_type[:receq] ? 'receq' : 'diffeq']
-      when ['polynomials', 'continuous', 'diffeq']   then input += "sumdiffeq(term, k, #{op}(x));"
-      when ['polynomials', 'continuous', 'receq']    then input += "sumrecursion(term, k, #{op}(n));"
-      when ['polynomials', 'discrete', 'diffeq']     then input += "sumrecursion(term, k, #{op}(x));"
-      when ['polynomials', 'discrete', 'receq']      then input += "sumrecursion(term, k, #{op}(n));"
-      when ['qpolynomials', 'continuous', 'diffeq']  then input += "qsumdiffeq(term, q, k, #{op}(x));"
-      when ['qpolynomials', 'continuous', 'receq']   then input += "qsumrecursion(term, q, k, #{op}(n));"
-      when ['qpolynomials', 'discrete', 'diffeq']    then input += "term := subs(q^(-x) = x, term):\nDE := qsumdiffeq(term, q, k, #{op}(x)):\nsubs(x = q^(-x), DE);"
-      when ['qpolynomials', 'discrete', 'receq']     then input += "term := subs(q^(-x) = x, term):\nRE := qsumrecursion(term, q, k, #{op}(n)):\nsubs(x = q^(-x), RE);"
+      when ['polynomials', 'continuous', 'diffeq']   then input += "sumdiffeq(term, k, #{op}(#{x}));"
+      when ['polynomials', 'continuous', 'receq']    then input += "sumrecursion(term, k, #{op}(#{n}));"
+      when ['polynomials', 'discrete', 'diffeq']     then input += "sumrecursion(term, k, #{op}(#{x}));"
+      when ['polynomials', 'discrete', 'receq']      then input += "sumrecursion(term, k, #{op}(#{n}));"
+      when ['qpolynomials', 'continuous', 'diffeq']  then input += "qsumdiffeq(term, q, k, #{op}(#{x}));"
+      when ['qpolynomials', 'continuous', 'receq']   then input += "qsumrecursion(term, q, k, #{op}(#{n}));"
+      when ['qpolynomials', 'discrete', 'diffeq']    then input += "term := subs(q^(-x) = x, term):\nDE := qsumdiffeq(term, q, k, #{op}(#{x})):\nsubs(x = q^(-x), DE);"
+      when ['qpolynomials', 'discrete', 'receq']     then input += "term := subs(q^(-x) = x, term):\nRE := qsumrecursion(term, q, k, #{op}(#{n})):\nsubs(x = q^(-x), RE);"
     end
     
     stamp = Time.now.to_i.to_s
