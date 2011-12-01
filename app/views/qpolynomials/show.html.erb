@@ -11,6 +11,10 @@
 <h3><%= t('parameters') %></h3>
 
 <%= form_tag polynomial_path(@polynomial.sid), :remote => true, :method => 'get', :class => 'form' do %>
+  <p>n<%= text_field_tag 'n', 'n' %></p>
+  <p>x<%= text_field_tag 'x', 'x' %></p>
+  <p>q<%= text_field_tag 'q', 'q' %></p>
+
   <% @polynomial.parameters.each do |parameter| %>
   <p>
     <%= parameter.name %>
@@ -22,7 +26,7 @@
   <p>
     &nbsp;&nbsp;
     <%= text_field_tag 'factor', '' %>
-    argument (q-hypergeometric term in \(n\) and \(x\) allowed)
+    prefactor (q-hypergeometric term in \(n\) and \(x\) allowed)
   </p>
   
   <%= submit_tag 'Submit', :class => 'button', :id => 'submit' %>
