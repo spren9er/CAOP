@@ -76,7 +76,7 @@ hermite.save
 qlaguerre = Polynomial.new({
   name:       'q-Laguerre',
   sid:        'qlaguerre',
-  definition: 'L_n^{(a)}(x) = \frac{(q^{a+1};q)_n}{(q;q)_n} {}_{1}\phi_{1}\!\left(\left. {q^{-n} \atop q^{a+1}} \; \right| q ; -q^{n+a+1}x \right)',
+  definition: 'L_n^{(a)}(x;q) = \frac{(q^{a+1};q)_n}{(q;q)_n} {}_{1}\phi_{1}\!\left(\left. {q^{-n} \atop q^{a+1}} \; \right| q ; -q^{n+a+1}x \right)',
   maple:      'qpochhammer(q^(-n),q,k)/qpochhammer(q^(a+1),q,k)/qpochhammer(q,q,k)*(-q^(n+a+1)*x)^k*(-1)^k*q^binomial(k,2)',
   type:       'continuous'
 })
@@ -90,8 +90,8 @@ qlaguerre.save
 qcharlier = Polynomial.new({
   name:       'q-Charlier',
   sid:        'qcharlier',
-  definition: 'C_n(q^{-x}; a; q) = {}_{2}\phi_{1}\!\left(\left. {q^{-n}, q^{-x} \atop 0} \; \right| q ; -\frac{q^{n+1}}{a} \right)',
-  maple:      'qpochhammer(q^(-n),q,k)/qpochhammer(q^(-x),q,k)/qpochhammer(q,q,k)*(-q^(n+1)/a)^k',
+  definition: 'C_n(q^{-x}; a; q) = (-a^{-1}q;q)_n {}_{1}\phi_{1}\!\left(\left. {q^{-n} \atop -a^{-1}q} \; \right| q ; -\frac{q^{n+1-x}}{a} \right)',
+  maple:      'qpochhammer(q^(-n),q,k)/qpochhammer(-q/a,q,k)/qpochhammer(q,q,k)*(-q^(n+1)*q^(-x)/a)^k*(-1)^k*q^binomial(k,2)',
   type:       'discrete'  
 })
 qcharlier.parameters.create(name: 'a', lower_bound: 0, upper_bound: Float::MAX)
