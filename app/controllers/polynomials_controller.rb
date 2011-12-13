@@ -23,8 +23,12 @@ class PolynomialsController < ApplicationController
   
   def compute
     @polynomial = Polynomial.where(sid: params[:id]).first
-    input, output = @polynomial.compute(params[:parameters], params[:type], params[:factor])
-    render :text => input + "---" + output   
+    if @polynomial.hyper_check(params[:parameters], params[:type])
+      input, output = @polynomial.compute(params[:parameters], params[:type])
+      render :text => input + "---" + output   
+    else
+      render :text => 'ERROR --- ERROR (prefactor has not the required form)'
+    end
   end  
   
   private

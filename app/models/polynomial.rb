@@ -13,17 +13,17 @@ class Polynomial
   # MAPLE_PATH = 'usr/local/maple12/bin'
   MAPLE_PATH = '/Library/Frameworks/Maple.framework/Versions/15/bin'
   
-  def compute(params = nil, equation_type, factor)
+  def compute(param, equation_type)
     op = operator[0]
     qcase = category.sid == 'qpolynomials'
     
     # mixin parameters
-    if params.present?
+    if param.present?
       param_names = self.parameters.map(&:name) + ['n','x']
       param_names << 'q' if qcase
       subs = param_names.inject([]) do |set, param_name|
         fixparam = param_name
-        varparam = params[param_name]        
+        varparam = param[param_name]        
         set << ["#{fixparam} = #{varparam}"] if fixparam != varparam
         set
       end
@@ -31,12 +31,13 @@ class Polynomial
     end
     
     # special values
-    n = params['n']
-    x = params['x']
-    q = params['q'] if qcase
+    n = param['n']
+    x = param['x']
+    q = param['q'] if qcase
+    factor = param['factor']
     
     # put input in file
-    input = "term := #{self.maple}:\n"
+    input = factor.present? ? "term := #{factor}*#{self.maple}:\n" : "term := #{self.maple}:\n"
     input += subs_command if subs_command.present?
 
     # choose appropriate commands
@@ -47,7 +48,7 @@ class Polynomial
       when ['polynomials',  'discrete',   'receq']  then input += "sumrecursion(term, k, #{op}(#{n}));"
       when ['qpolynomials', 'continuous', 'diffeq'] then input += "qsumdiffeq(term, #{q}, k, #{op}(#{x}));"
       when ['qpolynomials', 'continuous', 'receq']  then input += "qsumrecursion(term, #{q}, k, #{op}(#{n}), recursion = up);"
-      when ['qpolynomials', 'discrete',   'diffeq'] then input += "term := subs(#{q}^(-#{x}) = #{x}, term):\nDE := qsumdiffeq(term, #{q}, k, #{op}(#{x})):\nRE := diffeqtoshift(DE, #{q}):RE;"#\nsubs(#{x} = #{q}^(-#{x}), RE);"
+      when ['qpolynomials', 'discrete',   'diffeq'] then input += "term := subs(#{q}^(-#{x}) = #{x}, term):\nDE := qsumdiffeq(term, #{q}, k, #{op}(#{x})):\nRE := qdiffeqtorecursion(DE, #{q}):\nRE := qshiftrecursion(RE, #{q}):\nsubs(#{x} = #{q}^(-#{x}), RE);"
       when ['qpolynomials', 'discrete',   'receq']  then input += "term := subs(#{q}^(-#{x}) = #{x}, term):\nRE := qsumrecursion(term, #{q}, k, #{op}(#{n}), recursion = up):\nsubs(#{x} = #{q}^(-#{x}), RE);"
     end
     
@@ -60,7 +61,7 @@ class Polynomial
     # compute
     options = qcase ? ' -qi lib/maple/qsum15.mpl' : ' -qi lib/maple/hsum15.mpl'
     options += ' -c"interface(prettyprint=false)"'
-    output = `#{MAPLE_PATH + '/maple' + options + ' < ' + filename}`.strip
+    output = `#{MAPLE_PATH + '/maple' + options + ' < ' + filename}`.strip    
         
     # prepend package import
     package = qcase ? "> read \"qsum.mpl\":\n" : "> read \"hsum.mpl\":\n"
@@ -115,6 +116,44 @@ class Polynomial
     output.gsub!(regexp, self.operator)
       
     return [input, output]
+  end
+  
+  def hyper_check(param, equation_type)
+    return true if param['factor'].blank?
+    
+    qcase = category.sid == 'qpolynomials'    
+    n = param['n']
+    x = param['x']
+    q = param['q']
+
+    input = "term := #{param['factor']}:\n"
+    
+    # choose appropriate commands
+    case [category.sid, type, equation_type[:receq] ? 'receq' : 'diffeq']
+      when ['polynomials',  'continuous', 'diffeq'] then input += "type(simpcomb(diff(term, #{x})/term), ratpoly);"
+      when ['polynomials',  'continuous', 'receq']  then input += "type(ratio(term,#{n}), ratpoly);"
+      when ['polynomials',  'discrete',   'diffeq'] then input += ""
+      when ['polynomials',  'discrete',   'receq']  then input += ""
+      when ['qpolynomials', 'continuous', 'diffeq'] then input += "type(qsimpcomb(qdiff(term, #{x}, #{q})/term), ratpoly);"
+      when ['qpolynomials', 'continuous', 'receq']  then input += "type(qratio(term,#{n}), ratpoly);"
+      when ['qpolynomials', 'discrete',   'diffeq'] then input += ""
+      when ['qpolynomials', 'discrete',   'receq']  then input += ""    
+    end 
+        
+    stamp = Time.now.to_i.to_s
+    filename = 'tmp/computation' + stamp + (5*rand(9)).to_s + '.txt'
+    file = File.new(filename, 'w')
+    file.write input
+    file.close
+    
+    options = qcase ? ' -qi lib/maple/qsum15.mpl' : ' -qi lib/maple/hsum15.mpl'
+    options += ' -c"interface(prettyprint=false)"'
+    output = `#{MAPLE_PATH + '/maple' + options + ' < ' + filename}`.strip
+    
+    # delete file
+    File.delete(filename)
+    
+    return output == 'true'
   end
   
   def operator

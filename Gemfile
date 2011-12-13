@@ -6,6 +6,7 @@ gem 'bson_ext', '~> 1.3'
 
 gem 'admin_base', :git => 'git@github.com:provideal/admin_base.git'
 gem 'stylr', :git => 'git@github.com:provideal/stylr.git'
+gem 'contentr', :git => 'git@github.com:provideal/contentr.git'
 
 gem 'simple_form'
 gem 'mathjax-rails'

@@ -2417,6 +2417,16 @@ end:
 	parse(qshiftstring);
 end:
 
+`print/invqshift`:= proc(f)
+	local D, j, qshiftstring;
+	qshiftstring:= cat(`invS`,args[nargs],`[`);
+	for j in [args[2..nargs-2]] do
+		qshiftstring:= cat(qshiftstring,convert(j,string),`,`);
+	od;
+	qshiftstring:= cat(qshiftstring, convert(args[nargs-1],string),`](`,convert(f,string),`)`);
+	parse(qshiftstring);
+end:
+
 # ----------------------------------------------------------------------
 
 qdiff:= proc(F,x)
@@ -2458,6 +2468,29 @@ qshift:= proc(F,x)
 		normal(subs(x=x*q,F));
 	elif (nargs > 3) then
 		procname(normal(subs(x=x*q,F)),args[3..nargs]);
+	else
+		'procname(args)';
+	fi;
+end:
+
+# ----------------------------------------------------------------------
+
+invqshift:= proc(F,x)
+	local q, j;
+	options system, remember;
+	q:= args[nargs];
+	if (nargs = 2) then
+		F;
+	elif type(F,function) and not(type(op(0,F),procedure)) then
+		if not(has([seq(has(F,j),j=args[2..nargs-1])],false)) then
+			'procname(args)';
+		else
+			0;
+		fi;
+	elif (nargs = 3) then
+		normal(subs(x=x*1/q,F));
+	elif (nargs > 3) then
+		procname(normal(subs(x=x*1/q,F)),args[3..nargs]);
 	else
 		'procname(args)';
 	fi;
@@ -5018,13 +5051,13 @@ end:
 # ----------------------------------------------------------------------
 ########################################################################
 #                                                                      #
-#  diffeqtoshift: Convert q-differential equation to q-shift equation  #
-#                                                                      #
+#  qdiffeqtorecursion: Convert q-differential equation to q-reucrrence #
+#                      equation                                        #
 #                                                                      #
 #                                                                      #
 ########################################################################
 
-diffeqtoshift:=proc(diffeq,q)
+qdiffeqtorecursion:=proc(diffeq,q)
 local term, operator, f, x, n;
 if type(diffeq, equation) then
    term:=lhs(diffeq)-rhs(diffeq)
@@ -5045,4 +5078,47 @@ elif type(term,'function') then
    end if;
 end if;
 term
+end:
+
+# ----------------------------------------------------------------------
+########################################################################
+#                                                                      #
+#  qshiftrecursion: Shift q-recurrence equation to negative q-shifts   #
+#                                                                      #
+#                                                                      #
+#                                                                      #
+########################################################################
+
+qshiftrecursion:=proc(recursion,q,ord:=0)
+local term, order, operator, f, x, n;
+if type(recursion, equation) then
+   term:=lhs(recursion)-rhs(recursion)
+else 
+   term:=recursion
+end if;
+
+if (ord=0) then 
+  order:=max(map(x->nops([op(2..-2,x)]),indets(term,specop(anything,qshift)))) 
+else 
+  order:=ord;
+end if; 
+
+if type(term,'`+`') and type(recursion, equation) then
+   return collect(numer(normal(map(procname,term,q,order))),invqshift,simplify@factor@qsimpcomb)=0
+elif type(term,'`*`') then
+   return map(procname,term,q,order)
+elif type(term,'function') then
+   operator:=op(0,term);
+   if operator=qshift then
+      f:=op(0,op(1,term));
+      x:=op(1,op(1,term)); 
+      n:=nops([op(2..-2, term)]);
+      return invqshift(f(x),x$(order-n),q);
+   else 
+      f:=op(0,term);
+      x:=op(1,term); 
+      return invqshift(f(x),x$order,q);
+   end if;
+end if;
+subs(q=1/q,term)
 end:
