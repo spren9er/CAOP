@@ -19,10 +19,11 @@ GIT
 
 GIT
   remote: git@github.com:provideal/stylr.git
-  revision: f99a27f75eef08627503fdc6365b63af8b3ef47b
+  revision: 9299097de8ac48d5639039e534636bc75520fa94
   specs:
     stylr (0.0.1)
       compass (~> 0.12.alpha.0)
+      jquery-rails
       rails (~> 3.1)
       sass-rails (~> 3.1)
 
@@ -75,7 +76,7 @@ GEM
       fssm (>= 0.2.7)
       sass (~> 3.1)
     erubis (2.7.0)
-    execjs (1.2.9)
+    execjs (1.2.12)
       multi_json (~> 1.0)
     fssm (0.2.7)
     hike (1.2.1)
