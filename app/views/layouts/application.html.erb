@@ -19,16 +19,7 @@
     </ul>
 
     <ul class="menu secondary">
-      <li class="raw"><form><input type="text" placeholder="Search"></form></li>
-      <li class="dropdown">
-        <%= link_to "Settings", "#", :class => "dropdown-toggle" %>
-        <ul class="dropdown-menu">
-          <li><%= link_to t('Settings'), root_path %></li>
-          <li><%#= link_to "Settings", "#" %></li>
-          <li class="divider"></li>
-          <li><%= link_to "Foo", "#" %></li>
-        </ul>
-      </li>
+      <li><%= link_to(t('logout'), logout_path) if session[:htaccess_authenticated] %></li>
     </ul>
   <% end %>
 
@@ -43,7 +34,58 @@
   <% content_for(:flash) do %>
     <% flash.each do |name, msg| %><div class="flash_<%= name %>"><%= msg %></div><% end %>
   <% end %>
+  
+  
+  
+  <%= contentr_toolbar %>
+  
+  <% if content_for?(:metabar) %>
+  <div id="metabar-wrapper">
+    <div id="metabar">
+      <%= yield(:metabar) %>
+    </div>
+  </div>
+  <% end %>
 
-  <%= render :template => 'layouts/admin_base/application' %>  
+  <% if content_for?(:topbar) %>
+  <div id="topbar-wrapper">
+    <div id="topbar">
+      <%= yield(:topbar) %>
+    </div>
+  </div>
+  <% end %>
+
+  <% if content_for?(:flash) %>
+    <div id="flashbar-wrapper">
+      <div id="flashbar">
+        <%= yield(:flash) %>
+      </div>
+    </div>
+  <% end %>
+
+  <div id="mainarea-wrapper">
+    <% with_sidebar_class = content_for?(:sidebar) ? 'with-sidebar' : 'without-sidebar' -%>
+    <div id="mainarea" class="<%= with_sidebar_class -%>">
+      <% if content_for?(:sidebar) %>
+        <div id="sidebar">
+          <%= yield(:sidebar) %>
+        </div>
+      <% end %>
+
+      <div id="pagearea">
+        <div id="page">
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% if content_for?(:footer) %>
+  <div id="footer-wrapper">
+    <div id="footer">
+      <%= yield(:footer) %>
+    </div>
+  </div>
+  <% end %>
 </body>
 </html>

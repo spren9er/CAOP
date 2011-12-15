@@ -2,6 +2,8 @@ $("#diffeq").html("<%= escape_javascript(image_tag('spinner.gif')) %>");
 $("#receq").html("<%= escape_javascript(image_tag('spinner.gif')) %>");
 
 var compute = function(){
+  var error_message = "An error occurred!<br/>Either no connection to the CAS server could be established or your choice of parameters fails!<br/>Try it with other parameters!";
+  
   // compute difference/differential equation
   $.ajax({
     url: "<%= compute_polynomial_path(@polynomial.sid, :type => {:diffeq => true}, :parameters => params) %>",
@@ -18,7 +20,7 @@ var compute = function(){
       });
     }, 
 	error: function(data) {
-	  $("#diffeq").html("An error occurred!");        
+	  $("#diffeq").html(error_message);        
 	}
   });    
   
@@ -38,7 +40,7 @@ var compute = function(){
       });
     }, 
     error: function(data) {
-      $("#receq").html("An error occurred!");        
+      $("#receq").html(error_message);        
     }
   });  
 };

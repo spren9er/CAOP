@@ -1,8 +1,26 @@
 ###
 #
+# CONTENTR
+#
+###
+
+Contentr::Node.delete_all
+
+@site = Contentr::Site.create!(name: 'cms')
+
+polynomials_page = Contentr::LinkedPage.new(name: 'polynomials', linked_to: 'polynomials#index', parent: @site)
+polynomials_page.position = 0
+polynomials_page.published = true
+polynomials_page.paragraphs << Contentr::HtmlParagraph.new(area_name: 'overview', body: 'TEST')
+polynomials_page.save!
+
+###
+#
 #  CATEGORIES
 #
 ###
+
+Category.delete_all
 
 polynomials = Category.create({
   name:       'Orthogonal Polynomials',
@@ -20,6 +38,8 @@ qpolynomials = Category.create({
 #  ORTHOGONAL POLYNOMIALS
 #
 ###
+
+Polynomial.delete_all
 
 #
 # Jacobi

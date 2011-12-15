@@ -6,12 +6,362 @@
  *= require_tree . 
 */
 
+// Setup the liquid grid
+$blueprint-liquid-grid-columns: 24;
+$blueprint-liquid-grid-width: 3.167%;
+$blueprint-liquid-grid-margin: 1.042%;
+$blueprint-liquid-container-width: 100%;
+$blueprint-liquid-container-min-width: none;
+
+// Contentr
+$contentr-toolbar-background-color: #c8175d;
+
+// Global Imports
+@import "blueprint/reset";
+@import "blueprint/liquid";
+@import "compass/css3";
 @import "compass/css3/box-shadow";
 @import "compass/css3/border-radius";
-@import "admin_base";
-@import "stylr";
+@import "compass/utilities/general/min";
+@import "compass/utilities/general/float";
+@import "stylr/all";
+@import "contentr";
 
-@include admin_base();
+// Global definements
+$main-text-color: #333;
+$main-background-color: #c7c7c7;
+$main-background-gradient: linear-gradient(lighten($main-background-color, 10%) .25, $main-background-color);
+
+$metabar-background-color: #2d2d2d;
+$metabar-text-color: #ccc;
+$metabar-height: 25px;
+$metabar-font-size: 90%;
+
+$topbar-background-color: #222;
+$topbar-background-gradient: linear-gradient(lighten($topbar-background-color, 10%) .25, $topbar-background-color);
+$topbar-text-color: #fff;
+$topbar-height: 40px;
+$topbar-dropdown-background-color: #333;
+
+$sidebar-width: 200px;
+
+$pagearea-background-color: #fff;
+$pagearea-padding: 10px;
+$pagearea-border-radius: 6px;
+
+$flashbar-background-color: #ffeeee;
+$flashbar-text-color: #000;
+
+$menu-dropdown-background-color: #333;
+$menu-dropdown-arrow-color: #f1f1f1;
+$menu-dropdown-menu-width: 160px;
+$menu-dropdown-voff: 40px;
+$menu-dropdown-hoff: 0;
+$menu-dropdown-z-index: 1000;
+
+@mixin menu {
+
+  @include float-left;
+
+  &.secondary {
+    @include float-right;
+    li.dropdown ul.dropdown-menu {
+      left: auto;
+      right: 0;
+    }
+  }
+
+  li {
+    display: block;
+    @include float-left;
+    margin: 0;
+    padding: 0 6px;
+
+    &:hover {
+      background-color: darken($menu-dropdown-background-color, 5%);
+    }
+
+    &.raw:hover {
+      background-color: transparent;
+    }
+
+    a {
+      display: block;
+      padding: 0;
+    }
+
+    &.dropdown {
+      position: relative;
+
+      &.open {
+        background-color: darken($menu-dropdown-background-color, 5%);
+        ul.dropdown-menu {
+          display: block;
+        }
+      }
+
+      a.dropdown-toggle {
+        &:after {
+          width: 0;
+          height: 0;
+          text-indent: -99999px;
+          overflow: hidden;
+          content: "\2193";
+          margin-left: 4px;
+          border-left: 4px solid transparent;
+          border-right: 4px solid transparent;
+          border-top: 4px solid $menu-dropdown-arrow-color;
+          @include inline-block;
+        }
+      }
+
+      ul.dropdown-menu {
+        display: none;
+        text-align: left;
+        z-index: $menu-dropdown-z-index;
+        background-color: $menu-dropdown-background-color;
+        position: absolute;
+        top: $menu-dropdown-voff;
+        left: $menu-dropdown-hoff;
+        width: $menu-dropdown-menu-width;
+        padding: 5px 0;
+        @include border-bottom-radius(4px);
+
+        li {
+          line-height: 20px;
+          height: 20px;
+          display: block;
+          float: none;
+          margin: 0;
+          padding: 5px 10px;
+
+          &:hover {
+            background-color: darken($menu-dropdown-background-color, 5%);
+          }
+
+          &.divider {
+            height: 1px;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            background-color: darken($menu-dropdown-background-color, 5%);
+            border-bottom: 1px solid lighten($menu-dropdown-background-color, 5%);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Global styles
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 18px;
+  color: $main-text-color;
+  background-color: $main-background-color;
+  @include background-image($main-background-gradient);
+  text-rendering: optimizeLegibility;
+}
+
+ul.navigation {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+// layout
+#metabar,
+#topbar,
+#mainarea,
+#footer,
+#flashbar-wrapper {
+  min-width: 480px;
+  max-width: 1200px;
+  width: 90%;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+// metabar
+#metabar-wrapper {
+  text-align: right;
+  background-color: $metabar-background-color;
+  color: $metabar-text-color;
+  font-size: $metabar-font-size;
+  @include single-text-shadow(darken($metabar-background-color, 30%), 1px, 1px, 2px);
+
+  #metabar {
+    height: $metabar-height;
+    line-height: $metabar-height;
+    vertical-align: middle;
+
+    a {
+      color: $metabar-text-color;
+      text-decoration: none;
+    }
+
+    ul.menu {
+      $menu-dropdown-voff: $metabar-height;
+      @include menu;
+      @include float-right;
+      margin-left: 15px;
+      li.dropdown ul.dropdown-menu {
+        left: auto;
+        right: 0;
+      }
+    }
+  }
+}
+
+// topbar
+#topbar-wrapper {
+  color: $topbar-text-color;
+  margin-bottom: 15px;
+  background-color: $topbar-background-color;
+  @include background-image($topbar-background-gradient);
+  @include single-text-shadow(darken($topbar-background-color, 30%), 1px, 1px, 2px);
+  @include box-shadow(darken($main-background-color, 30%) 0 3px 5px);
+
+  a {
+    color: $topbar-text-color;
+    text-decoration: none;
+  }
+
+  #topbar {
+    height: $topbar-height;
+    line-height: $topbar-height;
+
+    h1 {
+      @include float-left;
+      width: $sidebar-width;
+      color: $topbar-text-color;
+      font-size: 20px;
+      padding: 0;
+      margin: 0;
+    }
+
+    ul.menu {
+      $menu-dropdown-voff: 40px;
+      $menu-dropdown-background-color: #333;
+      $menu-dropdown-arrow-color: #f1f1f1;
+      @include menu;
+    }
+
+    form {
+      @include inline-block;
+      vertical-align: baseline;
+      input[type="text"],
+      input[type="password"] {
+        @include border-radius(3px);
+        border: 1px solid darken($topbar-background-color, 5%);
+        padding: 4px;
+        background-color: lighten($topbar-background-color, 5%);
+
+        &:focus {
+          outline: none;
+          background-color: #fff;
+        }
+      }
+    }
+  }
+}
+
+#flashbar-wrapper {
+  margin-bottom: 15px;
+  #flashbar {
+    @include border-radius($pagearea-border-radius);
+    @include box-shadow(darken($main-background-color, 30%) 0 0 6px);
+    padding: 10px;
+    background-color: $flashbar-background-color;
+    color: $flashbar-text-color;
+    text-align: center;
+  }
+}
+
+
+// main area
+#mainarea-wrapper {
+  margin-bottom: 15px;
+
+  #mainarea {
+    #sidebar {
+      @include float-left;
+      width: $sidebar-width;
+
+      ul.navigation {
+        margin-top: 6px;
+
+        a {
+          display: block;
+          text-decoration: none;
+          color: $main-text-color;
+          font-size: 120%;
+          padding: 5px;
+
+          &.active {
+            $background-color: darken($main-background-color, 15%);
+            background-color: $background-color;
+
+            &:hover {
+              background-color: $background-color;
+            }
+          }
+
+          &:hover {
+            background-color: darken($main-background-color, 5%);
+          }
+        }
+      }
+    }
+
+    &.with-sidebar {
+      #pagearea {
+        margin-left: $sidebar-width;
+      }
+    }
+
+    #pagearea {
+      @include min-height(400px);
+      @include border-radius($pagearea-border-radius);
+      @include box-shadow(darken($main-background-color, 30%) 0 0 6px);
+
+      background-color: $pagearea-background-color;
+      padding: $pagearea-padding;
+
+      #page {
+        @include stylr-typography;
+        @include container;
+        overflow: visible;
+
+        #page-header {
+          @include border-top-radius($pagearea-border-radius);
+          background-color: #F1F6F9;
+          padding: 10px;
+          margin: -$pagearea-padding;
+          margin-bottom: 15px;
+          border-bottom: 1px solid #DADEE5;
+        }
+      }
+    }
+  }
+}
+
+// footer
+#footer-wrapper {
+  #footer {
+    text-align: right;
+  }
+}
+
+// ADMIN BASE END
 
 $caop-main-color: #2659d3;
 
@@ -144,6 +494,7 @@ form.simple_form, form.form {
   margin-bottom: 15px;
 }
 
-.secondary {
-  display: none !important;
-}
+.overview {
+  	width: 100%;
+  	height: 600px;
+  }
