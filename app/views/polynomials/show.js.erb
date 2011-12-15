@@ -2,7 +2,7 @@ $("#diffeq").html("<%= escape_javascript(image_tag('spinner.gif')) %>");
 $("#receq").html("<%= escape_javascript(image_tag('spinner.gif')) %>");
 
 var compute = function(){
-  var error_message = "An error occurred!<br/>Either no connection to the CAS server could be established or your choice of parameters fails!<br/>Try it with other parameters!";
+  var error_message = "An error occurred!<br/>Either no connection to the CAS server could be established or your choice of parameters failed!<br/>Try it with other parameters!";
   
   // compute difference/differential equation
   $.ajax({
