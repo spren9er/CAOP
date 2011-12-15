@@ -26,6 +26,7 @@
 # Feb 28, 2004, adaption to Maple 9: bug in gausselim, not yet resolved,
 # but instead solve is called, see "Maple 9"
 # Mar 13 and Apr 12, 2010, sum->add and bug involving nestes subs resolved (WK)
+# Dec 14, 2011, qdiffeqtorecursion and qshiftrecursion added
 #
 #
 # Prof. Dr. Wolfram Koepf
@@ -1237,8 +1238,8 @@ init:= proc()
 	option `Copyright (c) 1997-2001 by Harald Boeing & Wolfram Koepf.`;
 	# print(`Copyright 1998,  Harald Boeing & Wolfram Koepf`);
 	# print(`Konrad-Zuse-Zentrum Berlin`);
-   # print(`Package "q-Hypergeometric Summation", Maple V-13`):
-   # print(`Copyright 1998-2010, Harald Boeing & Wolfram Koepf, University of Kassel`):
+   # print(`Package "q-Hypergeometric Summation", Maple V-15`):
+   # print(`Copyright 1998-2011, Harald Boeing & Wolfram Koepf, University of Kassel`):
 
 	# ======================================================================
 
@@ -2114,7 +2115,7 @@ local Rk, Rn, RkRn, c;
 			print('F'(n+1,k)/'F'(n,k)=RkRn[2]));
 	fi;
    if not(type(RkRn,list(ratpoly(anything,K)))) or has(RkRn,k) then
-      ERROR(`Input term is not hypergeomtric wrt. K and N.`);
+      ERROR(`Input term is not hypergeometric wrt. K and N.`);
    fi;
 	RK:= RkRn[1];
 	c:= select(has, 'c*(c+1)'*RkRn[2], K);

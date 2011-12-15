@@ -35,6 +35,7 @@ class Polynomial
     x = param['x']
     q = param['q'] if qcase
     factor = param['factor']
+    factor = "(#{factor})" if factor =~ /\+|\-/
     
     # put input in file
     input = factor.present? ? "term := #{factor}*#{self.maple}:\n" : "term := #{self.maple}:\n"
@@ -61,7 +62,7 @@ class Polynomial
     # compute
     options = qcase ? ' -qi lib/maple/qsum15.mpl' : ' -qi lib/maple/hsum15.mpl'
     options += ' -c"interface(prettyprint=false)"'
-    output = `#{MAPLE_PATH + '/maple' + options + ' < ' + filename}`.strip    
+    output = `#{MAPLE_PATH + '/maple' + options + ' < ' + filename}`    
         
     # prepend package import
     package = qcase ? "> read \"qsum.mpl\":\n" : "> read \"hsum.mpl\":\n"
@@ -79,14 +80,17 @@ class Polynomial
 
     # latex conversion
     output = `#{MAPLE_PATH + '/maple' + options + ' < ' + filename}`
-        
+    output.gsub!(/\n|\s/, '')
+      
     # delete file
     File.delete(filename)
     
+    raise "ERROR" if output =~ /Error/
+        
     #
     # substitutions (order of substitutions is relevant!!!)
     #
-    regexp = Regexp.new("(\\left\s*\()*(\s*\{\\it\s*Dq\}_\{\{)(x[,x]*)(\}\})(\s*\\right\s*\))*(\s*\\left\s*\(\s*)(#{op}\s*\\left\(\s*x\s*\\right\s*\))(\s*\\right\s*\))")
+    regexp = Regexp.new("(\\left\()*(\{\\itDq\}_\{\{)(x[,x]*)(\}\})(\\right\))*(\\left\()(#{op}\\left\(x\\right\))(\\right\))")
     output = output.scan(regexp).uniq.inject(output) do |s, r| 
       xcount = r[2].gsub(/\s/,"").split(',').count
       if type == 'continuous'
@@ -102,17 +106,17 @@ class Polynomial
     end 
     
     # differences: y(x + ...) -> self.operator
-    regexp = Regexp.new("(#{op}\s*\\left*\(\s*)(x\s*\+*\s*\d*)(\s*\\right*\))")
+    regexp = Regexp.new("(#{op}\\left*\()(x\+*\d*)(\\right*\))")
     output = output.scan(regexp).uniq.inject(output) do |s, r| s.gsub(r.join, self.operator.gsub('x', "{#{r[1]}}")) end
     
     # shifts: y(n +- ...) -> self.operator
-    regexp = Regexp.new("(#{op}\s*\\left*\(\s*)(n\s*\+*\s*\d*)(\s*\\right*\))")
+    regexp = Regexp.new("(#{op}\\left*\()(n\+*\d*)(\\right*\))")
     output = output.scan(regexp).uniq.inject(output) do |s, r| s.gsub(r.join, self.operator.gsub('n', "{#{r[1]}}")) end
-    regexp = Regexp.new("(#{op}\s*\\left*\(\s*)(n\s*\-*\s*\d*)(\s*\\right*\))")
+    regexp = Regexp.new("(#{op}\\left*\()(n\-*\d*)(\\right*\))")
     output = output.scan(regexp).uniq.inject(output) do |s, r| s.gsub(r.join, self.operator.gsub('n', "{#{r[1]}}")) end
     
     # functions: y(x) -> self.operator
-    regexp = Regexp.new("#{op}\s*\\left*\(\s*x\s*\\right*\)")
+    regexp = Regexp.new("#{op}\\left*\(x\\right*\)")
     output.gsub!(regexp, self.operator)
       
     return [input, output]

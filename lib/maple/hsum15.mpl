@@ -38,6 +38,7 @@
 # Oct 18, 2009: allow degreebound -1 with f=0
 # Dec 14, 2009: Torsten Sprenger: bugs for inomogeneous RE resolved
 # Dec 14, 2009: function inhomotohomo added 
+# Dec 14, 2011: hyperrecursion added
 #
 # Prof. Dr. Wolfram Koepf
 # Department 10 Mathematics / Natural Sciences
@@ -2720,6 +2721,11 @@ v:=denom(rat);
 collect(u*lhs(RE)-v*subs(n=n+1,lhs(RE)),S,factor)=0
 end: # inhomotohomo
 
+hyperrecursion:=proc(upper,lower,z,Sn)
+local k;
+sumrecursion(hyperterm(upper,lower,z,k),k,Sn);
+end:
+
 Timing:=proc(f)
 local TIME,result;
  TIME:=time():
@@ -2727,5 +2733,5 @@ local TIME,result;
  RETURN([(time()-TIME)*seconds,result]);
 end: # Timing
 
-# print(`Package "Hypergeometric Summation", Maple V - Maple 13`):
-# print(`Copyright 1998-2009, Wolfram Koepf, University of Kassel`):
+# print(`Package "Hypergeometric Summation", Maple V - Maple 15`):
+# print(`Copyright 1998-2011, Wolfram Koepf, University of Kassel`):
