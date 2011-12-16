@@ -7,14 +7,14 @@ class ApplicationController < ActionController::Base
 
   def login
     htaccess
-    redirect_to :root
+    redirect_to :root, :notice => 'Successfully logged in!'
   end
   
   def logout
     session[:htaccess_authenticated] = false
     ::ApplicationController.const_set("Password", nil)
     ::ApplicationController.const_set("Username", nil)
-    redirect_to :back, :alert => 'Successfully logged out!'
+    redirect_to :back, :notice => 'Successfully logged out!'
   end
   
   protected

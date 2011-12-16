@@ -14,7 +14,7 @@ $blueprint-liquid-container-width: 100%;
 $blueprint-liquid-container-min-width: none;
 
 // Contentr
-$contentr-toolbar-background-color: #c8175d;
+$contentr-toolbar-background-color: lighten(#333, 20%);
 
 // Global Imports
 @import "blueprint/reset";
@@ -50,7 +50,7 @@ $pagearea-padding: 10px;
 $pagearea-border-radius: 6px;
 
 $flashbar-background-color: #ffeeee;
-$flashbar-text-color: #000;
+$flashbar-text-color: #333;
 
 $menu-dropdown-background-color: #333;
 $menu-dropdown-arrow-color: #f1f1f1;
@@ -498,3 +498,9 @@ form.simple_form, form.form {
   	width: 100%;
   	height: 600px;
   }
+  
+.toolbar {
+  a {
+    color: #efefef !important;
+  }
+}

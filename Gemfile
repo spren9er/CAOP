@@ -4,7 +4,11 @@ gem 'rails', '~> 3.1.3'
 gem 'mongoid', '~> 2.3'
 gem 'bson_ext', '~> 1.3'
 
-gem 'contentr', git: 'git://github.com/metaminded/contentr.git'
+if File.exist?(fname = File.join(File.dirname(__FILE__), 'tmp', 'local_contentr_path.txt'))
+  gem 'contentr', path: File.new(fname).read.strip
+else
+  gem 'contentr', git: 'git://github.com/metaminded/contentr.git'
+end
 gem 'stylr', :git => 'git@github.com:provideal/stylr.git'
 
 gem 'simple_form'
