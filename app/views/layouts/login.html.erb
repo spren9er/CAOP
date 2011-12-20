@@ -1,30 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>CAOP</title>
+  <title>CAOP - Login</title>
   <%= stylesheet_link_tag    "application" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
-  <%= mathjax_tag %>
 </head>
 <body>
-  <% content_for(:metabar) do %>
-  <% end %>
-
   <% content_for(:topbar) do %>
     <h1><%= link_to "CAOP", root_path %></h1>
-    <ul class="menu">
-      <%= menu_item :item => "polynomials", :label => t('orthogonal_polynomials'), :url => polynomials_path() %></li>
-      <%= menu_item :item => "qpolynomials", :label => t('qorthogonal_polynomials'), :url => qpolynomials_path() %></li>
-    </ul>
 
     <ul class="menu secondary">
       <li><%= link_to(t('logout'), logout_path) if session[:authorized] %></li>
     </ul>
-  <% end %>
-
-  <% content_for(:sidebar) do %>
-    <%= render :partial => 'sidebar' %>
   <% end %>
 
   <% content_for(:footer) do %>
@@ -34,9 +22,7 @@
   <% content_for(:flash) do %>
     <% flash.each do |name, msg| %><div class="flash_<%= name %>"><%= msg %></div><% end %>
   <% end %>
-  
-  <%#= contentr_toolbar %>
-  
+    
   <% if content_for?(:metabar) %>
   <div id="metabar-wrapper">
     <div id="metabar">

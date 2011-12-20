@@ -2,26 +2,35 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   def contentr_authorized?
-    session[:htaccess_authenticated]
+    session[:authorized]
   end
 
   def login
-    htaccess
-    redirect_to :root, :notice => 'Successfully logged in!'
+    if request.post?
+      set_credentials
+      password = ::ApplicationController::Password
+      username = ::ApplicationController::Username
+      
+      if params[:password] == password and params[:username] == username
+        session[:authorized] = true
+        redirect_to root_path, :notice => 'Successfully logged in!'
+        return
+      end     
+      
+      flash[:alert] = 'Authorization failed!'
+    end
+    render :layout => 'login'
   end
   
   def logout
-    session[:htaccess_authenticated] = false
-    ::ApplicationController.const_set("Password", nil)
-    ::ApplicationController.const_set("Username", nil)
+    session[:authorized] = false
     redirect_to :back, :notice => 'Successfully logged out!'
   end
   
   protected
 
-  def htaccess
-    return true if session[:htaccess_authenticated] == true
-    if ! ::ApplicationController.const_defined? "Password"
+  def set_credentials
+    if !::ApplicationController.const_defined? "Password"
       un, pw = nil
       fname = File.join(Rails::root, 'config', 'htpasswd.txt')
       if File.exists? fname
@@ -31,12 +40,6 @@ class ApplicationController < ActionController::Base
       end
       ::ApplicationController.const_set("Password", pw)
       ::ApplicationController.const_set("Username", un)
-    end
-    password = ::ApplicationController::Password
-    username = ::ApplicationController::Username
-    return true unless password.present?
-    session[:htaccess_authenticated] = authenticate_or_request_with_http_basic do |user_name, passwd|
-      user_name == username && password == passwd
     end
   end
   
