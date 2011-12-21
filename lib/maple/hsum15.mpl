@@ -7,6 +7,8 @@
 # renamed hsum9.mpl
 # renamed hsum10.mpl
 # renamed hsum13.mpl
+# adapted to Maple 14-15 by Torsten Sprenger, 2011
+# renamed hsum15.mpl
 # 
 # Version 1.1, Jan 02, 2001
 # Version 1.2, Oct 13, 2002
@@ -17,6 +19,7 @@
 # Version 1.7, Jan 29, 2006 for Maple 10
 # Version 1.8, Jan 29, 2008 for Maple 11
 # Version 1.9, Dec 14, 2009 for Maple 13
+# Version 2.0, Dec 22, 2011 for Maple 15
 # History:
 # Feb 12, 1998, recpoly eingefuegt, printf in rechyper entfernt
 # Mar 16, 1998, sumdeltanabla, `sumdelta+nabla` eingefuegt
@@ -36,9 +39,11 @@
 # Jan 29, 2008, inhomogenous part of Zeilberger: add instead of the new "sum"
 # Oct 18, 2009, bug add instead if sum, and backquotes, resolved;
 # Oct 18, 2009: allow degreebound -1 with f=0
-# Dec 14, 2009: Torsten Sprenger: bugs for inomogeneous RE resolved
+# Dec 14, 2009: bugs for inomogeneous RE resolved
 # Dec 14, 2009: function inhomotohomo added 
 # Dec 14, 2011: hyperrecursion added
+# Dec 20, 2011: new versions of modified procedures of revised book
+# Dec 22, 2011: rational linear input for sumrecursion
 #
 # Prof. Dr. Wolfram Koepf
 # Department 10 Mathematics / Natural Sciences
@@ -471,30 +476,26 @@ end:
 simplify_combinatorial:=proc(x) simpcomb(x) end:
 
 Sumtohyper:=proc(f,k)
-local rat,num,den,x,numlist,denlist,init,i,j,result;
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
-init:=simpcomb(subs(k=0,f));
+local rat,num,den,x,numlist,denlist,init,i,j;
+init:=eval(f,k=0);
 if init=0 then
- ERROR(`Shift necessary`);
-fi;
+  ERROR("shift necessary")
+end if;  
 rat:=simpcomb(subs(k=k+1,f)/f);
 if not type(rat,ratpoly(anything,k)) then
- ERROR(`Cannot be converted into hypergeometric form`)
-fi:
+  ERROR("cannot be converted into hypergeometric form")
+end if;
 num:=numer(rat);
 den:=denom(rat);
-x:=lcoeff(num,k)/lcoeff(den,k);
-numlist := normal([solve(num,k)]);
-numlist := [seq(-j,j=numlist)];
-denlist := normal([solve(den,k)]);
-denlist := [seq(-j,j=denlist)];
+numlist:=-[solve(num,k)];
+denlist:=-[solve(den,k)];
 if not(member(1,denlist,'i')) then
- ERROR(`Shift necessary or no conversion possible`);
-fi;
-denlist:= subsop(i=NULL,denlist);
-result:=init*Hypergeom(numlist,denlist,x);
-RETURN(result)
-end: # Sumtohyper
+  ERROR("shift necessary or no conversion possible")
+end if;
+x:=lcoeff(num,k)/lcoeff(den,k);
+denlist:=subsop(i=NULL,denlist);
+init*Hypergeom(numlist,denlist,x)
+end proc:
 
 Sumtohyper:=proc(f,k)
 local Ank, Ank1,DE,rat,num,den,numfactors,denfactors,lc,l,numlist,numset,
@@ -623,6 +624,24 @@ end: # mininteger
 # end: # simpcomb
 
 kfreerec:=proc(f,k,n,kmax,nmax)
+local N,ansatz,variables,rec,i,j,l,solution,F,a;
+if nargs>5 then F:=args[6] end if;
+if nargs>6 then a:=args[7] end if;
+N:=(kmax+1)*(nmax+1);
+ansatz:=add(add(a[i,j]*simpcomb(subs(n=n+j,k=k+i,f)/f),j=0..nmax),i=0..kmax);
+ansatz:=collect(numer(normal(ansatz)),k);
+variables:={seq(seq(a[i,j],j=0..nmax),i=0..kmax)};
+solution:={solve({coeffs(ansatz,k)},variables)};
+if subs(op(solution),variables)={0} then 
+  ERROR(cat("No k-free recurrence equation of order (",kmax,",",nmax,") exists"));
+end if;
+rec:=add(add(a[i,j]*F(n+j,k+i),j=0..nmax),i=0..kmax);
+rec:=subs(op(1,solution),rec);
+rec:=numer(normal(rec));
+collect(rec,F,factor)=0
+end proc:
+
+kfreerec:=proc(f,k,n,kmax,nmax)
 local SUM,N,variables,i,j,l,solution,rat,F,a;
 options remember,
 `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
@@ -648,21 +667,20 @@ rat:= collect(rat,[seq(seq(F(n+nmax-j,k+kmax-i),j=0..nmax),i=0..kmax)]);
 RETURN(map(factor,rat)=0);
 end: # kfreerec
 
-# old
 fasenmyer:=proc(f,k,sn,nmax)
-local F,a,n,S,i,j,recursion;
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
-if nargs>4 then a:=args[5] fi;
-if type(sn,function) then S:=op(0,sn); n:=op(1,sn) else n:=sn fi;
-recursion:=op(1,kfreerec(f,k,n,nmax,nmax,F,a));
-for i from 0 to nmax do
- for j from 0 to nmax do
-   recursion:=subs(F(n+j,k+i)=S(n+j),recursion);
-   recursion:=collect(recursion,S(n+j));
- od;
-od;
-RETURN(map(factor,recursion)=0);
-end: # fasenmyer
+local F,a,n,S,i,j,rec;
+if type(sn,function) then 
+  S:=op(0,sn); 
+  n:=op(1,sn) 
+else 
+  n:=sn 
+end if;
+rec:=lhs(kfreerec(f,k,n,nmax,nmax,F,a));
+rec:=applyrule(F(n+j::integer,k+i::integer)=S(n+j),rec);
+rec:=normal(solve(rec,S(n+nmax)));
+rec:=denom(rec)*S(n+nmax)-numer(rec);
+collect(rec,S,factor)=0
+end proc: 
 
 fasenmyer:=proc(f,k,sn,nmax)
 local F,a,n,S,i,j,recursion,tmp;
@@ -735,23 +753,36 @@ primedispersion:=proc(q,r,k)
 # calculates the dispersion of nonfactorizable polynomials q and r of 
 # equal degree
 local f,g,n,a,b,c,d,j;
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
 f:=collect(q,k);
 g:=collect(r,k);
 n:=degree(f,k);
-if n=0 or n<>degree(g,k) then RETURN({}) fi;
+if n=0 or n<>degree(g,k) then return {} end if;
 a:=coeff(f,k,n);
 b:=coeff(f,k,n-1);
 c:=coeff(g,k,n);
 d:=coeff(g,k,n-1);
 j:=normal((b*c-a*d)/(a*c*n));
-if not type(j,nonnegint) then RETURN({}) fi;
+if not type(j,nonnegint) then return {} end if;
 if collect(c*f-a*subs(k=k+j,g),k)=0 then 
- RETURN({j}) 
+  return {j} 
 else
- RETURN({});
-fi;
+  return {};
+end if;
 end: # primedispersion
+
+dispersionset:=proc(q,r,k)
+local f,g,i,j,result,tmp,op1,op2;
+f:=map2(op,1,op(2,factors(q)));
+g:=map2(op,1,op(2,factors(r)));
+result:={};
+for op1 in f do
+  for op2 in g do
+    tmp:=primedispersion(op1,op2,k);
+    if tmp<>{} then result:=result union {op(1,tmp)} end if;
+  end do;
+end do; 
+return result;
+end: # dispersionset
 
 dispersionset:=proc(q,r,k)
 # calculates the dispersion set of polynomials q and r, i.e. the set 
@@ -937,12 +968,15 @@ end: #factorgcd
 
 WZcertificate:=proc(F,k,n)
 local a,gos;
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
- a:=subs(n=n+1,F)-F;
- gos:=traperror(gosper(a,k));
- if gos=lasterror then ERROR(`WZ method fails`) fi;
- RETURN(simpcomb(gos/F));
-end: # WZcertificate
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+a:=subs(n=n+1,F)-F;
+try
+  gos:=gosper(a,k);
+catch:
+  error `WZ method fails`;
+end try;
+return simpcomb(gos/F);
+end proc: # WZcertificate
 
 WZgospercertificate:=proc(F,k,n)
 local a,gos;
@@ -1049,51 +1083,76 @@ end: #extended_gosper
 
 WZcertificate:=proc(F,k,n)
 local a,gos,m,l;
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
- if nargs>3 then m:=args[4] else m:=1 fi;
- if nargs>4 then l:=args[5] else l:=1 fi;
- a:=subs(n=n+m,F)-F;
- gos:=traperror(extended_gosper(a,k,l));
- if gos=lasterror then ERROR(`Extended WZ method fails`) fi;
- RETURN(simpcomb(gos/F));
-end: # WZcertificate
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+if nargs>3 then m:=args[4] else m:=1 end if;
+if nargs>4 then l:=args[5] else l:=1 end if;
+a:=subs(n=n+m,F)-F;
+try
+  gos:=extended_gosper(a,k,l);
+catch: 
+  error `Extended WZ method fails`
+end try;
+return simpcomb(gos/F);
+end proc: # WZcertificate
 
 zeilberger:=proc(F,k,sn)
 local n,A,S,sigma,rat,p,q,r,upd,deg,f,b,j,var,rec,sol,num,den;
 options remember,
-`Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
-if type(sn,function) then S:=op(0,sn); n:=op(1,sn) else n:=sn fi;
- A:=F+sigma[1]*subs(n=n+1,F);
- rat:=ratio(A,k);
- if not type(rat,ratpoly(anything,k)) then
-   ERROR(`Algorithm not applicable`)
- fi;
- # p:=1: q:=subs(k=k-1,numer(rat)): r:=subs(k=k-1,denom(rat)):
- p:=1: q:=numer(rat): r:=denom(rat):
- upd:=update(p,q,r,k);
- p:=op(1,upd): q:=op(2,upd): r:=op(3,upd):
- deg:=degreebound(p,q,r,k);
-# Maple 13: if deg<0 then 
- if deg<-1 then  
-   ERROR(`Algorithm finds no recurrence equation of first order`) 
- fi;
- f:=add(b[j]*k^j,j=0..deg);
- var:={sigma[1],seq(b[j],j=0..deg)};
- rec:=collect(subs(k=k+1,q)*f-r*subs(k=k-1,f)-p,k);
- sol:={solve({coeffs(rec,k)},var)};
- if sol={} then 
-   ERROR(`Algorithm finds no recurrence equation of first order`) 
- fi;
- sigma[1]:=subs(op(1,sol),sigma[1]);
- sigma[1]:=normal(sigma[1]);
- for j from 0 to deg do
-   sigma[1]:=subs(b[j]=0,sigma[1]);
- od;
- num:=factor(numer(sigma[1]));
- den:=factor(denom(sigma[1]));
- rec:=den*S(n)+num*S(n+1)=0;
- RETURN(rec);
+`Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+if type(sn,function) then S:=op(0,sn); n:=op(1,sn) else n:=sn end if;
+A:=F+sigma[1]*subs(n=n+1,F);
+rat:=ratio(A,k);
+if not type(rat,ratpoly(anything,k)) then
+  error `Algorithm not applicable`
+end if;
+p:=1: q:=subs(k=k-1,numer(rat)): r:=subs(k=k-1,denom(rat)):
+upd:=update(p,q,r,k);
+p:=op(1,upd): q:=op(2,upd): r:=op(3,upd):
+deg:=degreebound(p,q,r,k);
+if deg<0 then  
+  error `Algorithm finds no recurrence equation of first order` 
+end if;
+f:=add(b[j]*k^j,j=0..deg);
+var:={sigma[1],seq(b[j],j=0..deg)};
+rec:=collect(subs(k=k+1,q)*f-r*subs(k=k-1,f)-p,k);
+sol:={solve({coeffs(rec,k)},var)};
+if sol={} then 
+  error `Algorithm finds no recurrence equation of first order`
+end if;
+sigma[1]:=subs(op(1,sol),sigma[1]);
+sigma[1]:=normal(sigma[1]);
+for j from 0 to deg do
+  sigma[1]:=subs(b[j]=0,sigma[1]);
+end do;
+num:=factor(numer(sigma[1]));
+den:=factor(denom(sigma[1]));
+return den*S(n)+num*S(n+1)=0;
 end: # zeilberger
+
+closedform:=proc(F,k,sn)
+local zeilberg,S,n,rat,num,den,lc,numlist,denlist,j,i,init,cert;
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+if type(sn,function) then S:=op(0,sn); n:=op(1,sn) else n:=sn end if;
+init:=eval(eval(F,k=0),n=0);
+if init=0 then
+  error `Shift necessary`
+end if;
+zeilberg:=zeilberger(F,k,S(n));
+rat:=normal(solve(zeilberg,S(n+1))/S(n));
+num:=numer(rat);
+den:=denom(rat);
+lc:=lcoeff(num,n)/lcoeff(den,n);
+numlist:=normal([solve(num,n)]);
+numlist:=[seq(-j,j=numlist)];
+denlist:=normal([solve(den,n)]);
+denlist:=[seq(-j,j=denlist)];
+if member(1,denlist,'i') then
+  denlist:= subsop(i=NULL,denlist)
+else
+  numlist:= [op(numlist),1]
+end if;
+return simplify(init*hyperterm(numlist,denlist,lc,n));
+end: # closedform
 
 closedform:=proc(F,k,sn)
 global SUM;
@@ -1194,10 +1253,43 @@ option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
 end: # Closedform
 
 sumrecursion:=proc(F,k,sn)
+local n,S,b,sigma,rat,p,q,r,upd,deg,f,i,j,jj,l,var,req,sol,num,den,J,a; 
+options remember,
+`Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+if type(sn,function) then S:=op(0,sn); n:=op(1,sn) else n:=sn end if;
+for J from 1 to MAXORDER do 
+  a:=F+add(sigma[j]*subs(n=n+j,F),j=1..J);
+  rat:=ratio(a,k);
+  if not type(rat,ratpoly(anything,k)) then
+    error `Algorithm not applicable`
+  end if;
+  p:=1: q:=subs(k=k-1,numer(rat)): r:=subs(k=k-1,denom(rat)):
+  upd:=update(p,q,r,k);
+  p:=op(1,upd): q:=op(2,upd): r:=op(3,upd):
+  deg:=degreebound(p,q,r,k);
+  if deg>=0 then
+    f:=add(b[j]*k^j,j=0..deg);
+   var:={seq(sigma[jj],jj=1..J),seq(b[jj],jj=0..deg)};
+    req:=collect(subs(k=k+1,q)*f-r*subs(k=k-1,f)-p,k);
+    sol:={solve({coeffs(req,k)},var)};
+    if not(sol={} or {seq(op(2,op(l,op(1,sol))),l=1..nops(op(1,sol)))}={0}) then
+      req:=S(n)+add(sigma[j]*S(n+j),j=1..J);
+      req:=subs(op(1,sol),req);
+      req:=numer(normal(req));
+      req:=collect(req,[seq(S(n+J-j),j=0..J)]);
+      return map(factor,req)=0;
+    end if;
+  end if;
+end do;
+error cat(`Algorithm finds no recurrence equation of order <= `,MAXORDER);
+end: # sumrecursion
+
+sumrecursion:=proc(F,k,sn)
 local n,S,b,sigma,Rk,Rn,rat,p,q,r,upd,deg,f,i,j,jj,l,var,req,sol,num,den,J; 
 options remember,
 `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
 if type(sn,function) then S:=op(0,sn); n:=op(1,sn) else n:=sn fi;
+
 Rk:=ratio(F,k);
 Rn:=ratio(F,n);
 for J from 1 to MAXORDER do
@@ -1354,6 +1446,41 @@ end: # sumdelta+nabla
 
 sumdiffeq:=proc(F,k,sx)
 local x,S,a,b,sigma,rat,p,q,r,upd,deg,f,j,jj,l,var,deq,sol,num,den,J,cert;
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+if type(sx,function) then 
+  S:=op(0,sx); x:=op(1,sx) 
+else 
+  x:=sx 
+end if;
+for J from 1 to MAXORDER do
+  a:=F+add(sigma[j]*diff(F,x$j),j=1..J);
+  rat:=simpcomb(a/subs(k=k-1,a)); 
+  if not type(rat,ratpoly(anything,k)) then
+    error `Algorithm not applicable`
+  end if;
+  p:=1: q:=subs(k=k-1,numer(rat)): r:=subs(k=k-1,denom(rat)):
+  upd:=update(p,q,r,k);
+  p:=op(1,upd): q:=op(2,upd): r:=op(3,upd):
+  deg:=degreebound(p,q,r,k);
+  if deg>=0 then
+    f:=add(b[j]*k^j,j=0..deg);
+    var:={seq(sigma[jj],jj=1..J),seq(b[jj],jj=0..deg)};
+    deq:=collect(subs(k=k+1,q)*f-r*subs(k=k-1,f)-p,k);
+    sol:={solve({coeffs(deq,k)},var)}; 
+    if not(sol={} or {seq(op(2,op(l,op(1,sol))),l=1..nops(op(1,sol)))}={0}) then
+      deq:=S(x)+add(sigma[j]*diff(S(x),x$j),j=1..J);
+      deq:=normal(subs(op(1,sol),deq));
+      deq:=numer(deq);
+      deq:=collect(deq,[seq(diff(S(x),x$(J-j)),j=0..J-1),S(x)]);
+      return map(factor,deq)=0;
+    end if;
+  end if;
+end do;
+error cat(`Algorithm finds no differential equation of order <= `,MAXORDER);
+end proc: # sumdiffeq
+
+sumdiffeq:=proc(F,k,sx)
+local x,S,a,b,sigma,rat,p,q,r,upd,deg,f,j,jj,l,var,deq,sol,num,den,J,cert;
 option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
 if type(sx,function) then S:=op(0,sx); x:=op(1,sx) else x:=sx fi;
 for J from 1 to MAXORDER do
@@ -1394,6 +1521,38 @@ for J from 1 to MAXORDER do
 od;
 ERROR(cat(`Algorithm finds no differential equation of order <= `,MAXORDER))
 end: # sumdiffeq
+
+sumdiffrule:=proc(F,k,snx)
+local n,x,S,a,b,sigma,rat,p,q,r,upd,deg,f,j,jj,l,var,req,sol,sol2,num,den,J;
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+if type(snx,function) then 
+  S:=op(0,snx); n:=op(1,snx); x:=op(2,snx);
+else 
+  n:=op(1,snx); x:=op(2,snx); 
+end if;
+for J from 1 to MAXORDER do
+  a:=diff(F,x)-add(sigma[j]*subs(n=n+j,F),j=0..J);
+  rat:=ratio(a,k);
+  if not type(rat,ratpoly(anything,k)) then
+    error `Algorithm not applicable`;
+  end if;
+  p:=1: q:=subs(k=k-1,numer(rat)): r:=subs(k=k-1,denom(rat)):
+  upd:=update(p,q,r,k);
+  p:=op(1,upd): q:=op(2,upd): r:=op(3,upd):
+  deg:=degreebound(p,q,r,k);
+  if deg>=0 then
+    f:=add(b[j]*k^j,j=0..deg);
+    var:={seq(sigma[jj],jj=0..J),seq(b[jj],jj=0..deg)};
+    req:=collect(subs(k=k+1,q)*f-r*subs(k=k-1,f)-p,k);
+    sol:={solve({coeffs(req,k)},var)};
+    if not(sol={} or {seq(op(2,op(l,op(1,sol))),l=1..nops(op(1,sol)))}={0}) then         sol2:=add(sigma[j]*S(n+j,x),j=0..J);
+      sol2:=subs(op(1,sol),sol2);
+      return diff(S(n,x),x)=map(factor,sol2);
+    end if;
+  end if;
+end do;
+error cat(`Algorithm finds no derivative rule of order <= `,MAXORDER);
+end proc: # sumdiffrule
 
 sumdiffrule:=proc(F,k,snx)
 local n,x,S,a,b,sigma,rat,p,q,r,upd,deg,f,j,jj,l,var,req,sol,sol2,num,den,J;
@@ -1493,10 +1652,32 @@ end:
 
 sumrecursion:= proc()
 	local F,S,k,sumrange,n,Rk,constRn,Rn,Poly,J,sigma,sigmafac,f,pqr,\
-		deg,b,var,req,sol,j,cert,const,unsub,tim,certificate,recorder;
+		deg,b,var,req,sol,j,cert,const,unsub,tim,certificate,recorder,\
+		denomsk,denomsn,ratk,ratn,term,RE,order,newRE,kmax,nmax,i;
 	options `Copyright 1998  Wolfram Koepf & Harald Boeing`;
+		
 	tim:= time();
 	`sumrecursion/arguments`([args],F,k,sumrange,n,S,unsub,certificate,recorder);
+	
+	# rational linear input
+	term:=F;
+   ratk:=simpcomb(subs(k=k+1,term)/term);
+   ratn:=simpcomb(subs(n=n+1,term)/term);
+   denomsk:=select(type,map2(op,2,select(type,map(x -> coeff(op(x),k),indets(ratk, specfunc(algebraic,GAMMA))),fraction)),integer);
+   denomsn:=select(type,map2(op,2,select(type,map(x -> coeff(op(x),n),indets(ratn, specfunc(algebraic,GAMMA))),fraction)),integer);
+   if denomsk <> {} or denomsn <> {} then
+      kmax:=max(denomsk union {1});
+      nmax:=max(denomsn union {1});
+      RE:=sumrecursion(subs(k=kmax*k, n=nmax*n, term), k, S(n));
+      order:=recursionorder(RE, S(n));
+      newRE:=0;
+      for i from 0 to order do
+         newRE:=newRE+subs(n=n/nmax, coeff(lhs(RE),S(n+i)))*S(n+nmax*i);
+      end do;
+      return newRE=0;
+   fi;
+   
+   # integer linear input
 	Rk:= ratio(F,k);
 	constRn:= ratio(F,n);
 	userinfo(1,proofsum,\
@@ -1831,98 +2012,131 @@ ERROR(`Algorithm finds no differential equation of order`,J)
 end: # sumholodiffeq
 
 contratio:=proc(f,x)
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
- simpcomb(diff(f,x)/f);
-end: # contratio
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+  simpcomb(diff(f,x)/f);
+end proc: # contratio
 
 contdispersionset:=proc(q,r,x)
 # finds the nonnegative integer dispersion values j
 local j,res,s,l;
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
- res:=frontend(resultant,[r,q-j*diff(r,x),x]); # (11.2)
- s:=simplify({solve(res,j)});
- l:={};
- for j in s do
-   if type(j,nonnegint) then l:=l union {j} fi;
- od;
- RETURN(convert(l,set))
-end: # contdispersionset
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+res:=frontend(resultant,[r,q-j*diff(r,x),x]); # (11.2)
+s:=simplify({solve(res,j)});
+l:={};
+for j in s do
+  if type(j,nonnegint) then l:=l union {j} end if;
+end do;
+return convert(l,set);
+end proc: # contdispersionset
 
 contupdate:=proc(p,q,r,x)
 # updates the triple [p,q,r] according to gcd-condition
 local dis,g,pnew,qnew,rnew,j;
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
- g:=frontend(gcd,[r,q-diff(r,x)]); # (11.2), j=1
- if has(g,x) then
-   pnew:=normal(p*g); # (11.3), j=1
-   qnew:=normal(diff(r/g,x)+(q-diff(r,x))/g); # (11.3), j=1
-   rnew:=normal(r/g); # (11.3), j=1
- else
-   pnew:=p; qnew:=q; rnew:=r;
- fi;
- dis:=contdispersionset(qnew,rnew,x);
- for j in dis do
-   g:=frontend(gcd,[rnew,qnew-j*diff(rnew,x)]); # (11.2)
-   if has(g,x) then
-     pnew:=normal(pnew*g^j); # (11.3)
-     qnew:=normal(j*diff(rnew/g,x)+(qnew-j*diff(rnew,x))/g); # (11.3)
-     rnew:=normal(rnew/g); # (11.3)
-   fi;
- od;
- RETURN([pnew,qnew,rnew]);
-end: # contupdate
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+g:=frontend(gcd,[r,q-diff(r,x)]); # (11.2), j=1
+if has(g,x) then
+  pnew:=normal(p*g); # (11.3), j=1
+  qnew:=normal(diff(r/g,x)+(q-diff(r,x))/g); # (11.3), j=1
+  rnew:=normal(r/g); # (11.3), j=1
+else
+  pnew:=p; qnew:=q; rnew:=r;
+end if;
+dis:=contdispersionset(qnew,rnew,x);
+for j in dis do
+  g:=frontend(gcd,[rnew,qnew-j*diff(rnew,x)]); # (11.2)
+  if has(g,x) then
+    pnew:=normal(pnew*g^j); # (11.3)
+    qnew:=normal(j*diff(rnew/g,x)+(qnew-j*diff(rnew,x))/g); # (11.3)
+    rnew:=normal(rnew/g); # (11.3)
+  end if;
+end do;
+return [pnew,qnew,rnew];
+end proc: # contupdate
 
 contdegreebound:=proc(p,q,r,x)
 # calculates the degree bound for f
 local pol1,pol2,deg1,deg2,a,b;
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
- pol1:=collect(r,x);
- pol2:=collect(q+diff(r,x),x);
- if pol1=0 then deg1:=-1 else deg1:=degree(pol1,x) fi;
- if pol2=0 then deg2:=-1 else deg2:=degree(pol2,x) fi;
- if deg1<=deg2 then RETURN(degree(p,x)-deg2) fi;
- a:=coeff(pol1,x,deg1);
- b:=coeff(pol2,x,deg1-1);
- if not(type(-b/a,nonnegint)) then RETURN(degree(p,x)-deg1+1) else
-   RETURN(max(-b/a,degree(p,x)-deg1+1)) fi;
-end: # contdegreebound
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+pol1:=collect(r,x);
+pol2:=collect(q+diff(r,x),x);
+if pol1=0 then deg1:=-1 else deg1:=degree(pol1,x) end if;
+if pol2=0 then deg2:=-1 else deg2:=degree(pol2,x) end if;
+if deg1<=deg2 then return degree(p,x)-deg2 end if;
+  a:=coeff(pol1,x,deg1);
+  b:=coeff(pol2,x,deg1-1);
+  if not(type(-b/a,nonnegint)) then 
+    return degree(p,x)-deg1+1 
+  else
+    return max(-b/a,degree(p,x)-deg1+1) 
+  end if;
+end proc: # contdegreebound
 
 contfindf:=proc(p,q,r,x)
 # finds ftilde, given the triple [p,q,r]
 local deg,ftilde,a,j,deq,sol,result;
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
- deg:=contdegreebound(p,q,r,x);
- if deg<0 then ERROR(`No polynomial ftilde exists`) fi;
- ftilde:=add(a[j]*x^j,j=0..deg);
- deq:=collect((q+diff(r,x))*ftilde+r*diff(ftilde,x)-p,x); # (11.5)
- sol:={solve({coeffs(deq,x)},{seq(a[j],j=0..deg)})};
- if sol={} then ERROR(`No polynomial ftilde exists`) else
-   result:=subs(op(1,sol),ftilde);
- fi;
- for j from 0 to deg do
-   result:=subs(a[j]=0,result);
- od;
- RETURN(result);
-end: # contfindf
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+deg:=contdegreebound(p,q,r,x);
+if deg<0 then error `No polynomial ftilde exists` end if;
+ftilde:=add(a[j]*x^j,j=0..deg);
+deq:=collect((q+diff(r,x))*ftilde+r*diff(ftilde,x)-p,x); # (11.5)
+sol:={solve({coeffs(deq,x)},{seq(a[j],j=0..deg)})};
+if sol={} then 
+  error `No polynomial ftilde exists` 
+else
+  result:=subs(op(1,sol),ftilde);
+end if;
+for j from 0 to deg do
+  result:=subs(a[j]=0,result);
+end do;
+return result;
+end proc: # contfindf
 
 contgosper:=proc(f,x)
 # implements the continuous version of Gosper's algorithm
 local rat,p,q,r,pqr,ftilde;
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
- rat:=contratio(f,x);
- if not type(rat,ratpoly(anything,x)) then
-   ERROR(`Algorithm not applicable`)
- fi;
- p:=1; q:=numer(rat); r:=denom(rat);
- pqr:=contupdate(p,q,r,x);
- p:=op(1,pqr); q:=op(2,pqr); r:=op(3,pqr);
- ftilde:=traperror(contfindf(p,q,r,x));
- if ftilde=lasterror then
-   ERROR(`No hyperexponential antiderivative exists`)
- else
-   RETURN(normal(r*ftilde*f/p))
- fi; # (11.4)
-end: # contgosper
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+rat:=contratio(f,x);
+if not type(rat,ratpoly(anything,x)) then
+  error `Algorithm not applicable`
+end if;
+p:=1; q:=numer(rat); r:=denom(rat);
+pqr:=contupdate(p,q,r,x);
+p:=op(1,pqr); q:=op(2,pqr); r:=op(3,pqr);
+try 
+  ftilde:=contfindf(p,q,r,x);
+catch:
+  error `No hyperexponential antiderivative exists`;
+end try;
+return normal(r*ftilde*f/p); # (11.4)
+end proc: # contgosper
+
+intrecursion:=proc(F,t,sn)
+local S,n,f,b,sigma,rat,p,q,r,upd,deg,ftilde,j,jj,l,var,req,sol,num,den,J,cert;option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+if type(sn,function) then S:=op(0,sn); n:=op(1,sn) else n:=sn end if;
+for J from 1 to MAXORDER do
+  f:=F+add(sigma[j]*subs(n=n+j,F),j=1..J);
+  rat:=contratio(f,t);
+  if not type(rat,ratpoly(anything,t)) then
+    error `Algorithm not applicable`;
+  end if;
+  p:=1: q:=numer(rat): r:=denom(rat):
+  upd:=contupdate(p,q,r,t);
+  p:=op(1,upd): q:=op(2,upd): r:=op(3,upd):
+  deg:=contdegreebound(p,q,r,t);
+  if deg>=0 then
+    ftilde:=add(b[j]*t^j,j=0..deg);
+    var:={seq(sigma[jj],jj=1..J),seq(b[jj],jj=0..deg)};
+    req:=collect((q+diff(r,t))*ftilde+r*diff(ftilde,t)-p,t);
+    sol:={solve({coeffs(req,t)},var)};
+    if not(sol={} or {seq(op(2,op(l,op(1,sol))),l=1..nops(op(1,sol)))}={0}) then          req:=S(n)+add(sigma[j]*S(n+j),j=1..J);
+      req:=normal(subs(op(1,sol),req));
+      req:=collect(numer(req),[seq(S(n+J-j),j=0..J)]);
+      return map(factor,req)=0;
+    end if;
+  end if;
+end do;
+error cat(`Algorithm finds no recurrence equation of order <= `,MAXORDER);
+end proc: # intrecursion
 
 intrecursion:=proc(F,t,sn)
 local S,n,f,b,sigma,rat,p,q,r,upd,deg,ftilde,j,jj,l,var,req,sol,
@@ -2003,6 +2217,38 @@ for J from 1 to MAXORDER do
 od;
 ERROR(cat(`Algorithm finds no recurrence equation of order <= `,MAXORDER))
 end: # defintrecursion
+
+intdiffeq:=proc(F,t,sx)local x,S,f,b,sigma,rat,p,q,r,upd,deg,ftilde,j,jj,l,var,deq,sol,num,den,J,cert;
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+if type(sx,function) then S:=op(0,sx); x:=op(1,sx) else x:=sx end if;
+for J from 1 to MAXORDER do
+  f:=F+add(sigma[j]*diff(F,x$j),j=1..J);
+  rat:=contratio(f,t);
+  if not type(rat,ratpoly(anything,t)) then
+    error `Algorithm not applicable`;
+  end if;
+  p:=1: q:=numer(rat): r:=denom(rat):
+  upd:=contupdate(p,q,r,t);
+  p:=op(1,upd): q:=op(2,upd): r:=op(3,upd):
+  deg:=contdegreebound(p,q,r,t);
+  if deg>=0 then
+    ftilde:=add(b[j]*t^j,j=0..deg);
+    var:={seq(sigma[jj],jj=1..J),seq(b[jj],jj=0..deg)};
+    deq:=collect((q+diff(r,t))*ftilde+r*diff(ftilde,t)-p,t);
+    sol:={solve({coeffs(deq,t)},var)};
+    if not(sol={} or {seq(op(2,op(l,op(1,sol))),l=1..nops(op(1,sol)))}={0}) then
+      deq:=S(x)+add(sigma[j]*diff(S(x),x$j),j=1..J);
+      deq:=normal(subs(op(1,sol),deq));
+      deq:=numer(deq);
+      deq:=collect(deq,[seq(diff(S(x),x$(J-j)),j=0..J-1),S(x)]);
+      deq:=numer(normal(deq));
+      deq:=collect(deq,[seq(diff(S(x),x$(J-j)),j=0..J-1),S(x)]);
+      return map(factor,deq)=0;
+    end if;
+  end if;
+end do;
+error cat(`Algorithm finds no differential equation of order <= `,MAXORDER);
+end proc: # intdiffeq
 
 intdiffeq:=proc(F,t,sx)
 local x,S,f,b,sigma,rat,p,q,r,upd,deg,ftilde,j,jj,l,var,deq,sol,
@@ -2151,49 +2397,49 @@ end: # contWZgospercertificate
 
 rodriguesrecursion:=proc(g,h,x,sn)
 local S,n,t,result;
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
 if type(sn,function) then
- S:=op(0,sn); n:=op(1,sn);
+  S:=op(0,sn); n:=op(1,sn);
 else
- n:=op(1,sn); 
-fi;
- result:=intrecursion(n!*g*subs(x=t,h)/(t-x)^(n+1),t,S(n));
-RETURN(result);
-end: # rodriguesrecursion
+  n:=op(1,sn); 
+end if;
+result:=intrecursion(n!*g*subs(x=t,h)/(t-x)^(n+1),t,S(n));
+return result;
+end proc: # rodriguesrecursion
 
 rodriguesdiffeq:=proc(g,h,n,sx)
 local S,x,t,result;
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
 if type(sx,function) then
- S:=op(0,sx); x:=op(1,sx);
+  S:=op(0,sx); x:=op(1,sx);
 else
- x:=op(1,sx);
-fi;
- result:=intdiffeq(g*subs(x=t,h)/(t-x)^(n+1),t,S(x));
-RETURN(result);
-end: # rodriguesdiffeq
+  x:=op(1,sx);
+end if;
+result:=intdiffeq(g*subs(x=t,h)/(t-x)^(n+1),t,S(x));
+return result;
+end proc: # rodriguesdiffeq
 
 GFrecursion:=proc(F,a,z,sn)
 local S,n;
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
 if type(sn,function) then
- S:=op(0,sn); n:=op(1,sn);
+  S:=op(0,sn); n:=op(1,sn);
 else
- n:=op(1,sn);
-fi;
-RETURN(intrecursion(F/a/z^(n+1),z,S(n)));
-end: # GFrecursion
+  n:=op(1,sn);
+end if;
+return intrecursion(F/a/z^(n+1),z,S(n));
+end proc: # GFrecursion
 
 GFdiffeq:=proc(F,a,z,n,sx)
 local S,x;
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
 if type(sx,function) then
- S:=op(0,sx); x:=op(1,sx);
+  S:=op(0,sx); x:=op(1,sx);
 else
- x:=op(1,sx);
-fi;
-RETURN(intdiffeq(F/a/z^(n+1),z,S(x)));
-end: # GFdiffeq
+  x:=op(1,sx);
+end if;
+return intdiffeq(F/a/z^(n+1),z,S(x));
+end proc: # GFdiffeq
 
 rodrigues2integrand:=proc(a,rho,g,n,x,t)
 local prefactor,derivativeterm,result;
@@ -2246,6 +2492,51 @@ option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
  RETURN(order);
 end: #recursionorder
 
+rec2poly:=proc()
+local rec,s,n,P,Q,R,M,N,alpha,beta,gamma,delta,sol,tmp,l,S,REC;
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+rec:=expand(args[1]):
+if type(rec,`equation`) then rec:=op(1,rec)-op(2,rec) end if;
+s:=op(0,args[2]);
+n:=op(1,args[2]);
+P:=collect(coeff(rec,s(n+2)),n);
+Q:=collect(coeff(rec,s(n+1)),n);
+R:=collect(coeff(rec,s(n)),n);
+M:=max(degree(P,n),degree(Q,n),degree(R,n));
+alpha[0]:=coeff(P,n,M);
+beta[0]:=coeff(Q,n,M);
+gamma[0]:=coeff(R,n,M);
+# check first condition
+if not(simplify(alpha[0]+beta[0]+gamma[0])=0) then
+  error `No polynomial solution exists`;
+end if;
+alpha[1]:=coeff(P,n,M-1);
+beta[1]:=coeff(Q,n,M-1);
+gamma[1]:=coeff(R,n,M-1);
+# check second condition
+if not(simplify(beta[0]+2*gamma[0])=0) then
+  N:=normal((alpha[1]+beta[1]+gamma[1])/(beta[0]+2*gamma[0]));
+# check third condition
+elif not(simplify(alpha[1]+beta[1]+gamma[1])=0) then
+  error `No polynomial solution exists`;
+else
+  alpha[2]:=coeff(P,n,M-2);
+  beta[2]:=coeff(Q,n,M-2);
+  gamma[2]:=coeff(R,n,M-2);
+  sol:={solve(N^2*gamma[0]-(beta[1]+gamma[0]+2*gamma[1])*N+alpha[2]+beta[2]+gamma[2],N)};
+  N:=max(op(select(type,sol,nonnegint)));
+end if; 
+if type(N,negint) then
+  error `No polynomial solution exists`;
+end if;
+S:=add(delta[N-l]*n^l,l=0..N);
+REC:=collect(P*subs(n=n+2,S)+Q*subs(n=n+1,S)+R*S,n);
+sol:={solve(normal({coeffs(REC,n)}),{seq(delta[l],l=0..N)})};
+if sol={} or {seq(op(2,op(l,op(1,sol))),l=1..nops(op(1,sol)))}={0}
+  then error `No polynomial solution exists`
+end if;
+return factor(subs(op(1,sol),S));
+end proc: # rec2poly
 
 rec2poly:=proc()
 local rec,s,n,P,Q,R,M,N,alpha,beta,gamma,delta,sol,tmp,l,S,REC;
@@ -2293,53 +2584,56 @@ option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
  RETURN(factor(subs(op(1,sol),S)));
 end: # rec2poly
 
-factor_completely:= proc(poly,n,shift,rootlist)
+factor_completely:=proc(poly,n,shift,rootlist)
 local p,i,l;
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
- l:= normal([solve(subs(n=n+shift,poly),n)]);
- if (nargs = 4) then
-   rootlist:= [1,seq(n-i,i=l)];
- fi;
- lcoeff(expand(poly),n) * product('n-l[i]-shift','i'=1..nops(l));
-end:
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+l:=normal([solve(subs(n=n+shift,poly),n)]);
+if (nargs=4) then
+  rootlist:=[1,seq(n-i,i=l)];
+end if;
+return lcoeff(expand(poly),n)*product('n-l[i]-shift','i'=1..nops(l));
+end proc: # factor_completely
 
 rec2hyper:=proc()
-local rec,s,n,P,Q,R,i,j,Qfactors,Qchoices,Rfactors,Rchoices,
-     p,q,r,c,sol,C,tmp,t,cchoices;
-option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
- rec:=expand(args[1]):
- if type(rec,`=`) then rec:=op(1,rec)-op(2,rec) fi;
- s:=op(0,args[2]);
- n:=op(1,args[2]);
- P:=coeff(rec,s(n+2));
- Q:=coeff(rec,s(n+1));
- R:=coeff(rec,s(n));
- if (P = 0) then
-   RETURN({-factor_completely(R,n,0)/factor_completely(Q,n,0)});
- fi;
- R:= factor_completely(R,n,-1,Qfactors);
- Qchoices:=generateproducts(Qfactors);
- P:= factor_completely(P,n,-2,Rfactors);
- Rchoices:=generateproducts(Rfactors);
- sol:={};
- for q in Qchoices do
-   for r in Rchoices do
-     cchoices:=(C^2*(P/subs(n=n+2,r))*subs(n=n+2,q)+C*Q+
-       (R/subs(n=n+1,q))*subs(n=n+1,r));
-     cchoices:= normal({solve(traperror(lcoeff(expand(cchoices),n),C))});
-     for c in cchoices do
-       tmp:= (c^2*(P/subs(n=n+2,r))*subs(n=n+2,q)*p(n+2)+c*Q*p(n+1)+
-            (R/subs(n=n+1,q))*subs(n=n+1,r)*p(n));
-       tmp:=traperror(rec2poly(tmp,p(n)));
-       if not(tmp=lasterror) then 
-         t:=normal(c*subs(n=n+1,tmp)*subs(n=n+1,q)/(tmp*subs(n=n+1,r)));
-         sol:={op(sol),t} 
-       fi;
-     od; 
-   od;
- od;
- RETURN(sol);
-end: # rec2hyper
+local rec,s,n,P,Q,R,i,j,Qfactors,Qchoices,Rfactors,Rchoices,p,q,r,c,sol,C,tmp,t,cchoices;
+option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+rec:=expand(args[1]):
+if type(rec,`equation`) then rec:=op(1,rec)-op(2,rec) end if;
+s:=op(0,args[2]);
+n:=op(1,args[2]);
+P:=coeff(rec,s(n+2));
+Q:=coeff(rec,s(n+1));
+R:=coeff(rec,s(n));
+if (P=0) then
+  return {-factor_completely(R,n,0)/factor_completely(Q,n,0)};
+end if;
+R:=factor_completely(R,n,-1,Qfactors);
+Qchoices:=generateproducts(Qfactors);
+P:=factor_completely(P,n,-2,Rfactors);
+Rchoices:=generateproducts(Rfactors);
+sol:={};
+for q in Qchoices do
+  for r in Rchoices do
+    cchoices:=(C^2*(P/subs(n=n+2,r))*subs(n=n+2,q)+C*Q+(R/subs(n=n+1,q))*
+              subs(n=n+1,r));
+    try
+      cchoices:=normal({solve(lcoeff(expand(normal(cchoices)),n),C)});
+      for c in cchoices do
+        try 
+          tmp:=normal((c^2*(P/subs(n=n+2,r))*subs(n=n+2,q)*p(n+2)+c*Q*p(n+1)+
+             (R/subs(n=n+1,q))*subs(n=n+1,r)*p(n)));
+          tmp:=rec2poly(eval(tmp),p(n));
+          t:=normal(c*subs(n=n+1,tmp)*subs(n=n+1,q)/(tmp*subs(n=n+1,r)));
+          sol:={op(sol),t};
+        catch:
+        end try;
+      end do;
+    catch: 
+    end try;
+  end do;
+end do;
+return sol;
+end proc: # rec2hyper
 # ----------------------------------------------------------------------
 
 # Maple 9
@@ -2385,6 +2679,28 @@ option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
    then ERROR(`No polynomial solution exists`) fi;
  RETURN(factor(subs(op(1,sol),S)));
 end: # recpoly
+
+generateproducts:=proc(a)
+local f,r,n;
+options `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+# slightly changed `combinat/powerset/multiset`...
+r:=[a];
+f:=proc(a,x) 
+  local p,t;
+  if member(x,a,p) then 
+    t:=subsop(p=NULL,a); procname(t,x),t 
+  end if;
+end;
+n:=nops(a);
+while (0<n) do
+  r:=[op(map(f,r,a[n])),op(r)];
+  n:=n-1;
+  while (0<n) and (a[n+1]=a[n]) do 
+    n:=n-1; 
+  end do;
+end do;
+return map(convert,r,`*`);
+end proc: # generateproducts
 
 generateproducts:= proc(a)
 local f,r,n;

@@ -14,7 +14,7 @@ $blueprint-liquid-container-width: 100%;
 $blueprint-liquid-container-min-width: none;
 
 // Contentr
-$contentr-toolbar-background-color: lighten(#333, 20%);
+$contentr-toolbar-background-color: #aaa;
 
 // Global Imports
 @import "blueprint/reset";
@@ -363,7 +363,7 @@ ul.navigation {
 
 // ADMIN BASE END
 
-$caop-main-color: #2659d3;
+$caop-main-color: #c8175d;
 
 #mainarea-wrapper {
   margin-bottom: 15px;
@@ -453,7 +453,7 @@ $caop-main-color: #2659d3;
   } 
 }
 
-form.simple_form, form.form {
+.simple_form, .form {
   @include stylr-form;
 }
 
@@ -503,4 +503,8 @@ form.simple_form, form.form {
   a {
     color: #efefef !important;
   }
+}
+
+pre.computation {
+  background-color: #efefef !important;
 }
