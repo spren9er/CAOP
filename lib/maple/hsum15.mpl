@@ -968,7 +968,7 @@ end: #factorgcd
 
 WZcertificate:=proc(F,k,n)
 local a,gos;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 a:=subs(n=n+1,F)-F;
 try
   gos:=gosper(a,k);
@@ -1083,7 +1083,7 @@ end: #extended_gosper
 
 WZcertificate:=proc(F,k,n)
 local a,gos,m,l;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 if nargs>3 then m:=args[4] else m:=1 end if;
 if nargs>4 then l:=args[5] else l:=1 end if;
 a:=subs(n=n+m,F)-F;
@@ -1098,7 +1098,7 @@ end proc: # WZcertificate
 zeilberger:=proc(F,k,sn)
 local n,A,S,sigma,rat,p,q,r,upd,deg,f,b,j,var,rec,sol,num,den;
 options remember,
-`Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+`Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 if type(sn,function) then S:=op(0,sn); n:=op(1,sn) else n:=sn end if;
 A:=F+sigma[1]*subs(n=n+1,F);
 rat:=ratio(A,k);
@@ -1129,30 +1129,6 @@ den:=factor(denom(sigma[1]));
 return den*S(n)+num*S(n+1)=0;
 end: # zeilberger
 
-closedform:=proc(F,k,sn)
-local zeilberg,S,n,rat,num,den,lc,numlist,denlist,j,i,init,cert;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
-if type(sn,function) then S:=op(0,sn); n:=op(1,sn) else n:=sn end if;
-init:=eval(eval(F,k=0),n=0);
-if init=0 then
-  error `Shift necessary`
-end if;
-zeilberg:=zeilberger(F,k,S(n));
-rat:=normal(solve(zeilberg,S(n+1))/S(n));
-num:=numer(rat);
-den:=denom(rat);
-lc:=lcoeff(num,n)/lcoeff(den,n);
-numlist:=normal([solve(num,n)]);
-numlist:=[seq(-j,j=numlist)];
-denlist:=normal([solve(den,n)]);
-denlist:=[seq(-j,j=denlist)];
-if member(1,denlist,'i') then
-  denlist:= subsop(i=NULL,denlist)
-else
-  numlist:= [op(numlist),1]
-end if;
-return simplify(init*hyperterm(numlist,denlist,lc,n));
-end: # closedform
 
 closedform:=proc(F,k,sn)
 global SUM;
@@ -1202,6 +1178,33 @@ option `Copyright 1998  Wolfram Koepf, Konrad-Zuse-Zentrum Berlin`;
           init*hyperterm(numlist,denlist,lc,n))),cert]);
  fi;
 end: # closedform
+
+
+closedform:=proc(F,k,sn)
+local zeilberg,S,n,rat,num,den,lc,numlist,denlist,j,i,init,cert;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
+if type(sn,function) then S:=op(0,sn); n:=op(1,sn) else n:=sn end if;
+init:=eval(eval(F,k=0),n=0);
+if init=0 then
+  error `Shift necessary`
+end if;
+zeilberg:=zeilberger(F,k,S(n));
+rat:=normal(solve(zeilberg,S(n+1))/S(n));
+num:=numer(rat);
+den:=denom(rat);
+lc:=lcoeff(num,n)/lcoeff(den,n);
+numlist:=normal([solve(num,n)]);
+numlist:=[seq(-j,j=numlist)];
+denlist:=normal([solve(den,n)]);
+denlist:=[seq(-j,j=denlist)];
+if member(1,denlist,'i') then
+  denlist:= subsop(i=NULL,denlist)
+else
+  numlist:= [op(numlist),1]
+end if;
+return simplify(init*hyperterm(numlist,denlist,lc,n));
+end: # closedform
+
 
 Closedform:=proc(F,k,sn)
 global SUM;
@@ -1255,7 +1258,7 @@ end: # Closedform
 sumrecursion:=proc(F,k,sn)
 local n,S,b,sigma,rat,p,q,r,upd,deg,f,i,j,jj,l,var,req,sol,num,den,J,a; 
 options remember,
-`Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+`Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 if type(sn,function) then S:=op(0,sn); n:=op(1,sn) else n:=sn end if;
 for J from 1 to MAXORDER do 
   a:=F+add(sigma[j]*subs(n=n+j,F),j=1..J);
@@ -1446,7 +1449,7 @@ end: # sumdelta+nabla
 
 sumdiffeq:=proc(F,k,sx)
 local x,S,a,b,sigma,rat,p,q,r,upd,deg,f,j,jj,l,var,deq,sol,num,den,J,cert;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 if type(sx,function) then 
   S:=op(0,sx); x:=op(1,sx) 
 else 
@@ -1524,7 +1527,7 @@ end: # sumdiffeq
 
 sumdiffrule:=proc(F,k,snx)
 local n,x,S,a,b,sigma,rat,p,q,r,upd,deg,f,j,jj,l,var,req,sol,sol2,num,den,J;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 if type(snx,function) then 
   S:=op(0,snx); n:=op(1,snx); x:=op(2,snx);
 else 
@@ -2012,14 +2015,14 @@ ERROR(`Algorithm finds no differential equation of order`,J)
 end: # sumholodiffeq
 
 contratio:=proc(f,x)
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
   simpcomb(diff(f,x)/f);
 end proc: # contratio
 
 contdispersionset:=proc(q,r,x)
 # finds the nonnegative integer dispersion values j
 local j,res,s,l;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 res:=frontend(resultant,[r,q-j*diff(r,x),x]); # (11.2)
 s:=simplify({solve(res,j)});
 l:={};
@@ -2032,7 +2035,7 @@ end proc: # contdispersionset
 contupdate:=proc(p,q,r,x)
 # updates the triple [p,q,r] according to gcd-condition
 local dis,g,pnew,qnew,rnew,j;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 g:=frontend(gcd,[r,q-diff(r,x)]); # (11.2), j=1
 if has(g,x) then
   pnew:=normal(p*g); # (11.3), j=1
@@ -2056,7 +2059,7 @@ end proc: # contupdate
 contdegreebound:=proc(p,q,r,x)
 # calculates the degree bound for f
 local pol1,pol2,deg1,deg2,a,b;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 pol1:=collect(r,x);
 pol2:=collect(q+diff(r,x),x);
 if pol1=0 then deg1:=-1 else deg1:=degree(pol1,x) end if;
@@ -2074,7 +2077,7 @@ end proc: # contdegreebound
 contfindf:=proc(p,q,r,x)
 # finds ftilde, given the triple [p,q,r]
 local deg,ftilde,a,j,deq,sol,result;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 deg:=contdegreebound(p,q,r,x);
 if deg<0 then error `No polynomial ftilde exists` end if;
 ftilde:=add(a[j]*x^j,j=0..deg);
@@ -2094,7 +2097,7 @@ end proc: # contfindf
 contgosper:=proc(f,x)
 # implements the continuous version of Gosper's algorithm
 local rat,p,q,r,pqr,ftilde;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 rat:=contratio(f,x);
 if not type(rat,ratpoly(anything,x)) then
   error `Algorithm not applicable`
@@ -2111,7 +2114,7 @@ return normal(r*ftilde*f/p); # (11.4)
 end proc: # contgosper
 
 intrecursion:=proc(F,t,sn)
-local S,n,f,b,sigma,rat,p,q,r,upd,deg,ftilde,j,jj,l,var,req,sol,num,den,J,cert;option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+local S,n,f,b,sigma,rat,p,q,r,upd,deg,ftilde,j,jj,l,var,req,sol,num,den,J,cert;option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 if type(sn,function) then S:=op(0,sn); n:=op(1,sn) else n:=sn end if;
 for J from 1 to MAXORDER do
   f:=F+add(sigma[j]*subs(n=n+j,F),j=1..J);
@@ -2219,7 +2222,7 @@ ERROR(cat(`Algorithm finds no recurrence equation of order <= `,MAXORDER))
 end: # defintrecursion
 
 intdiffeq:=proc(F,t,sx)local x,S,f,b,sigma,rat,p,q,r,upd,deg,ftilde,j,jj,l,var,deq,sol,num,den,J,cert;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 if type(sx,function) then S:=op(0,sx); x:=op(1,sx) else x:=sx end if;
 for J from 1 to MAXORDER do
   f:=F+add(sigma[j]*diff(F,x$j),j=1..J);
@@ -2397,7 +2400,7 @@ end: # contWZgospercertificate
 
 rodriguesrecursion:=proc(g,h,x,sn)
 local S,n,t,result;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 if type(sn,function) then
   S:=op(0,sn); n:=op(1,sn);
 else
@@ -2409,7 +2412,7 @@ end proc: # rodriguesrecursion
 
 rodriguesdiffeq:=proc(g,h,n,sx)
 local S,x,t,result;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 if type(sx,function) then
   S:=op(0,sx); x:=op(1,sx);
 else
@@ -2421,7 +2424,7 @@ end proc: # rodriguesdiffeq
 
 GFrecursion:=proc(F,a,z,sn)
 local S,n;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 if type(sn,function) then
   S:=op(0,sn); n:=op(1,sn);
 else
@@ -2432,7 +2435,7 @@ end proc: # GFrecursion
 
 GFdiffeq:=proc(F,a,z,n,sx)
 local S,x;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 if type(sx,function) then
   S:=op(0,sx); x:=op(1,sx);
 else
@@ -2494,7 +2497,7 @@ end: #recursionorder
 
 rec2poly:=proc()
 local rec,s,n,P,Q,R,M,N,alpha,beta,gamma,delta,sol,tmp,l,S,REC;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 rec:=expand(args[1]):
 if type(rec,`equation`) then rec:=op(1,rec)-op(2,rec) end if;
 s:=op(0,args[2]);
@@ -2586,7 +2589,7 @@ end: # rec2poly
 
 factor_completely:=proc(poly,n,shift,rootlist)
 local p,i,l;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 l:=normal([solve(subs(n=n+shift,poly),n)]);
 if (nargs=4) then
   rootlist:=[1,seq(n-i,i=l)];
@@ -2596,7 +2599,7 @@ end proc: # factor_completely
 
 rec2hyper:=proc()
 local rec,s,n,P,Q,R,i,j,Qfactors,Qchoices,Rfactors,Rchoices,p,q,r,c,sol,C,tmp,t,cchoices;
-option `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+option `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 rec:=expand(args[1]):
 if type(rec,`equation`) then rec:=op(1,rec)-op(2,rec) end if;
 s:=op(0,args[2]);
@@ -2682,7 +2685,7 @@ end: # recpoly
 
 generateproducts:=proc(a)
 local f,r,n;
-options `Copyright 1998-2011  Wolfram Koepf, University of Kassel`;
+options `Copyright 1998-2012  Wolfram Koepf, University of Kassel`;
 # slightly changed `combinat/powerset/multiset`...
 r:=[a];
 f:=proc(a,x) 
@@ -3050,4 +3053,4 @@ local TIME,result;
 end: # Timing
 
 # print(`Package "Hypergeometric Summation", Maple V - Maple 15`):
-# print(`Copyright 1998-2011, Wolfram Koepf, University of Kassel`):
+# print(`Copyright 1998-2012, Wolfram Koepf, University of Kassel`):

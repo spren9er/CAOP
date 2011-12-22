@@ -80,45 +80,59 @@ class Polynomial
 
     # latex conversion
     output = `#{MAPLE_PATH + '/maple' + options + ' < ' + filename}`
-    output.gsub!(/\n|\s/, '')
+    output.gsub!(/\n|\s/, '').gsub!(/\\it/, '\it ')
       
     # delete file
     File.delete(filename)
     
-    raise "ERROR" if output =~ /[e|E]rror/
+    raise "ERROR" if output =~ /[e|E]{1}rror/
         
     #
     # substitutions (order of substitutions is relevant!!!)
     #
-    regexp = Regexp.new("(\\left\()*(\{\\itDq\}_\{\{)(x[,x]*)(\}\})(\\right\))*(\\left\()(#{op}\\left\(x\\right\))(\\right\))")
+    regexp = Regexp.new("(\\left\()*(\{\\it Dq\}_\{\{)(#{x}[,#{x}]*)(\}\})(\\right\))*(\\left\()(#{op}\\left\(#{x}\\right\))(\\right\))")
     output = output.scan(regexp).uniq.inject(output) do |s, r| 
       xcount = r[2].gsub(/\s/,"").split(',').count
       if type == 'continuous'
-        # q-derivatives: qdiff -> D_q
+        # q-derivatives: qdiff -> Dq
         expr = "D_q #{r[6]}"
         expr = "D_q^#{xcount} #{r[6]}" if xcount > 1
       elsif type == 'discrete'
         # q-differences: qdiff -> y(x + ...)  
-        expr = "#{op}\\left( x \\right)"
-        expr = "#{op}\\left( x + #{xcount} \\right)" if xcount > 0
+        expr = "#{op}\\left( #{x} \\right)"
+        expr = "#{op}\\left( #{x} + #{xcount} \\right)" if xcount > 0
       end
       s.gsub(r.join, expr) 
     end 
     
+    # q-shifts: invSq -> y(x + ...)
+    regexp = Regexp.new("(\\left\()*(\{\\it invSq\}_\{\{)(#{x}[,#{x}]*)(\}\})(\\right\))*(\\left\()(#{op}\\left\(#{x}\\right\))(\\right\))")
+    output = output.scan(regexp).uniq.inject(output) do |s, r| 
+      xcount = r[2].gsub(/\s/,'').split(',').count
+      s.gsub(r.join, expr) 
+    end
+
+    # self.operator with substituted values
+    operatr = self.operator.gsub('n', n).gsub('x', x)
+    operatr.gsub!('q', q) if qcase
+    
+    # prefactor
+    prefactor = factor.present? ? factor + ' \cdot ' : ''
+    
     # differences: y(x + ...) -> self.operator
-    regexp = Regexp.new("(#{op}\\left*\()(x\+*\d*)(\\right*\))")
-    output = output.scan(regexp).uniq.inject(output) do |s, r| s.gsub(r.join, self.operator.gsub('x', "{#{r[1]}}")) end
-    
-    # shifts: y(n +- ...) -> self.operator
-    regexp = Regexp.new("(#{op}\\left*\()(n\+*\d*)(\\right*\))")
-    output = output.scan(regexp).uniq.inject(output) do |s, r| s.gsub(r.join, self.operator.gsub('n', "{#{r[1]}}")) end
-    regexp = Regexp.new("(#{op}\\left*\()(n\-*\d*)(\\right*\))")
-    output = output.scan(regexp).uniq.inject(output) do |s, r| s.gsub(r.join, self.operator.gsub('n', "{#{r[1]}}")) end
-    
-    # functions: y(x) -> self.operator
-    regexp = Regexp.new("#{op}\\left*\(x\\right*\)")
-    output.gsub!(regexp, self.operator)
+    regexp = Regexp.new("(#{op}\\\\left*\\()(#{x}\\+\\d*)(\\\\right*\\))")
+    output = output.scan(regexp).uniq.inject(output) do |s, r| s.gsub(r.join, prefactor + operatr.gsub(x, "{#{r[1]}}")) end
       
+    # shifts: y(n +- ...) -> self.operator
+    regexp = Regexp.new("(#{op}\\\\left*\\()(#{n}\\+\\d*)(\\\\right*\\))")
+    output = output.scan(regexp).uniq.inject(output) do |s, r| s.gsub(r.join, prefactor + operatr.gsub(n, "{#{r[1]}}")) end
+    regexp = Regexp.new("(#{op}\\\\left*\\()(#{n}\\-\\d*)(\\\\right*\\))")
+    output = output.scan(regexp).uniq.inject(output) do |s, r| s.gsub(r.join, prefactor + operatr.gsub(n, "{#{r[1]}}")) end
+
+    # functions: y(x|n) -> self.operator
+    regexp = Regexp.new("#{op}\\\\left*\\([#{n}|#{x}]\\\\right*\\)")
+    output.gsub!(regexp, prefactor + operatr)
+          
     return [input, output]
   end
   
