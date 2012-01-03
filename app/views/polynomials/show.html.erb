@@ -5,20 +5,32 @@
 
 <p>The <%= @polynomial.name %> polynomials are defined as</p>
 
-\[<%= @polynomial.definition %>\]
+\[
+  \begin{align}
+    <%= @definition[0] %> &= <%= @definition[1] %>\\
+                          &= <%= @definition[2] %>
+  \end{align}
+\]
 
 
 <h3><%= t('parameters') %></h3>
 
 <%= form_tag polynomial_path(@polynomial.sid), :remote => true, :method => 'get', :class => 'form' do %>
-  <p>n<%= text_field_tag 'n', 'n' %></p>
-  <p>x<%= text_field_tag 'x', 'x' %></p>
+  <p>
+    \(n\)
+    <%= text_field_tag 'n', 'n' %>
+  </p>
+  
+  <p>
+    \(x\)
+    <%= text_field_tag 'x', 'x' %>
+  </p>
 
   <% @polynomial.parameters.each do |parameter| %>
   <p>
-    <%= parameter.name %>
+    \(<%= parameter.latex_name %>\)
     <%= text_field_tag parameter.name, parameter.name %>
-    <%= parameter.boundaries %>
+    \(<%= parameter.boundaries %>\)
   </p>  
   <% end %>  
 

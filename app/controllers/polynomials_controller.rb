@@ -12,6 +12,8 @@ class PolynomialsController < ApplicationController
     @polynomials = nonq.polynomials
     @polynomial = Polynomial.where(sid: params[:id]).first
     
+    @definition = @polynomial.definition.split(' = ')
+    
     @diffeq = (@polynomial.type == 'continuous') ?  t('differential_equation') : t('difference_equation')
     @receq = t('recurrence_equation')
     

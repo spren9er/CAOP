@@ -2,14 +2,21 @@ class Parameter
   include Mongoid::Document
   embedded_in :polynomial
   field :name,   type: String
-  field :lower_bound, type: Float
-  field :upper_bound, type: Float
+  field :lower_bound, type: String
+  field :upper_bound, type: String
   
   def boundaries
-    threshold = 1000000
-    return "" if lower_bound < -threshold and upper_bound > threshold
-    return "#{name} > #{lower_bound.to_i}" if upper_bound > threshold
-    return "#{name} < #{upper_bound.to_i}" if lower_bound < -threshold
-    return "#{lower_bound.to_i} < #{name} < #{upper_bound.to_i}"
+    case upper_bound
+      when 'pi'
+        return "#{lower_bound} < #{latex_name} < \\pi"
+      when 'infinity'
+        return "#{latex_name} > #{lower_bound}"
+      else
+        return "#{lower_bound} < #{latex_name} < #{upper_bound}"
+    end
+  end
+  
+  def latex_name
+    name.length > 1 ? "\\#{name}" : name
   end
 end
