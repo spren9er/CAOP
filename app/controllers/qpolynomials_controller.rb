@@ -12,6 +12,8 @@ class QpolynomialsController < ApplicationController
     @polynomials = q.polynomials
     @polynomial = Polynomial.where(sid: params[:id]).first
     
+    @definition = @polynomial.definition.split(' = ')
+    
     @diffeq = (@polynomial.type == 'continuous') ?  t('qdifferential_equation') : t('qdifference_equation')
     @receq = t('qrecurrence_equation')
     

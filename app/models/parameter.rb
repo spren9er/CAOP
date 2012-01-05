@@ -1,7 +1,7 @@
 class Parameter
   include Mongoid::Document
   embedded_in :polynomial
-  field :name,   type: String
+  field :name,        type: String
   field :lower_bound, type: String
   field :upper_bound, type: String
   
@@ -10,9 +10,17 @@ class Parameter
       when 'pi'
         return "#{lower_bound} < #{latex_name} < \\pi"
       when 'infinity'
-        return "#{latex_name} > #{lower_bound}"
+        if lower_bound != '-infinity'
+          return "#{latex_name} > #{lower_bound}"
+        else
+          return ""
+        end
       else
-        return "#{lower_bound} < #{latex_name} < #{upper_bound}"
+        if lower_bound != '-infinity'
+          return "#{lower_bound} < #{latex_name} < #{upper_bound}"
+        else
+          return "#{latex_name} < #{upper_bound}"
+        end
     end
   end
   

@@ -84,7 +84,7 @@ class Polynomial
     # delete file
     File.delete(filename)
     
-    raise "ERROR" if output =~ /[e|E]{1}rror/
+    # raise "ERROR" if output =~ /[e|E]{1}rror/
 
     # substitutions (order of substitutions is relevant!!!)
     #
