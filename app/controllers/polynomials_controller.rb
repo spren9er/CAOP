@@ -29,7 +29,8 @@ class PolynomialsController < ApplicationController
       input, output = @polynomial.compute(params[:parameters], params[:type])
       render :text => input + "---" + output   
     else
-      render :text => 'ERROR --- ERROR (prefactor has not the required form)'
+      # prefactor has not the required form
+      raise ""
     end
   end  
   

@@ -1,5 +1,8 @@
-<h2><%= @polynomial.name %></h2>
+<%= content_for :topbar do %> 
+  <div id="spinner"></div>
+<% end %>
 
+<h2><%= @polynomial.name %> Polynomials</h2>
 
 <h3><%= t('definition') %></h3>
 
@@ -35,7 +38,6 @@
   <% end %>  
 
   <p>
-    &nbsp;&nbsp;
     <%= text_field_tag 'factor', '' %>
     prefactor (hypergeometric term in \(n\) and hyperexponential term in \(x\) required)
   </p>
@@ -90,5 +92,28 @@ $(function(){
       $(this).html('Hide Maple');      
     }
   });
+  
+  MathJax.Hub.Register.StartupHook("End Typeset", function(){
+    $("#spinner").fadeOut();
+    $("#pagearea").fadeIn();
+    $("#footer").fadeIn();
+  });
 });
 </script>
+
+<style type="text/css" media="screen">
+#pagearea, #footer {
+  display: none;
+}
+
+#spinner {
+  position: absolute;
+  margin: auto;
+  text-align: center;
+  top: 450px;
+  margin-left: 650px;
+  width: 48px;
+  height: 48px;
+  background: transparent url("<%= asset_path('spinner.gif') %>") no-repeat;
+}
+</style>

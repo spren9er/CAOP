@@ -41,18 +41,25 @@ class Polynomial
     input = factor.present? ? "term := #{factor}*#{self.maple}:\n" : "term := #{self.maple}:\n"
     input += subs_command if subs_command.present?
 
-    # choose appropriate commands
-    case [category.sid, type, equation_type[:receq] ? 'receq' : 'diffeq']
-      when ['polynomials',  'continuous', 'diffeq'] then input += "sumdiffeq(term, k, #{op}(#{x}));"
-      when ['polynomials',  'continuous', 'receq']  then input += "sumrecursion(term, k, #{op}(#{n}));"
-      when ['polynomials',  'discrete',   'diffeq'] then input += "sumrecursion(term, k, #{op}(#{x}));"
-      when ['polynomials',  'discrete',   'receq']  then input += "sumrecursion(term, k, #{op}(#{n}));"
-      when ['qpolynomials', 'continuous', 'diffeq'] then input += "qsumdiffeq(term, #{q}, k, #{op}(#{x}));"
-      when ['qpolynomials', 'continuous', 'receq']  then input += "qsumrecursion(term, #{q}, k, #{op}(#{n}), recursion = up);"
-      when ['qpolynomials', 'discrete',   'diffeq'] then input += "term := subs(#{q}^(-#{x}) = #{x}, term):\nDE := qsumdiffeq(term, #{q}, k, #{op}(#{x})):\nRE := qdiffeqtorecursion(DE, #{q}):\nRE := qshiftrecursion(RE, #{q}):\nsubs(#{x} = #{q}^(-#{x}), RE);"
-      when ['qpolynomials', 'discrete',   'receq']  then input += "term := subs(#{q}^(-#{x}) = #{x}, term):\nRE := qsumrecursion(term, #{q}, k, #{op}(#{n}), recursion = up):\nsubs(#{x} = #{q}^(-#{x}), RE);"
+    # special polynomials
+    if %w{wilson continuous_dual_hahn continuous_hahn meixner_pollaczek}.include?(sid) and !equation_type[:receq]
+      input += "term := subs(#{x} = I*y, term):\n"
+      input += "DE := sumrecursion(term, k, #{op}(y)):\n"
+      input += "subs(y = #{x}/I, DE);" 
+    else
+      # choose appropriate commands
+      case [category.sid, type, equation_type[:receq] ? 'receq' : 'diffeq']
+        when ['polynomials',  'continuous', 'diffeq'] then input += "sumdiffeq(term, k, #{op}(#{x}));"
+        when ['polynomials',  'continuous', 'receq']  then input += "sumrecursion(term, k, #{op}(#{n}));"
+        when ['polynomials',  'discrete',   'diffeq'] then input += "sumrecursion(term, k, #{op}(#{x}));"
+        when ['polynomials',  'discrete',   'receq']  then input += "sumrecursion(term, k, #{op}(#{n}));"
+        when ['qpolynomials', 'continuous', 'diffeq'] then input += "qsumdiffeq(term, #{q}, k, #{op}(#{x}));"
+        when ['qpolynomials', 'continuous', 'receq']  then input += "qsumrecursion(term, #{q}, k, #{op}(#{n}), recursion = up);"
+        when ['qpolynomials', 'discrete',   'diffeq'] then input += "term := subs(#{q}^(-#{x}) = #{x}, term):\nDE := qsumdiffeq(term, #{q}, k, #{op}(#{x})):\nRE := qdiffeqtorecursion(DE, #{q}):\nRE := qshiftrecursion(RE, #{q}):\nsubs(#{x} = #{q}^(-#{x}), RE);"
+        when ['qpolynomials', 'discrete',   'receq']  then input += "term := subs(#{q}^(-#{x}) = #{x}, term):\nRE := qsumrecursion(term, #{q}, k, #{op}(#{n}), recursion = up):\nsubs(#{x} = #{q}^(-#{x}), RE);"
+      end
     end
-    
+      
     stamp = Time.now.to_i.to_s
     filename = 'tmp/computation' + stamp + (5*rand(9)).to_s + '.txt'
     file = File.new(filename, 'w')
@@ -84,7 +91,7 @@ class Polynomial
     # delete file
     File.delete(filename)
     
-    # raise "ERROR" if output =~ /[e|E]{1}rror/
+    raise "ERROR" if output =~ /[e|E]{1}rror/
 
     # substitutions (order of substitutions is relevant!!!)
     #
@@ -130,6 +137,8 @@ class Polynomial
     # # functions: y(x|n) -> self.operator
     # regexp = Regexp.new("#{op}\\\\left*\\([#{n}|#{x}]\\\\right*\\)")
     # output.gsub!(regexp, prefactor + operatr)
+          
+    # TODO: \left( \delta \right) - substitution due to maple bug
           
     return [input, output]
   end

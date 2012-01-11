@@ -1,8 +1,8 @@
-$("#diffeq").html("<%= escape_javascript(image_tag('spinner.gif')) %>");
-$("#receq").html("<%= escape_javascript(image_tag('spinner.gif')) %>");
+$("#diffeq").html("<%= escape_javascript(image_tag('computation_spinner.gif')) %>");
+$("#receq").html("<%= escape_javascript(image_tag('computation_spinner.gif')) %>");
 
 var compute = function(){
-  var error_message = "An error occurred!<br/>Either no connection to the CAS server could be established or your choice of parameters failed!<br/>Try again with other parameters!";
+  var error_message = "An error occurred!<br/>Either no connection to the CAS server could be established or your choice of parameters failed!<br/>Try it again with other parameters!";
   
   // compute difference/differential equation
   $.ajax({
