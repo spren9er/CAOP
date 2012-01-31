@@ -1,33 +1,5 @@
 <ul class="navigation">
   <% @polynomials.each do |p| %>
-    <li><%= link_to p.name, qpolynomial_path(p.sid) %></li>
+    <li><%= link_to_polynomial p %></li>
   <% end %>  
-  
-  <li><%#= link_to "Askey-Wilson", root_path %></li>
-  <li><%#= link_to "q-Racah", root_path %></li>
-  <li><%#= link_to "Continuous Dual q-Hahn", root_path %></li>
-  <li><%#= link_to "Big q-Jacobi", root_path %></li>
-  <li><%#= link_to "q-Hahn", root_path %></li>
-  <li><%#= link_to "Dual q-Hahn", root_path %></li>
-  <li><%#= link_to "Al-Salam-Chihara", root_path %></li>
-  <li><%#= link_to "q-Meixner-Pollaczek", root_path %></li>
-  <li><%#= link_to "Continuous q-Jacobi", root_path %></li>
-  <li><%#= link_to "Big q-Laguerre", root_path %></li>
-  <li><%#= link_to "Little q-Jacobi", root_path %></li>
-  <li><%#= link_to "q-Meixner", root_path %></li>
-  <li><%#= link_to "Quantum q-Krawtchouk", root_path %></li>
-  <li><%#= link_to "q-Krawtchouk", root_path %></li>
-  <li><%#= link_to "Affine q-Krawtchouk", root_path %></li>
-  <li><%#= link_to "Dual q-Krawtchouk", root_path %></li>
-  <li><%#= link_to "Continuous Big q-Hermite", root_path %></li>
-  <li><%#= link_to "Continuous q-Laguerre polynomials", root_path %></li>
-  <li><%#= link_to "Little q-Laguerre / Wall", root_path %></li>
-  <li><%#= link_to "q-Laguerre", root_path %></li>
-  <li><%#= link_to "Alternative q-Charlier", root_path %></li>
-  <li><%#= link_to "Al-Salam-Carlitz I", root_path %></li>
-  <li><%#= link_to "Al-Salam-Carlitz II", root_path %></li>
-  <li><%#= link_to "Continuous q-Hermite", root_path %></li>
-  <li><%#= link_to "Stieltjes-Wigert", root_path %></li>
-  <li><%#= link_to "Discrete q-Hermite I", root_path %></li>
-  <li><%#= link_to "Discrete q-Hermite II", root_path %></li>
 </ul>

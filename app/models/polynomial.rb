@@ -184,4 +184,8 @@ class Polynomial
   def operator
     /^([^=]*)=.*$/.match(self.definition)[1]
   end
+  
+  def q?
+    category.sid == 'qpolynomials'
+  end
 end

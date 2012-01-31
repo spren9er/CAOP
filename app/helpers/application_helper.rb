@@ -13,4 +13,9 @@ module ApplicationHelper
     end 
   end
   
+  def link_to_polynomial(polynomial)
+    sid = polynomial.sid
+    link_to polynomial.name, polynomial.q? ? qpolynomial_path(sid) : polynomial_path(sid), sid == params[:id] ? {:class => 'active'} : nil
+  end
+  
 end
