@@ -381,15 +381,16 @@ $caop-main-color: #c8175d;
           text-decoration: none;
           color: $main-text-color;
           font-size: 110%;
-          padding: 5px;
+          padding: 5px 5px 5px 10px;
+          @include border-left-radius(7px);          
         
           &.active {
-            $background-color: darken($main-background-color, 5%);
+            $background-color: $main-text-color;
             background-color: $background-color;
             color: #efefef;
 
             &:hover {
-              background-color: $background-color;
+              background-color: lighten($background-color, 15%);
             }
           }
 
@@ -404,6 +405,7 @@ $caop-main-color: #c8175d;
       #page {
         width: 95%;
         padding: 15px;
+        font-size: 120%;
         
         h3 {
           margin: 15px 0 0 0;
@@ -461,9 +463,12 @@ $caop-main-color: #c8175d;
   @include stylr-button;
 }
 
+#definition {
+  font-size: 80%;
+}
+
 .result_wrapper {
   @include border-radius(3px);
-//  @include box-shadow(#ccc 0 1px 1px inset);
   border: 1px solid #ccc;
   width: 100%;
   height: 48px;
@@ -478,6 +483,7 @@ $caop-main-color: #c8175d;
   line-height: 18px;
   overflow: scroll;
   margin: 0 10px;
+  font-size: 80%;
 }
 
 .computation_wrapper {
@@ -507,4 +513,15 @@ $caop-main-color: #c8175d;
 
 pre.computation {
   background-color: #efefef !important;
+}
+
+#spinner {
+  position: absolute;
+  left: 50%;
+  top: 33%;
+  text-align: center;
+  margin-left: 100px;
+  width: 48px;
+  height: 48px;
+  background: transparent url(asset-path('spinner.gif', image)) no-repeat;
 }
