@@ -14,9 +14,8 @@ application_page.published = true
 application_page.paragraphs << HeaderParagraph.new(area_name: 'Entry_Page', title: 'CAOP - Computer Algebra & Orthogonal Polynomials')
 application_page.paragraphs << ParagraphParagraph.new(area_name: 'Entry_Page', body: "CAOP is a package for calculating formulas for orthogonal polynomials belonging to the Askey scheme by <a href=\"http://www.maplesoft.com/\">Maple</a>.
 With the present version users can compute recurrence relations, differential and difference equations, without having Maple installed on
-their own computer. It is also possible to multiply the polynomial by a scaling function, to change the argument and to give values to the parameters by filling out a form, before doing the calculation. As an extra option the user can choose the layout of the output: prettyprint, lineprint or LaTeX. The latter two options make it possible to insert the output in another Maple worksheet respectively in a LaTeX document by a simple mouse-action.
+their own computer. It is also possible to multiply the polynomial by a scaling function, to change the argument and to give values to the parameters by filling out a form, before doing the calculation.
 ")
-application_page.paragraphs << ParagraphParagraph.new(area_name: 'Entry_Page', body: "Furthermore there are some help pages available for users who are not familiar with Maple. They can be viewed simultaneously while filling in the form.")
 application_page.paragraphs << ParagraphParagraph.new(area_name: 'Entry_Page', body: "All computations in CAOP are performed by calling procedures either from <a href=\"http://www.mathematik.uni-kassel.de/%7Ekoepf/Publikationen/#down\">hsum15</a> (\"Hypergeometric Summation\") or <a href=\"http://www.mathematik.uni-kassel.de/%7Ekoepf/Publikationen/#down\">qsum15</a> (\"q-Hypergeometric Summation\") by <a href=\"http://www.mathematik.uni-kassel.de/%7Ekoepf/\">Wolfram Koepf</a>, University of Kassel.")
 application_page.paragraphs << ParagraphParagraph.new(area_name: 'Entry_Page', body: "The implementation of CAOP was originally done by <a href=\"http://www.cs.vu.nl/%7Erene/\">Ren&eacute; Swarttouw</a> as part of the <a href=\"http://www.cs.vu.nl/%7Erene/Onderzoek/AW.html\">Askey-Wilson-Scheme Project</a> performed at <a href=\"http://www.riaca.win.tue.nl/\">RIACA</a> in Eindhoven in 2004. A completely revised version of this project has been done by <a href=\"http://www.mathematik.uni-kassel.de/~sprenger\">Torsten Sprenger</a> under supervision of Wolfram Koepf in 2012. The present version is maintained by <a href=\"http://www.mathematik.uni-kassel.de/~koepf\">Wolfram Koepf</a>.")
 application_page.save!
@@ -256,8 +255,8 @@ charlier.save
 hermite = Polynomial.new({
   name:       'Hermite',
   sid:        'hermite',
-  definition: 'H_n(x) = \sum_{k=0}^n \frac{(-n/2)_k - ((n-1)/2)_k}{k!} \left(-\frac{1}{x^2}\right)^k = (2x)^n {}_2F_0 \left(\left. {-n/2, -(n-1)/2 \atop -} \; \right| -\frac{1}{x^2} \right)',
-  maple:      'pochhammer(-n/2,k)*pochhammer(-(n-1)/2,k)*(-1/x^2)^k',
+  definition: 'H_n(x) = (2x)^n \sum_{k=0}^n \frac{(-n/2)_k - ((n-1)/2)_k}{k!} \left(-\frac{1}{x^2}\right)^k = (2x)^n {}_2F_0 \left(\left. {-n/2, -(n-1)/2 \atop -} \; \right| -\frac{1}{x^2} \right)',
+  maple:      '(2*x)^n*pochhammer(-n/2,k)*pochhammer(-(n-1)/2,k)/k!*(-1/x^2)^k',
   type:       'continuous' 
 })
 hermite.category = polynomials
@@ -276,9 +275,9 @@ hermite.save
 askey_wilson = Polynomial.new({
   name:       'Askey Wilson',
   sid:        'askey_wilson',
-  definition: 'p_n(x;a,b,c,d|q) = a^{-n}(a b, a c, a d; q)_n \sum_{k=0}^\infty \frac{(q^{-n};q)_k (abcdq^{n-1};q)_k (ae^{it};q)_k (ae^{-it};q)_k}{(ab;q)_k (ac;q)_k (ad;q)_k (q;q)_k} q^k = a^{-n}(a b, a c, a d; q)_n {}_{4}\phi_{3}\!\left(\left. {q^{-n}, abcdq^{n-1}, a e^{it}, a e^{-it} \atop ab, ac, ad} \; \right| q ; q \right)\quad , x=\cos(t)',
-  maple:      'a^(-n)*qpochhammer(a*b,q,n)*qpochhammer(a*c,q,n)*qpochhammer(a*d,q,n)*qpochhammer(q^{-n},q,k)*qpochhammer(a*b*c*d*q^{n-1},q,k)*qpochhammer(a*exp(I*t),q,k)*qpochhammer(a*exp(-I*t),q,k)/qpochhammer(a*b,q,k)/qpochhammer(a*c,q,k)/qpochhammer(a*d,q,k)/qpochhammer(q,q,k)*q^k',
-  type:       'discrete'
+  definition: 'p_n(x;a,b,c,d|q) = a^{-n}(a b, a c, a d; q)_n \sum_{k=0}^\infty \frac{(q^{-n};q)_k (abcdq^{n-1};q)_k (ae^{it};q)_k (ae^{-it};q)_k}{(ab;q)_k (ac;q)_k (ad;q)_k (q;q)_k} q^k = a^{-n}(a b, a c, a d; q)_n {}_{4}\phi_{3}\!\left(\left. {q^{-n}, abcdq^{n-1}, a e^{it}, a e^{-it} \atop ab, ac, ad} \; \right| q ; q \right),\quad x=\cos(t)',
+  maple:      'a^(-n)*qpochhammer(a*b,q,n)*qpochhammer(a*c,q,n)*qpochhammer(a*d,q,n)*qpochhammer(q^(-n),q,k)*qpochhammer(a*b*c*d*q^(n-1),q,k)*qpochhammer(a*exp(I*t),q,k)*qpochhammer(a*exp(-I*t),q,k)/qpochhammer(a*b,q,k)/qpochhammer(a*c,q,k)/qpochhammer(a*d,q,k)/qpochhammer(q,q,k)*q^k',
+  type:       'continuous'
 })
 askey_wilson.parameters.create(name: 'a', lower_bound: '-infinity', upper_bound: 'infinity' )
 askey_wilson.parameters.create(name: 'b', lower_bound: '-infinity', upper_bound: 'infinity' )
@@ -294,7 +293,7 @@ qracah = Polynomial.new({
   name:       'q-Racah',
   sid:        'qracah',
   definition: 'R_n(\lambda(x);b,c,d,N;q) = \sum_{k=0}^\infty \frac{(q^{-n};q)_k (bq^{n-N};q)_k (q^{-x};q)_k (c d q^{x+1};q)_k}{(q^{-N};q)_k (bdq;q)_k (cq;q)_k (q;q)_k} q^k = {}_{4}\phi_{3}\!\left(\left. {q^{-n}, bq^{n-N}, q^{-x}, cdq^{x+1} \atop q^{-N}, bdq, cq} \; \right| q ; q \right)',
-  maple:      'qpochhammer(q^{-n},q,k)*qpochhammer(b*q^{n-N},q,k)*qpochhammer(q^{-x},q,k)*qpochhammer(cdq^{x+1},q,k)/qpochhammer(q^{-N},q,k)/qpochhammer(bdq,q,k)/qpochhammer(cq,q,k)/qpochhammer(q,q,k)*q^k',
+  maple:      'qpochhammer(q^(-n),q,k)*qpochhammer(b*q^(n-N),q,k)*qpochhammer(q^(-x),q,k)*qpochhammer(c*d*q/q^(-x),q,k)/qpochhammer(q^(-N),q,k)/qpochhammer(b*d*q,q,k)/qpochhammer(c*q,q,k)/qpochhammer(q,q,k)*q^k',
   type:       'discrete'
 })
 qracah.parameters.create(name: 'b', lower_bound: '-infinity', upper_bound: 'infinity' )
@@ -309,9 +308,9 @@ qracah.save
 continuous_dual_qhahn = Polynomial.new({
   name:       'Continuous Dual q-Hahn',
   sid:        'continuous_dual_qhahn',
-  definition: 'p_n(x;a,b,c|q) = a^{-n}(a b, a c; q)_n \sum_{k=0}^\infty \frac{(q^{-n};q)_k (a e^{it};q)_k (ae^{-it};q)_k}{(ab;q)_k (ac;q)_k (q;q)_k} q^k = a^{-n}(a b, a c; q)_n {}_{3}\phi_{2}\!\left(\left. {q^{-n}, a e^{it}, a e^{-it} \atop ab, ac} \; \right| q ; q \right)\quad , x=\cos(t)',
+  definition: 'p_n(x;a,b,c|q) = a^{-n}(a b, a c; q)_n \sum_{k=0}^\infty \frac{(q^{-n};q)_k (a e^{it};q)_k (ae^{-it};q)_k}{(ab;q)_k (ac;q)_k (q;q)_k} q^k = a^{-n}(a b, a c; q)_n {}_{3}\phi_{2}\!\left(\left. {q^{-n}, a e^{it}, a e^{-it} \atop ab, ac} \; \right| q ; q \right),\quad x=\cos(t)',
   maple:      'a^(-n)*qpochhammer(a*b,q,n)*qpochhammer(a*c,q,n)*qpochhammer(q^(-n),q,k)*qpochhammer(a*exp(I*t),q,k)*qpochhammer(a*exp(-I*t),q,k)/qpochhammer(a*b,q,k)/qpochhammer(a*c,q,k)/qpochhammer(q,q,k)*q^k',
-  type:       'discrete'
+  type:       'continuous'
 })
 continuous_dual_qhahn.parameters.create(name: 'a', lower_bound: '-infinity', upper_bound: 'infinity' )
 continuous_dual_qhahn.parameters.create(name: 'b', lower_bound: '-infinity', upper_bound: 'infinity' )
@@ -325,9 +324,9 @@ continuous_dual_qhahn.save
 continuous_qhahn = Polynomial.new({
   name:       'Continuous q-Hahn',
   sid:        'continuous_qhahn',
-  definition: 'p_n(x;a,b,c|q) = a^{-n} e^{-inu} (abe^{2iu}, a c, a d; q)_n \sum_{k=0}^\infty \frac{(q^{-n};q)_k (abcdq^{n-1};q)_k (ae^{i(t+2u};q)_k (ae^{-it};q)_k}{(abe^{2iu};q)_k (ac;q)_k (ad;q)_k (q;q)_k} q^k = a^{-n} e^{-inu} (abe^{2iu}, a c, a d; q)_n {}_{4}\phi_{3}\!\left(\left. {q^{-n}, abcdq^{n-1}, ae^{i(t+2u)}, a e^{-it} \atop abe^{2iu}, ac, ad} \; \right| q ; q \right)\quad , x=\cos(t+u)',
-  maple:      'a^(-n)*exp(i*n*u)*qpochhammer(a*b*e^(2*i*u),q,n)*qpochhammer(a*c,q,n)*qpochhammer(a*d,q,n)*qpochhammer(q^(-n),q,k)*qpochhammer(abcdq^(-n),q,k)*qpochhammer(a*exp(I*(t+2*u)),q,k)*qpochhammer(a*exp(-I*t),q,k)/qpochhammer(a*b*exp(2*i*u),q,k)/qpochhammer(a*c,q,k)/qpochhammer(a*d,q,k)/qpochhammer(q,q,k)*q^k',
-  type:       'discrete'
+  definition: 'p_n(x;a,b,c|q) = a^{-n} e^{-inu} (abe^{2iu}, a c, a d; q)_n \sum_{k=0}^\infty \frac{(q^{-n};q)_k (abcdq^{n-1};q)_k (ae^{i(t+2u};q)_k (ae^{-it};q)_k}{(abe^{2iu};q)_k (ac;q)_k (ad;q)_k (q;q)_k} q^k = a^{-n} e^{-inu} (abe^{2iu}, a c, a d; q)_n {}_{4}\phi_{3}\!\left(\left. {q^{-n}, abcdq^{n-1}, ae^{i(t+2u)}, a e^{-it} \atop abe^{2iu}, ac, ad} \; \right| q ; q \right),\quad x=\cos(t+u)',
+  maple:      'a^(-n)*exp(-I*n*u)*qpochhammer(a*b*exp(2*I*u),q,n)*qpochhammer(a*c,q,n)*qpochhammer(a*d,q,n)*qpochhammer(q^(-n),q,k)*qpochhammer(a*b*c*d*q^(n-1),q,k)*qpochhammer(a*exp(I*(t+2*u)),q,k)*qpochhammer(a*exp(-I*t),q,k)/qpochhammer(a*b*exp(2*I*u),q,k)/qpochhammer(a*c,q,k)/qpochhammer(a*d,q,k)/qpochhammer(q,q,k)*q^k',
+  type:       'continuous'
 })
 continuous_qhahn.parameters.create(name: 'a', lower_bound: '-infinity', upper_bound: 'infinity' )
 continuous_qhahn.parameters.create(name: 'b', lower_bound: '-infinity', upper_bound: 'infinity' )
@@ -374,7 +373,7 @@ dual_qhahn = Polynomial.new({
   name:       'Dual q-Hahn',
   sid:        'dual_qhahn',
   definition: 'R_n(\mu(x);\gamma,\delta,N|q) = \sum_{k=0}^\infty \frac{(q^{-n};q)_k (q^{-x};q)_k (\gamma \delta q^{x+1};q)_k}{(\gamma q;q)_k (q^{-N};q)_k (q;q)_k} q^k = {}_{3}\phi_{2}\!\left(\left. {q^{-n}, q^{-x}, \gamma \delta q^{x+1} \atop \gamma q, q^{-N}} \; \right| q ; q \right)',
-  maple:      'qpochhammer(q^(-n),q,k)*qpochhammer(q^(-x),q,k)*qpochhammer(gamma*delta*q^(x+1),q,k)/qpochhammer(gamma*q,q,k)/qpochhammer(q^(-N),q,k)/qpochhammer(q,q,k)*q^k',
+  maple:      'qpochhammer(q^(-n),q,k)*qpochhammer(q^(-x),q,k)*qpochhammer(gamma*delta*q/q^(-x),q,k)/qpochhammer(gamma*q,q,k)/qpochhammer(q^(-N),q,k)/qpochhammer(q,q,k)*q^k',
   type:       'discrete'
 })
 dual_qhahn.parameters.create(name: 'gamma', lower_bound: '0', upper_bound: 'q^{-1}' )
@@ -388,9 +387,9 @@ dual_qhahn.save
 al_salam_chihara = Polynomial.new({
   name:       'Al Salam Chihara',
   sid:        'al_salam_chihara',
-  definition: 'Q_n(q^{-x};a,b|q) = a^{-n} (ab;q)_n \sum_{k=0}^\infty \frac{(q^{-n};q)_k (a e^{it};q)_k (a e^{-it};q)_k}{(ab;q)_k (q;q)_k} q^k = a^{-n} (ab;q)_n {}_{3}\phi_{2}\!\left(\left. {q^{-n}, a e^{it}, a e^{-it} \atop ab, 0} \; \right| q ; q \right)\quad x=\cos(t)',
-  maple:      'a^(-n)*qpochhammer(a*b,q,n)*qpochhammer(q^(-n),q,k)*qpochhammer(a*exp(I*t),q,k)*qpochhammer(a*exp(-I*t),q,k)/qpochhammer(a*b,q,k)/qpochhammer(0,q,k)/qpochhammer(q,q,k)*q^k',
-  type:       'discrete'
+  definition: 'Q_n(q^{-x};a,b|q) = a^{-n} (ab;q)_n \sum_{k=0}^\infty \frac{(q^{-n};q)_k (a e^{it};q)_k (a e^{-it};q)_k}{(ab;q)_k (q;q)_k} q^k = a^{-n} (ab;q)_n {}_{3}\phi_{2}\!\left(\left. {q^{-n}, a e^{it}, a e^{-it} \atop ab, 0} \; \right| q ; q \right),\quad x=\cos(t)',
+  maple:      'a^(-n)*qpochhammer(a*b,q,n)*qpochhammer(q^(-n),q,k)*qpochhammer(a*exp(I*t),q,k)*qpochhammer(a*exp(-I*t),q,k)/qpochhammer(a*b,q,k)/qpochhammer(q,q,k)*q^k',
+  type:       'continuous'
 })
 al_salam_chihara.parameters.create(name: 'a', lower_bound: '-infinity', upper_bound: 'infinity' )
 al_salam_chihara.parameters.create(name: 'b', lower_bound: '-infinity', upper_bound: 'infinity' )
@@ -403,9 +402,9 @@ al_salam_chihara.save
 qmeixner_pollaczek = Polynomial.new({
   name:       'q-Meixner Pollaczek',
   sid:        'qmeixner_pollaczek',
-  definition: 'P_n(x;a|q) = a^{-n} e^{-inu} \frac{(a^2;q)_n}{(q;q)_n} \sum_{k=0}^\infty \frac{(q^{-n};q)_k (a e^{i(t+2u)};q)_k (a e^{-it};q)_k}{(a^2;q)_k (q;q)_k} q^k =  a^{-n} e^{-inu} \frac{(a^2;q)_n}{(q;q)_n} {}_{3}\phi_{2}\!\left(\left. {q^{-n}, a e^{i(t+2u)}, a e^{-it} \atop a^2, 0} \; \right| q ; q \right)\quad x=\cos(t)',
+  definition: 'P_n(x;a|q) = a^{-n} e^{-inu} \frac{(a^2;q)_n}{(q;q)_n} \sum_{k=0}^\infty \frac{(q^{-n};q)_k (a e^{i(t+2u)};q)_k (a e^{-it};q)_k}{(a^2;q)_k (q;q)_k} q^k =  a^{-n} e^{-inu} \frac{(a^2;q)_n}{(q;q)_n} {}_{3}\phi_{2}\!\left(\left. {q^{-n}, a e^{i(t+2u)}, a e^{-it} \atop a^2, 0} \; \right| q ; q \right),\quad x=\cos(t)',
   maple:      'a^(-n)*exp(-I*n*u)*qpochhammer(a^2,q,n)/qpochhammer(q,q,n)*qpochhammer(q^(-n),q,k)*qpochhammer(a*exp(I*(t+2*u)),q,k)*qpochhammer(a*exp(-I*t),q,k)/qpochhammer(a^2,q,k)/qpochhammer(q,q,k)*q^k',
-  type:       'discrete'
+  type:       'continuous'
 })
 qmeixner_pollaczek.parameters.create(name: 'a', lower_bound: '-infinity', upper_bound: 'infinity' )
 qmeixner_pollaczek.category = qpolynomials
@@ -417,7 +416,7 @@ qmeixner_pollaczek.save
 continuous_qjacobi = Polynomial.new({
   name:       'Continuous q-Jacobi',
   sid:        'continuous_qjacobi',
-  definition: 'P_n^{(a,b)}(x|q) = \frac{(q^{a+1};q,n)}{(q;q,n)} \sum_{k=0}^\infty \frac{(q^{-n};q)_k (q^{n+a+b+1};q)_k (q^{1/2a+1/4}e^{it};q)_k (q^{1/2a+1/4}e^{-it};q)_k}{(q^{a+1};q)_k (-q^{1/2(a+b+1)};q)_k (-q^{1/2(a+b+2)};q)_k (q;q)_k} q^k = \frac{(q^{a+1};q,n)}{(q;q,n)} {}_{3}\phi_{2}\!\left(\left. {q^{-n}, q^{n+a+b+1}, q^{1/2a+1/4}e^{it}, q^{1/2a+1/4}e^{-it} \atop q^{a+1}, -q^{1/2(a+b+1)}, -q^{1/2(a+b+2)}} \; \right| q ; q \right)\quad x=\cos(t)',
+  definition: 'P_n^{(a,b)}(x|q) = \frac{(q^{a+1};q,n)}{(q;q,n)} \sum_{k=0}^\infty \frac{(q^{-n};q)_k (q^{n+a+b+1};q)_k (q^{1/2a+1/4}e^{it};q)_k (q^{1/2a+1/4}e^{-it};q)_k}{(q^{a+1};q)_k (-q^{1/2(a+b+1)};q)_k (-q^{1/2(a+b+2)};q)_k (q;q)_k} q^k = \frac{(q^{a+1};q,n)}{(q;q,n)} {}_{3}\phi_{2}\!\left(\left. {q^{-n}, q^{n+a+b+1}, q^{1/2a+1/4}e^{it}, q^{1/2a+1/4}e^{-it} \atop q^{a+1}, -q^{1/2(a+b+1)}, -q^{1/2(a+b+2)}} \; \right| q ; q \right),\quad x=\cos(t)',
   maple:      'qpochhammer(q^(a+1),q,n)/qpochhammer(q,q,n)*qpochhammer(q^(-n),q,k)*qpochhammer(q^(n+a+b+1),q,k)*qpochhammer(q^(1/2*a+1/4)*exp(I*t),q,k)*qpochhammer(q^(1/2*a+1/4)*exp(-I*t),q,k)/qpochhammer(q^(a+1),q,k)/qpochhammer(-q^(1/2*(a+b+1)),q,k)/qpochhammer(-q^(1/2*(a+b+2)),q,k)/qpochhammer(q,q,k)*q^k',
   type:       'continuous'
 })
@@ -525,8 +524,8 @@ dual_qkrawtchouk = Polynomial.new({
   name:       'Dual q-Krawtchouk',
   sid:        'dual_qkrawtchouk',
   definition: 'K_n(\lambda(x);c,N|q) = \sum_{k=0}^\infty \frac{(q^{-n};q)_k (q^{-x};q)_k (cq^{x-N};q)_k}{(q^{-N};q)_k (q;q)_k} q^k = {}_{3}\phi_{2}\!\left(\left. {q^{-n}, q^{-x}, cq^{x-N} \atop q^{-N}, 0} \; \right| q ; q \right)',
-  maple:      'qpochhammer(q^(-n),q,k)*qpochhammer(q^(-x),q,k)*qpochhammer(c*q^(x-N),q,k)/qpochhammer(q^(-N),q,k)/qpochhammer(q,q,k)*q^k',
-  type:       'continuous'
+  maple:      'qpochhammer(q^(-n),q,k)*qpochhammer(q^(-x),q,k)*qpochhammer(c*q^(N)/q^(-x),q,k)/qpochhammer(q^(-N),q,k)/qpochhammer(q,q,k)*q^k',
+  type:       'discrete'
 })
 dual_qkrawtchouk.parameters.create(name: 'c', lower_bound: '-infinity', upper_bound: '0' )
 dual_qkrawtchouk.category = qpolynomials
@@ -538,7 +537,7 @@ dual_qkrawtchouk.save
 continuous_big_qhermite = Polynomial.new({
   name:       'Continuous Big q-Hermite',
   sid:        'continuous_big_qhermite',
-  definition: 'H_n(x;a|q) = a^{-n} \sum_{k=0}^\infty \frac{(q^{-n};q)_k (a e^{i \theta};q)_k (a e^{-i \theta};q)_k}{(q;q)_k} q^k = a^{-n} {}_{3}\phi_{2}\!\left(\left. {q^{-n}, a e^{i \theta}, a e^{-i\theta} \atop 0, 0} \; \right| q ; q \right)\quad , x=\cos(\theta)',
+  definition: 'H_n(x;a|q) = a^{-n} \sum_{k=0}^\infty \frac{(q^{-n};q)_k (a e^{i \theta};q)_k (a e^{-i \theta};q)_k}{(q;q)_k} q^k = a^{-n} {}_{3}\phi_{2}\!\left(\left. {q^{-n}, a e^{i \theta}, a e^{-i\theta} \atop 0, 0} \; \right| q ; q \right),\quad x=\cos(\theta)',
   maple:      'a^(-n)*qpochhammer(q^(-n),q,k)*qpochhammer(a*exp(I*theta),q,k)*qpochhammer(a*exp(-I*theta),q,k)/qpochhammer(q,q,k)*q^k',
   type:       'continuous'
 })
@@ -552,7 +551,7 @@ continuous_big_qhermite.save
 continuous_qlaguerre = Polynomial.new({
   name:       'Continuous q-Laguerre',
   sid:        'continuous_qlaguerre',
-  definition: 'P_n^{(\alpha)}(x|q) = \frac{(q^{\alpha+1};q)_n}{(q;q)_n} \sum_{k=0}^\infty \frac{(q^{-n};q)_k (q^{1/2\alpha+1/4}e^{i \theta};q)_k (q^{1/2\alpha+1/4}e^{-i \theta};q)_k}{(q^{\alpha+1};q)_k (q;q)_k} q^k = \frac{(q^{\alpha+1};q)_n}{(q;q)_n} {}_{3}\phi_{2}\!\left(\left. {q^{-n}, q^{1/2\alpha+1/4}e^{i \theta}, q^{1/2\alpha+1/4}e^{-i \theta} \atop q^{\alpha+1}, 0} \; \right| q ; q \right)\quad , x=\cos(\theta)',
+  definition: 'P_n^{(\alpha)}(x|q) = \frac{(q^{\alpha+1};q)_n}{(q;q)_n} \sum_{k=0}^\infty \frac{(q^{-n};q)_k (q^{1/2\alpha+1/4}e^{i \theta};q)_k (q^{1/2\alpha+1/4}e^{-i \theta};q)_k}{(q^{\alpha+1};q)_k (q;q)_k} q^k = \frac{(q^{\alpha+1};q)_n}{(q;q)_n} {}_{3}\phi_{2}\!\left(\left. {q^{-n}, q^{1/2\alpha+1/4}e^{i \theta}, q^{1/2\alpha+1/4}e^{-i \theta} \atop q^{\alpha+1}, 0} \; \right| q ; q \right),\quad x=\cos(\theta)',
   maple:      'qpochhammer(q^(alpha+1),q,n)/qpochhammer(q,q,n)*qpochhammer(q^(-n),q,k)*qpochhammer(q^(1/2*alpha+1/4)*exp(I*theta),q,k)*qpochhammer(q^(1/2*alpha+1/4)*exp(-I*theta),q,k)/qpochhammer(q^(alpha+1),q,k)/qpochhammer(q,q,k)*q^k',
   type:       'continuous'
 })
@@ -650,7 +649,7 @@ al_salam_carlitzII.save
 continuous_qhermite = Polynomial.new({
   name:       'Continuous q-Hermite',
   sid:        'continuous_qhermite',
-  definition: 'H_n(x|q) = e^{in\theta} \sum_{k=0}^\infty \frac{(q^{-n};q)_k}{(q;q)_k} (-1)^k q^{-{k \choose 2}} \left(q^ne^{-2i\theta}\right)^k = e^{in\theta} {}_{2}\phi_{0}\!\left(\left. {q^{-n}, 0 \atop -} \; \right| q ; q^ne^{-2i\theta} \right)\quad , x=\cos(\theta)',
+  definition: 'H_n(x|q) = e^{in\theta} \sum_{k=0}^\infty \frac{(q^{-n};q)_k}{(q;q)_k} (-1)^k q^{-{k \choose 2}} \left(q^ne^{-2i\theta}\right)^k = e^{in\theta} {}_{2}\phi_{0}\!\left(\left. {q^{-n}, 0 \atop -} \; \right| q ; q^ne^{-2i\theta} \right),\quad x=\cos(\theta)',
   maple:      'exp(I*n*theta)*qpochhammer(q^(-n),q,k)/qpochhammer(q,q,k)*(-1)^k*q^(-binomial(k,2))*(q^n*exp(-2*I*theta))^k',
   type:       'continuous' 
 })

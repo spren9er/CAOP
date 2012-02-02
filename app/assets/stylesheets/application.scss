@@ -457,10 +457,15 @@ $caop-main-color: #c8175d;
 
 .simple_form, .form {
   @include stylr-form;
+  margin-top: 0px;
 }
 
 .button {
   @include stylr-button;
+}
+
+span.label {
+  @include stylr-inline-labels();
 }
 
 #definition {
@@ -503,7 +508,7 @@ $caop-main-color: #c8175d;
 .overview {
   	width: 100%;
   	height: 600px;
-  }
+}
   
 .toolbar {
   a {
@@ -528,4 +533,22 @@ pre.computation {
 
 .math_paragraph {
   font-size: 80%;
+}
+
+h2 {
+  border-bottom: 2px solid $main-text-color;
+}
+
+h3 {
+  border-top: 1px solid #efefef;
+}
+
+.left_col {
+  float: left;
+  width: 50%;
+}
+
+.right_col {
+  float: right;
+  width: 50%;
 }

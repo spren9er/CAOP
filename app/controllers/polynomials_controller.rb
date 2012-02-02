@@ -27,12 +27,22 @@ class PolynomialsController < ApplicationController
     @polynomial = Polynomial.where(sid: params[:id]).first
     if @polynomial.hyper_check(params[:parameters], params[:type])
       input, output = @polynomial.compute(params[:parameters], params[:type])
-      render :text => input + "---" + output   
+      
+      if output.blank?
+        render :text => 'maple_connection', :status => 500 
+        return
+      end
+      
+      if output =~ /[e|E]{1}rror/
+        render :text => 'maple_failure', :status => 500 
+        return
+      end
+                  
+      render :text => input + '---' + output   
     else
-      # prefactor has not the required form
-      raise ""
+      render :text => 'invalid_parameters', :status => 500
     end
-  end  
+  end
   
   private
   

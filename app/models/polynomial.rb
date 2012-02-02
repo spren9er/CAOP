@@ -40,12 +40,16 @@ class Polynomial
     # put input in file
     input = factor.present? ? "term := #{factor}*#{self.maple}:\n" : "term := #{self.maple}:\n"
     input += subs_command if subs_command.present?
+    
+    puts '<<<<<<<<<<<<<<<<<<<<<' + input
 
     # special polynomials
-    if %w{wilson continuous_dual_hahn continuous_hahn meixner_pollaczek}.include?(sid) and !equation_type[:receq]
+    if %w{wilson continuous_dual_hahn continuous_hahn meixner_pollaczek}.include?(sid) and equation_type[:diffeq]
       input += "term := subs(#{x} = I*y, term):\n"
       input += "DE := sumrecursion(term, k, #{op}(y)):\n"
       input += "subs(y = #{x}/I, DE);" 
+    elsif %w{askey_wilson continuous_dual_qhahn continuous_qhahn al_salam_chihara qmeixner_pollaczek continuous_qjacobi continuous_big_qhermite continuous_qlaguerre continuous_qhermite}.include?(sid) and equation_type[:diffeq]
+      # do nothing
     else
       # choose appropriate commands
       case [category.sid, type, equation_type[:receq] ? 'receq' : 'diffeq']
@@ -55,8 +59,8 @@ class Polynomial
         when ['polynomials',  'discrete',   'receq']  then input += "sumrecursion(term, k, #{op}(#{n}));"
         when ['qpolynomials', 'continuous', 'diffeq'] then input += "qsumdiffeq(term, #{q}, k, #{op}(#{x}));"
         when ['qpolynomials', 'continuous', 'receq']  then input += "qsumrecursion(term, #{q}, k, #{op}(#{n}), recursion = up);"
-        when ['qpolynomials', 'discrete',   'diffeq'] then input += "term := subs(#{q}^(-#{x}) = #{x}, term):\nDE := qsumdiffeq(term, #{q}, k, #{op}(#{x})):\nRE := qdiffeqtorecursion(DE, #{q}):\nRE := qshiftrecursion(RE, #{q}):\nsubs(#{x} = #{q}^(-#{x}), RE);"
-        when ['qpolynomials', 'discrete',   'receq']  then input += "term := subs(#{q}^(-#{x}) = #{x}, term):\nRE := qsumrecursion(term, #{q}, k, #{op}(#{n}), recursion = up):\nsubs(#{x} = #{q}^(-#{x}), RE);"
+        when ['qpolynomials', 'discrete',   'diffeq'] then input += "term := subs(#{q}^(-#{x}) = #{x}, term):\nDE := qsumdiffeq(term, #{q}, k, #{op}(#{x})):\nRE := qdiffeqtorecursion(DE, #{q}):\nRE := qshiftrecursion(RE, #{q}):\nqrecursiontodiffeq(RE, #{q});"
+        when ['qpolynomials', 'discrete',   'receq']  then input += "qsumrecursion(term, #{q}, k, #{op}(#{n}), recursion = up);"
       end
     end
       
@@ -91,53 +95,6 @@ class Polynomial
     # delete file
     File.delete(filename)
     
-    raise "ERROR" if output =~ /[e|E]{1}rror/
-
-    # substitutions (order of substitutions is relevant!!!)
-    #
-    # regexp = Regexp.new("(\\left\()*(\{\\it Dq\}_\{\{)(#{x}[,#{x}]*)(\}\})(\\right\))*(\\left\()(#{op}\\left\(#{x}\\right\))(\\right\))")
-    # output = output.scan(regexp).uniq.inject(output) do |s, r| 
-    #   xcount = r[2].gsub(/\s/,"").split(',').count
-    #   if type == 'continuous'
-    #     # q-derivatives: qdiff -> Dq
-    #     expr = "D_q #{r[6]}"
-    #     expr = "D_q^#{xcount} #{r[6]}" if xcount > 1
-    #   elsif type == 'discrete'
-    #     # q-differences: qdiff -> y(x + ...)  
-    #     expr = "#{op}\\left( #{x} \\right)"
-    #     expr = "#{op}\\left( #{x} + #{xcount} \\right)" if xcount > 0
-    #   end
-    #   s.gsub(r.join, expr) 
-    # end 
-    # 
-    # # q-shifts: invSq -> y(x + ...)
-    # regexp = Regexp.new("(\\left\()*(\{\\it invSq\}_\{\{)(#{x}[,#{x}]*)(\}\})(\\right\))*(\\left\()(#{op}\\left\(#{x}\\right\))(\\right\))")
-    # output = output.scan(regexp).uniq.inject(output) do |s, r| 
-    #   xcount = r[2].gsub(/\s/,'').split(',').count
-    #   s.gsub(r.join, expr) 
-    # end
-    # 
-    # # self.operator with substituted values
-    # operatr = self.operator.gsub('n', n).gsub('x', x)
-    # operatr.gsub!('q', q) if qcase
-    # 
-    # # prefactor
-    # prefactor = factor.present? ? factor + ' \cdot ' : ''
-    # 
-    # # differences: y(x + ...) -> self.operator
-    # regexp = Regexp.new("(#{op}\\\\left*\\()(#{x}\\+\\d*)(\\\\right*\\))")
-    # output = output.scan(regexp).uniq.inject(output) do |s, r| s.gsub(r.join, prefactor + operatr.gsub(x, "{#{r[1]}}")) end
-    #   
-    # # shifts: y(n +- ...) -> self.operator
-    # regexp = Regexp.new("(#{op}\\\\left*\\()(#{n}\\+\\d*)(\\\\right*\\))")
-    # output = output.scan(regexp).uniq.inject(output) do |s, r| s.gsub(r.join, prefactor + operatr.gsub(n, "{#{r[1]}}")) end
-    # regexp = Regexp.new("(#{op}\\\\left*\\()(#{n}\\-\\d*)(\\\\right*\\))")
-    # output = output.scan(regexp).uniq.inject(output) do |s, r| s.gsub(r.join, prefactor + operatr.gsub(n, "{#{r[1]}}")) end
-    # 
-    # # functions: y(x|n) -> self.operator
-    # regexp = Regexp.new("#{op}\\\\left*\\([#{n}|#{x}]\\\\right*\\)")
-    # output.gsub!(regexp, prefactor + operatr)
-          
     # TODO: \left( \delta \right) - substitution due to maple bug
           
     return [input, output]
@@ -157,12 +114,12 @@ class Polynomial
     case [category.sid, type, equation_type[:receq] ? 'receq' : 'diffeq']
       when ['polynomials',  'continuous', 'diffeq'] then input += "type(simpcomb(diff(term, #{x})/term), ratpoly);"
       when ['polynomials',  'continuous', 'receq']  then input += "type(ratio(term,#{n}), ratpoly);"
-      when ['polynomials',  'discrete',   'diffeq'] then input += ""
-      when ['polynomials',  'discrete',   'receq']  then input += ""
+      when ['polynomials',  'discrete',   'diffeq'] then input += "true;"
+      when ['polynomials',  'discrete',   'receq']  then input += "true;"
       when ['qpolynomials', 'continuous', 'diffeq'] then input += "type(qsimpcomb(qdiff(term, #{x}, #{q})/term), ratpoly);"
       when ['qpolynomials', 'continuous', 'receq']  then input += "type(qratio(term,#{n}), ratpoly);"
-      when ['qpolynomials', 'discrete',   'diffeq'] then input += ""
-      when ['qpolynomials', 'discrete',   'receq']  then input += ""    
+      when ['qpolynomials', 'discrete',   'diffeq'] then input += "true;"
+      when ['qpolynomials', 'discrete',   'receq']  then input += "true;"    
     end 
         
     stamp = Time.now.to_i.to_s

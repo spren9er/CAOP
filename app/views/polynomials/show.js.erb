@@ -2,8 +2,21 @@ $("#diffeq").html("<%= escape_javascript(image_tag('computation_spinner.gif')) %
 $("#receq").html("<%= escape_javascript(image_tag('computation_spinner.gif')) %>");
 
 var compute = function(){
-  var error_message = "An error occurred!<br/>Either no connection to the CAS server could be established or your choice of parameters failed!<br/>Try it again with other parameters!";
-  
+  // error messages
+  var invalid_parameters = "An error occurred!<br/>The factor has not the appropriate form!<br/>Try again with another factor!";
+  var maple_failure = "An error occurred!<br/>The CAS computation failed! There might be a syntax error in your input!<br/>Try again with other parameters!";
+  var maple_connection = "An error occurred!<br/>No connection to the CAS server could be established!<br/>Try again later!";
+
+  function error_message(data, container) {
+    if (data.responseText == 'invalid_parameters') {
+      $(container).html(invalid_parameters);               
+    } else if (data.responseText == 'maple_failure') {
+      $(container).html(maple_failure);               
+    } else if (data.responseText == 'maple_connection') {
+      $(container).html(maple_connection); 
+    }    
+  };
+
   // compute difference/differential equation
   $.ajax({
     url: "<%= compute_polynomial_path(@polynomial.sid, :type => {:diffeq => true}, :parameters => params) %>",
@@ -20,7 +33,7 @@ var compute = function(){
       });
     }, 
 	error: function(data) {
-	  $("#diffeq").html(error_message);        
+	  error_message(data, "#diffeq");
 	}
   });    
   
@@ -40,7 +53,7 @@ var compute = function(){
       });
     }, 
     error: function(data) {
-      $("#receq").html(error_message);        
+  	  error_message(data, "#receq");
     }
   });  
 };

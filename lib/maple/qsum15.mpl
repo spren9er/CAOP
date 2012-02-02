@@ -27,6 +27,7 @@
 # but instead solve is called, see "Maple 9"
 # Mar 13 and Apr 12, 2010, sum->add and bug involving nestes subs resolved (WK)
 # Dec 14, 2011, qdiffeqtorecursion and qshiftrecursion added
+# Feb 01, 2012, shift for qsum2hyper added (e.g. dixon summand)
 #
 #
 # Prof. Dr. Wolfram Koepf
@@ -1239,7 +1240,7 @@ init:= proc()
 	# print(`Copyright 1998,  Harald Boeing & Wolfram Koepf`);
 	# print(`Konrad-Zuse-Zentrum Berlin`);
    # print(`Package "q-Hypergeometric Summation", Maple V-15`):
-   # print(`Copyright 1998-2011, Harald Boeing & Wolfram Koepf, University of Kassel`):
+   # print(`Copyright 1998-2012, Harald Boeing & Wolfram Koepf, University of Kassel`):
 
 	# ======================================================================
 
@@ -3667,7 +3668,7 @@ end:
 # ----------------------------------------------------------------------
 
 sum2qhyper:= proc(F, q, k)
-local rat, K, shift, num, den, z, qpow, j, r, s, F0, zeit;
+local rat, K, shift, num, den, z, qpow, j, r, s, F0, zeit, i, pwr, temp_shift;
 	option `Copyright (c) 1997 by Harald Boeing & Wolfram Koepf.`;
 	zeit:= time();
 	if not type([args], [algebraic,name,name]) then
@@ -3684,6 +3685,23 @@ local rat, K, shift, num, den, z, qpow, j, r, s, F0, zeit;
 	qpow:= num[3] - den[3];
 	num:= sort(num[2]);
 	den:= sort(den[2]);
+	
+	shift:=1;
+	for i from 1 to nops(den) do
+	   if type(den[i], `^`) then
+	      pwr:=op(2, den[i]);
+	      if is(pwr, integer) then
+	         temp_shift:=select(type, pwr, integer);
+	         if pwr<>temp_shift then
+	            shift:=pwr
+	         end;
+	      fi;
+	   fi;
+   end;
+
+   num:=map(x->simplify(q^(-shift+1)*x),num);
+   den:=map(x->simplify(q^(-shift+1)*x),den);         
+	
 	if member(q, den, 'j') then
 		den:= subsop(j=NULL, den);
 	else
@@ -3700,7 +3718,7 @@ local rat, K, shift, num, den, z, qpow, j, r, s, F0, zeit;
 		s:= s + qpow;
 	fi;
 	z:= (-1)^(1+s-r) * q^(1+s-r) * z;
-	F0:= simplify(qsimpcomb(subs(k=0, F)));
+	F0:= simplify(qsimpcomb(subs(k=-shift+1, F)));
 	if (F0 = 0) then 
 		ERROR(`Shift neccessary (not implemented yet).`);
 	fi;
@@ -5122,4 +5140,24 @@ elif type(term,'function') then
    end if;
 end if;
 subs(q=1/q,term)
+end:
+
+# ----------------------------------------------------------------------
+########################################################################
+#                                                                      #
+#  qrecursionsubs: q-recurrence equation to q-difference equation      #
+#                                                                      #
+#                                                                      #
+#                                                                      #
+########################################################################
+
+qrecursiontodiffeq:=proc(recursion,q)
+local Fx, F, x, y, i, rec, order;
+Fx:=op(1,indets(recursion,specop(anything,invqshift))[1]);
+F:=op(0,Fx);
+x:=op(1,Fx);
+
+order:=10;
+rec:=subs(seq(invqshift(F(x),x$order-i,q)=F(y+order-i), i=0..order), recursion);
+subs(y=x,subs(x=q^(-x),rec));
 end:

@@ -17,41 +17,7 @@
 \]
 </div>
 
-<h3><%= t('parameters') %></h3>
-
-<%= form_tag polynomial_path(@polynomial.sid), :remote => true, :method => 'get', :class => 'form' do %>
-  <p>
-    \(n\)
-    <%= text_field_tag 'n', 'n' %>
-  </p>
-
-  <p>
-    \(x\)
-    <%= text_field_tag 'x', 'x' %>
-  </p>
-
-  <p>
-    \(q\)
-    <%= text_field_tag 'q', 'q' %>
-  </p>
-
-  <% @polynomial.parameters.each do |parameter| %>
-  <p>
-    \(<%= parameter.latex_name %>\)
-    <%= text_field_tag parameter.name, parameter.name %>
-    \(<%= parameter.boundaries %>\)
-  </p>  
-  <% end %>
-
-  <p>
-    <%= text_field_tag 'factor', '' %>
-    prefactor (q-hypergeometric term in \(n\) and q-hyperexponential term in \(x\) required)
-  </p>
-  
-  <%= submit_tag 'Submit', :class => 'button', :id => 'submit' %>
-<% end %>
-
-
+<% unless %w{askey_wilson continuous_dual_qhahn continuous_qhahn al_salam_chihara qmeixner_pollaczek continuous_qjacobi continuous_big_qhermite continuous_qlaguerre continuous_qhermite}.include?(@polynomial.sid) %>
 <h3><%= @diffeq %></h3>
 
 <div class="result_wrapper" id="diffeq_wrapper">
@@ -62,6 +28,8 @@
   <%= button_tag 'Show Maple', :class => 'computation_button', :id => 'diffeq_computation_submit' %>
   <pre id="diffeq_computation" class="computation" style="display: none"></pre>
 </div>
+<% end %>
+
 
 <h3><%= @receq %></h3>
 
@@ -73,6 +41,40 @@
   <%= button_tag 'Show Maple', :class => 'computation_button', :id => 'receq_computation_submit' %>
   <pre id="receq_computation" class="computation" style="display: none"></pre>
 </div>
+
+<h3><%= t('parameters') %></h3>
+
+<%= form_tag polynomial_path(@polynomial.sid), :remote => true, :method => 'get', :class => 'form' do %>
+  <div>
+    <div class="left_col">
+      <span class="label"><%= t('variables') %></span>
+      <p>\(n\) <%= text_field_tag 'n', 'n' %></p>
+      <p>\(x\) <%= text_field_tag 'x', 'x' %></p>
+      <p>\(q\) <%= text_field_tag 'q', 'q' %></p>
+    </div>
+
+    <div class="right_col">
+      <% if @polynomial.parameters.count > 0 %>
+        <span class="label"><%= t('parameters') %></span>
+        <% @polynomial.parameters.each do |parameter| %>
+          <p>
+            \(<%= parameter.latex_name %>\)
+            <%= text_field_tag parameter.name, parameter.name %>
+            \(<%= parameter.boundaries %>\)
+          </p>  
+        <% end %>
+      <% end %>
+    </div>    
+  </div>
+
+  <div style="clear: both">
+    <span class="label">factor</span>
+    <p>&nbsp;&nbsp;<%= text_field_tag 'factor', '' %> q-hypergeometric term in \(n\) and q-hyperexponential term in \(x\) required
+    </p>
+
+    <%= submit_tag 'Submit', :class => 'button', :id => 'submit' %>
+  </div>
+<% end %>
 
 
 <script type="text/javascript" charset="utf-8">
