@@ -41,8 +41,6 @@ class Polynomial
     input = factor.present? ? "term := #{factor}*#{self.maple}:\n" : "term := #{self.maple}:\n"
     input += subs_command if subs_command.present?
     
-    puts '<<<<<<<<<<<<<<<<<<<<<' + input
-
     # special polynomials
     if %w{wilson continuous_dual_hahn continuous_hahn meixner_pollaczek}.include?(sid) and equation_type[:diffeq]
       input += "term := subs(#{x} = I*y, term):\n"
