@@ -1,5 +1,6 @@
 $("#diffeq").html("<%= escape_javascript(image_tag('computation_spinner.gif')) %>");
 $("#receq").html("<%= escape_javascript(image_tag('computation_spinner.gif')) %>");
+$("#polynomial").hide();
 
 var compute = function(){
   // error messages
@@ -21,14 +22,18 @@ var compute = function(){
   $.ajax({
     url: "<%= compute_polynomial_path(@polynomial.sid, :type => {:diffeq => true}, :parameters => params) %>",
     success: function(data) {
-      var input = data.split("---")[0];
-      var output = data.split("---")[1];
+      var input = data['input'];
+      var output = data['output'];
       $("#diffeq_wrapper").animate({
         opacity: 1.0,
         width: '100%'
       }, 1000, function(){
         $("#diffeq").html('\\[' + output + '\\]');        
-        $("#diffeq_computation").html(input);        
+        $("#diffeq_computation").html(input); 
+        if (data['factor']) {
+          $("#polynomial").html("We consider the term \\[" + data['factor'] + "\\]");   
+          $("#polynomial").show();                                
+        };
         MathJax.Hub.Typeset();  
       });
     }, 
@@ -41,14 +46,18 @@ var compute = function(){
   $.ajax({
     url: "<%= compute_polynomial_path(@polynomial.sid, :type => {:receq => true}, :parameters => params) %>",
     success: function(data) {
-      var input = data.split("---")[0];
-      var output = data.split("---")[1];
+      var input = data['input'];
+      var output = data['output'];
       $("#receq_wrapper").animate({
         opacity: 1.0,
         width: '100%'
       }, 1000, function(){
         $("#receq").html('\\[' + output + '\\]');  
-        $("#receq_computation").html(input);                  
+        $("#receq_computation").html(input);
+        if (data['factor']) {
+          $("#polynomial").html("We consider the term \\[" + data['factor'] + "\\]");   
+          $("#polynomial").show();                                
+        };
         MathJax.Hub.Typeset();  
       });
     }, 

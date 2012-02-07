@@ -17,7 +17,7 @@
 \]
 </div>
 
-<% unless %w{askey_wilson continuous_dual_qhahn continuous_qhahn al_salam_chihara qmeixner_pollaczek continuous_qjacobi continuous_big_qhermite continuous_qlaguerre continuous_qhermite}.include?(@polynomial.sid) %>
+<% unless @polynomial.qspecial? %>
 <h3><%= @diffeq %></h3>
 
 <div class="result_wrapper" id="diffeq_wrapper">
@@ -69,7 +69,16 @@
 
   <div style="clear: both">
     <span class="label">factor</span>
-    <p>&nbsp;&nbsp;<%= text_field_tag 'factor', '' %> q-hypergeometric term in \(n\) and q-hyperexponential term in \(x\) required
+    <p>&nbsp;&nbsp;<%= text_field_tag 'factor', '' %> q-hypergeometric term in \(n\)
+      <% unless @polynomial.qspecial? %>
+        and 
+        <% if @polynomial.type == 'continuous' %> 
+          q-hyperexponential term in \(x\) 
+        <% else %> 
+          q-hypergeometric term in \(q^{-x}\) 
+        <% end %> 
+        required
+      <% end %>
     </p>
 
     <%= submit_tag 'Submit', :class => 'button', :id => 'submit' %>

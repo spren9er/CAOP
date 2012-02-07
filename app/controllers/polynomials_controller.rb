@@ -26,19 +26,19 @@ class PolynomialsController < ApplicationController
   def compute
     @polynomial = Polynomial.where(sid: params[:id]).first
     if @polynomial.hyper_check(params[:parameters], params[:type])
-      input, output = @polynomial.compute(params[:parameters], params[:type])
-      
-      if output.blank?
+      result = @polynomial.compute(params[:parameters], params[:type])
+      puts '<<<<<<<<<<<<<<<' + result.inspect
+      if result[:output].blank?
         render :text => 'maple_connection', :status => 500 
         return
       end
       
-      if output =~ /[e|E]{1}rror/
+      if result[:output] =~ /[e|E]{1}rror/
         render :text => 'maple_failure', :status => 500 
         return
       end
                   
-      render :text => input + '---' + output   
+      render :json => result.to_json
     else
       render :text => 'invalid_parameters', :status => 500
     end

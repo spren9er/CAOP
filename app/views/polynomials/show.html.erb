@@ -17,6 +17,8 @@
 \]
 </div>
 
+<div id="polynomial"> 
+</div>
 
 <h3><%= @diffeq %></h3>
 
@@ -66,7 +68,13 @@
 
   <div style="clear: both">
     <span class="label">factor</span>
-    <p>&nbsp;&nbsp;<%= text_field_tag 'factor', '' %> hypergeometric term in \(n\) and hyperexponential term in \(x\) required</p>
+    <p>&nbsp;&nbsp;<%= text_field_tag 'factor', '' %> hypergeometric term in \(n\) and 
+      <% if @polynomial.type == 'continuous' %> 
+        hyperexponential term in \(x\) required
+      <% else %>
+        hypergeometric term in \(x\) required
+      <% end %>
+    </p>
   
     <%= submit_tag 'Submit', :class => 'button', :id => 'submit' %>
   </div>

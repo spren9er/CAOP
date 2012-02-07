@@ -15,6 +15,7 @@ class Polynomial
   
   def compute(param, equation_type)
     op = operator[0]
+    subs_operator = operator
     qcase = category.sid == 'qpolynomials'
     
     # mixin parameters
@@ -24,6 +25,15 @@ class Polynomial
       subs = param_names.inject([]) do |set, param_name|
         fixparam = param_name
         varparam = param[param_name]        
+        if varparam =~ /[\\a-zA-Z]+/
+          subs_operator.gsub!('\\' + fixparam, '\\' + varparam) if fixparam.length > 1 and varparam.length > 1 
+          subs_operator.gsub!('\\' + fixparam,  varparam) if fixparam.length > 1 and varparam.length == 1
+          subs_operator.gsub!(fixparam, '\\' + varparam) if fixparam.length == 1 and varparam.length > 1
+          subs_operator.gsub!(fixparam, varparam) if fixparam.length == 1 and varparam.length == 1
+        else 
+          subs_operator.gsub!('\\' + fixparam,  varparam) if fixparam.length > 1
+          subs_operator.gsub!(fixparam,  varparam) if fixparam.length == 1 
+        end
         set << ["#{fixparam} = #{varparam}"] if fixparam != varparam
         set
       end
@@ -34,19 +44,25 @@ class Polynomial
     n = param['n']
     x = param['x']
     q = param['q'] if qcase
+
+    # put input in file and set up factor
     factor = param['factor']
-    factor = "(#{factor})" if factor =~ /\+|\-/
-    
-    # put input in file
-    input = factor.present? ? "term := #{factor}*#{self.maple}:\n" : "term := #{self.maple}:\n"
+    if factor.present? and factor != '1'
+      op = 'P'
+      factor = "(#{factor})" if factor =~ /\+|\-/
+      factor_latex = "P_#{n}(#{x}) = "
+      input = "term := #{factor}*#{self.maple}:\n"
+    else
+      input = "term := #{self.maple}:\n"
+    end
     input += subs_command if subs_command.present?
     
     # special polynomials
-    if %w{wilson continuous_dual_hahn continuous_hahn meixner_pollaczek}.include?(sid) and equation_type[:diffeq]
+    if self.special? and equation_type[:diffeq]
       input += "term := subs(#{x} = I*y, term):\n"
       input += "DE := sumrecursion(term, k, #{op}(y)):\n"
       input += "subs(y = #{x}/I, DE);" 
-    elsif %w{askey_wilson continuous_dual_qhahn continuous_qhahn al_salam_chihara qmeixner_pollaczek continuous_qjacobi continuous_big_qhermite continuous_qlaguerre continuous_qhermite}.include?(sid) and equation_type[:diffeq]
+    elsif self.qspecial? and equation_type[:diffeq]
       # do nothing
     else
       # choose appropriate commands
@@ -73,6 +89,9 @@ class Polynomial
     options += ' -c"interface(prettyprint=false)"'
     output = `#{MAPLE_PATH + '/maple' + options + ' < ' + filename}`    
         
+    # delete file
+    File.delete(filename)
+    
     # prepend package import
     package = qcase ? "> read \"qsum.mpl\":\n" : "> read \"hsum.mpl\":\n"
     input = package + input   
@@ -81,21 +100,13 @@ class Polynomial
     # write raw output in input
     input += "\n\n" + output.gsub(/\n/,"")
     
-    # latex conversion preparation
-    file = File.open(filename, 'w')
-    file.truncate(0)
-    file.write "latex(#{output});"
-    file.close
-
     # latex conversion
-    output = `#{MAPLE_PATH + '/maple' + options + ' < ' + filename}`
-    # output.gsub!(/\n|\s/, '').gsub!(/\\it/, '\it ')
-    # delete file
-    File.delete(filename)
+    output = Polynomial.latex(output);
+    factor_latex += Polynomial.latex(factor) + ' \cdot ' + subs_operator if factor.present? and factor != '1' 
     
     # TODO: \left( \delta \right) - substitution due to maple bug
           
-    return [input, output]
+    return {:input => input, :output => output, :factor => factor_latex}
   end
   
   def hyper_check(param, equation_type)
@@ -112,12 +123,12 @@ class Polynomial
     case [category.sid, type, equation_type[:receq] ? 'receq' : 'diffeq']
       when ['polynomials',  'continuous', 'diffeq'] then input += "type(simpcomb(diff(term, #{x})/term), ratpoly);"
       when ['polynomials',  'continuous', 'receq']  then input += "type(ratio(term,#{n}), ratpoly);"
-      when ['polynomials',  'discrete',   'diffeq'] then input += "true;"
-      when ['polynomials',  'discrete',   'receq']  then input += "true;"
+      when ['polynomials',  'discrete',   'diffeq'] then input += "type(ratio(term,#{x}), ratpoly);"
+      when ['polynomials',  'discrete',   'receq']  then input += "type(ratio(term,#{n}), ratpoly);"
       when ['qpolynomials', 'continuous', 'diffeq'] then input += "type(qsimpcomb(qdiff(term, #{x}, #{q})/term), ratpoly);"
       when ['qpolynomials', 'continuous', 'receq']  then input += "type(qratio(term,#{n}), ratpoly);"
-      when ['qpolynomials', 'discrete',   'diffeq'] then input += "true;"
-      when ['qpolynomials', 'discrete',   'receq']  then input += "true;"    
+      when ['qpolynomials', 'discrete',   'diffeq'] then input += "type(qratio(term,#{x}), ratpoly(anything, #{q}^anything));"
+      when ['qpolynomials', 'discrete',   'receq']  then input += "type(qratio(term,#{n}), ratpoly(anything, #{q}^anything));"    
     end 
         
     stamp = Time.now.to_i.to_s
@@ -142,5 +153,31 @@ class Polynomial
   
   def q?
     category.sid == 'qpolynomials'
+  end
+  
+  def qspecial?
+    %w{askey_wilson continuous_dual_qhahn continuous_qhahn al_salam_chihara qmeixner_pollaczek continuous_qjacobi continuous_big_qhermite continuous_qlaguerre continuous_qhermite}.include?(sid)
+  end
+  
+  def special?
+      %w{wilson continuous_dual_hahn continuous_hahn meixner_pollaczek}.include?(sid)
+  end
+  
+  def self.latex(term)
+    input = "latex(#{term});"
+    
+    stamp = Time.now.to_i.to_s
+    filename = 'tmp/computation' + stamp + (5*rand(9)).to_s + '.txt'
+    file = File.new(filename, 'w')
+    file.write input
+    file.close
+    
+    options = ' -q '
+    output = `#{MAPLE_PATH + '/maple' + options + ' < ' + filename}`.strip
+    
+    # delete file
+    File.delete(filename)
+    
+    return output
   end
 end
