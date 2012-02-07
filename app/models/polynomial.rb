@@ -126,7 +126,7 @@ class Polynomial
       when ['polynomials',  'discrete',   'diffeq'] then input += "type(ratio(term,#{x}), ratpoly);"
       when ['polynomials',  'discrete',   'receq']  then input += "type(ratio(term,#{n}), ratpoly);"
       when ['qpolynomials', 'continuous', 'diffeq'] then input += "type(qsimpcomb(qdiff(term, #{x}, #{q})/term), ratpoly);"
-      when ['qpolynomials', 'continuous', 'receq']  then input += "type(qratio(term,#{n}), ratpoly);"
+      when ['qpolynomials', 'continuous', 'receq']  then input += "type(qratio(term,#{n}), ratpoly(anything, #{q}^anything));"
       when ['qpolynomials', 'discrete',   'diffeq'] then input += "type(qratio(term,#{x}), ratpoly(anything, #{q}^anything));"
       when ['qpolynomials', 'discrete',   'receq']  then input += "type(qratio(term,#{n}), ratpoly(anything, #{q}^anything));"    
     end 

@@ -17,7 +17,7 @@ var compute = function(){
       $(container).html(maple_connection); 
     }    
   };
-
+  
   // compute difference/differential equation
   $.ajax({
     url: "<%= compute_polynomial_path(@polynomial.sid, :type => {:diffeq => true}, :parameters => params) %>",

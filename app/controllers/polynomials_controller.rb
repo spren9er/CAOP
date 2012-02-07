@@ -27,7 +27,7 @@ class PolynomialsController < ApplicationController
     @polynomial = Polynomial.where(sid: params[:id]).first
     if @polynomial.hyper_check(params[:parameters], params[:type])
       result = @polynomial.compute(params[:parameters], params[:type])
-      puts '<<<<<<<<<<<<<<<' + result.inspect
+
       if result[:output].blank?
         render :text => 'maple_connection', :status => 500 
         return
