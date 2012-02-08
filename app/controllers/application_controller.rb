@@ -47,9 +47,11 @@ class ApplicationController < ActionController::Base
   
   def stats_log
     ip_address = request.env['REMOTE_ADDR']
-    polynomial = Polynomial.where(sid: params[:id]).first
-    @stat = Stat.where(:polynomial_sid => polynomial.sid, :ip_address => ip_address).first
-    Stat.create!(:polynomial_id => polynomial.id, :polynomial_sid => polynomial.sid, :ip_address => ip_address, :category => polynomial.category.sid, :created_at => Time.now) unless @stat 
+    @stat = Stat.where(:polynomial_sid => params[:id], :ip_address => ip_address).first
+    unless @stat
+      polynomial = Polynomial.where(sid: params[:id]).first
+      Stat.create!(:polynomial_id => polynomial.id, :polynomial_sid => polynomial.sid, :ip_address => ip_address, :category => polynomial.category.sid, :created_at => Time.now)  
+    end
   end
   
 end
