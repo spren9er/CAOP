@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
   
   def logout
     session[:authorized] = false
-    redirect_to :back, :notice => 'Successfully logged out!'
+    redirect_to root_path, :notice => 'Successfully logged out!'
   end
   
   protected
@@ -35,12 +35,21 @@ class ApplicationController < ActionController::Base
       fname = File.join(Rails::root, 'config', 'htpasswd.txt')
       if File.exists? fname
         s = File.new(fname).read.strip
-        raise 'wrong format for config/htpasswd.txt, shoud be username:password' unless /^\w+:\w+$/.match s
+        raise 'wrong format for config/htpasswd.txt, should be username:password' unless /^\w+:\w+$/.match s
         un, pw = s.split(':')
       end
       ::ApplicationController.const_set("Password", pw)
       ::ApplicationController.const_set("Username", un)
     end
+  end
+  
+  private
+  
+  def stats_log
+    ip_address = request.env['REMOTE_ADDR']
+    polynomial = Polynomial.where(sid: params[:id]).first
+    @stat = Stat.where(:polynomial_sid => polynomial.sid, :ip_address => ip_address).first
+    Stat.create!(:polynomial_id => polynomial.id, :polynomial_sid => polynomial.sid, :ip_address => ip_address, :category => polynomial.category.sid, :created_at => Time.now) unless @stat 
   end
   
 end

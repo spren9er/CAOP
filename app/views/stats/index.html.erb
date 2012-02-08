@@ -1,0 +1,68 @@
+<h2>Statistics</h2>
+
+
+<h3>Latest Visits</h3>
+
+<table>
+  <thead>
+    <tr>
+      <td>IP-Address</td>
+      <td>Date</td>
+      <td>Last Polynomial</td>
+      <td>Count</td>
+    </tr>
+  </thead>
+  <tbody>
+    <% @latest_stats.each do |s| %> 
+    <tr>
+      <td><%= s.ip_address %></td>
+      <td><%= s.created_at.strftime("%m/%d/%Y, %H:%M") %></td>
+      <td><%= Polynomial.where(_id: s.polynomial_id).first.name %></td>
+      <td><%= s.count %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+<h3>Overall</h3>
+
+<div style="min-height: 1010px">
+  <div class="left_col">
+    <table>
+      <thead>
+        <tr>
+          <td>Orthogonal Polynomial</td>
+          <td>Count</td>
+        </tr>
+      </thead>
+      <tbody>
+        <% @polynomials_stats.sort_by{|p, stat| p}.each do |p, count| %> 
+        <tr>
+          <td><%= Polynomial.where(_id: p).first.name %></td>
+          <td><%= count %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="right_col">
+    <table>
+      <thead>
+        <tr>
+          <td>q-Orthogonal Polynomial</td>
+          <td>Count</td>
+        </tr>
+      </thead>
+      <tbody>
+        <% @qpolynomials_stats.sort_by{|p, stat| p}.each do |p, count| %> 
+        <tr>
+          <td><%= Polynomial.where(_id: p).first.name %></td>
+          <td><%= count %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

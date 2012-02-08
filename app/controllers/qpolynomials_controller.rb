@@ -1,6 +1,7 @@
 class QpolynomialsController < ApplicationController
 
   before_filter :set_menu_item
+  before_filter :stats_log, :only => :show
 
   def index
     q = Category.where(sid: 'qpolynomials').first

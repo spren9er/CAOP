@@ -49,9 +49,6 @@ $pagearea-background-color: #fff;
 $pagearea-padding: 10px;
 $pagearea-border-radius: 6px;
 
-$flashbar-background-color: #ffeeee;
-$flashbar-text-color: #333;
-
 $menu-dropdown-background-color: #333;
 $menu-dropdown-arrow-color: #f1f1f1;
 $menu-dropdown-menu-width: 160px;
@@ -278,10 +275,13 @@ ul.navigation {
   margin-bottom: 15px;
   #flashbar {
     @include border-radius($pagearea-border-radius);
-    @include box-shadow(darken($main-background-color, 30%) 0 0 6px);
-    padding: 10px;
-    background-color: $flashbar-background-color;
-    color: $flashbar-text-color;
+    @include box-shadow(darken($main-background-color, 30%) 0 0 4px);
+    padding: 5px;
+    font-size: 11px;
+    @include background-image(
+      linear-gradient(#62C362, #57AA57 33%, #57AA57)
+    );
+    color: #efefef;
     text-align: center;
   }
 }
@@ -464,6 +464,43 @@ $caop-main-color: #c8175d;
   @include stylr-button;
 }
 
+table {
+  @include stylr-table;
+  @include box-shadow(#ccc, 0, 1px, 6px);
+  @include border-radius(0);
+  border-collapse: collapse;
+  border-left: none;
+  border-right: none;
+  thead {
+    @include background-image(
+      linear-gradient($stylr-light-gray-color, $stylr-light-gray-color 25%, $stylr-gray-color)
+    );
+    background-color: $stylr-light-gray-color;
+
+    > tr > th {
+      border-bottom: none;
+      @include text-shadow(#fff, 0, 1px, 1px);
+      color: lighten($main-text-color, 5%);
+    }    
+  }
+
+  tbody {
+    tr:nth-child(odd) td {
+      background-color: lighten($stylr-light-gray-color, 2%);
+    }
+
+    tr:hover td {
+      background-color: $stylr-light-gray-color;
+      color: $main-text-color;
+    }
+    
+    tr td {
+      color: lighten($main-text-color, 15%);
+    }
+  }
+  
+}
+
 span.label {
   @include stylr-inline-labels();
 }
@@ -486,7 +523,7 @@ span.label {
 
 .result {
   line-height: 18px;
-  overflow: scroll;
+  overflow-x: scroll;
   margin: 0 10px;
   font-size: 80%;
 }
@@ -540,12 +577,12 @@ h2 {
 }
 
 h3 {
-  border-top: 1px solid #efefef;
+  border-top: 1px solid #ddd;
 }
 
 .left_col {
   float: left;
-  width: 50%;
+  width: 48%;
 }
 
 .right_col {

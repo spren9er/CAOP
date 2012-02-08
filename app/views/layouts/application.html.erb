@@ -19,6 +19,7 @@
     </ul>
 
     <ul class="menu secondary">
+      <%= menu_item :item => "stats", :label => t('stats'), :url => stats_path() if session[:authorized] %></li>
       <li><%= link_to(t('logout'), logout_path) if session[:authorized] %></li>
     </ul>
   <% end %>

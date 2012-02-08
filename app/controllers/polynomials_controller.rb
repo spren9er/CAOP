@@ -1,7 +1,8 @@
 class PolynomialsController < ApplicationController
 
   before_filter :set_menu_item
-
+  before_filter :stats_log, :only => :show
+  
   def index
     nonq = Category.where(sid: 'polynomials').first
     @polynomials = nonq.polynomials

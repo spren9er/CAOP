@@ -15,8 +15,18 @@ class Polynomial
   
   def compute(param, equation_type)
     op = operator[0]
-    subs_operator = operator
     qcase = category.sid == 'qpolynomials'
+    factor = param['factor']
+
+    # set up factor and put input in file
+    if factor.present? and factor != '1'
+      op = 'P'
+      factor = "(#{factor})" if factor =~ /\+|\-/
+      factor_latex = "P_{n}(x) = #{Polynomial.latex(factor)} \\cdot #{operator}" 
+      input = "term := #{factor}*#{self.maple}:\n"
+    else
+      input = "term := #{self.maple}:\n"
+    end
     
     # mixin parameters
     if param.present?
@@ -24,38 +34,29 @@ class Polynomial
       param_names << 'q' if qcase
       subs = param_names.inject([]) do |set, param_name|
         fixparam = param_name
-        varparam = param[param_name]        
-        if varparam =~ /[\\a-zA-Z]+/
-          subs_operator.gsub!('\\' + fixparam, '\\' + varparam) if fixparam.length > 1 and varparam.length > 1 
-          subs_operator.gsub!('\\' + fixparam,  varparam) if fixparam.length > 1 and varparam.length == 1
-          subs_operator.gsub!(fixparam, '\\' + varparam) if fixparam.length == 1 and varparam.length > 1
-          subs_operator.gsub!(fixparam, varparam) if fixparam.length == 1 and varparam.length == 1
-        else 
-          subs_operator.gsub!('\\' + fixparam,  varparam) if fixparam.length > 1
-          subs_operator.gsub!(fixparam,  varparam) if fixparam.length == 1 
+        varparam = param[param_name] 
+        if factor_latex    
+          if varparam =~ /[\\a-zA-Z]+/
+            factor_latex.gsub!('\\' + fixparam, '\\' + varparam) if fixparam.length > 1 and varparam.length > 1 
+            factor_latex.gsub!('\\' + fixparam,  varparam) if fixparam.length > 1 and varparam.length == 1
+            factor_latex.gsub!(fixparam, '\\' + varparam) if fixparam.length == 1 and varparam.length > 1
+            factor_latex.gsub!(fixparam, varparam) if fixparam.length == 1 and varparam.length == 1
+          else 
+            factor_latex.gsub!('\\' + fixparam,  varparam) if fixparam.length > 1
+            factor_latex.gsub!(fixparam,  varparam) if fixparam.length == 1 
+          end
         end
         set << ["#{fixparam} = #{varparam}"] if fixparam != varparam
         set
       end
       subs_command = "term := subs(#{subs.join(', ')}, term):\n" if subs.present?
     end
+    input += subs_command if subs_command.present?
     
     # special values
     n = param['n']
     x = param['x']
     q = param['q'] if qcase
-
-    # put input in file and set up factor
-    factor = param['factor']
-    if factor.present? and factor != '1'
-      op = 'P'
-      factor = "(#{factor})" if factor =~ /\+|\-/
-      factor_latex = "P_#{n}(#{x}) = "
-      input = "term := #{factor}*#{self.maple}:\n"
-    else
-      input = "term := #{self.maple}:\n"
-    end
-    input += subs_command if subs_command.present?
     
     # special polynomials
     if self.special? and equation_type[:diffeq]
@@ -102,7 +103,6 @@ class Polynomial
     
     # latex conversion
     output = Polynomial.latex(output);
-    factor_latex += Polynomial.latex(factor) + ' \cdot ' + subs_operator if factor.present? and factor != '1' 
     
     # TODO: \left( \delta \right) - substitution due to maple bug
           

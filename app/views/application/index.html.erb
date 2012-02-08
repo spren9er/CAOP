@@ -1,4 +1,9 @@
 <%= contentr_area :Entry_Page %>
 
-<p><%= button_to 'Orthogonal Polynomials of Askey-Wilson scheme', polynomials_path, :class => 'button', :method => :get %></p>
-<p><%= button_to 'q-Orthogonal Polynomials of Askey-Wilson scheme', qpolynomials_path, :class => 'button', :method => :get %></p>
+<div class="left_col">
+  <%= button_to 'Orthogonal Polynomials of Askey-Wilson scheme', polynomials_path, :class => 'button', :method => :get %>
+</div>
+
+<div class="right_col">
+  <%= button_to 'q-Orthogonal Polynomials of Askey-Wilson scheme', qpolynomials_path, :class => 'button', :method => :get %>
+</div>
