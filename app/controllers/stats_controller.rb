@@ -12,7 +12,8 @@ class StatsController < ApplicationController
     used_ip_addresses = []
     latest_stats.each do |s|
       if used_ip_addresses.include?(s.ip_address) 
-        @latest_stats[-1].count += 1 if @latest_stats.present?
+        index = used_ip_addresses.index(s.ip_address)
+        @latest_stats[index].count += 1 if @latest_stats.present?
         next
       end
       s.count = 1
