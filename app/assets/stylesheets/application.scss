@@ -471,6 +471,8 @@ table {
   border-collapse: collapse;
   border-left: none;
   border-right: none;
+  margin-top: 0;
+
   thead {
     @include background-image(
       linear-gradient($stylr-light-gray-color, $stylr-light-gray-color 25%, $stylr-gray-color)
