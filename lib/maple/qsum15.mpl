@@ -13,7 +13,8 @@
 # Version 1.0, Feb 12, 1998
 # Version 1.1, Jan 02, 2001
 # Version 1.2, Feb 28, 2004
-# Version 1.3, Apr 12, 2010 
+# Version 1.3, Apr 12, 2010
+# Version 1.4, Feb 09, 2012 
 #
 #
 # History:
@@ -27,7 +28,7 @@
 # but instead solve is called, see "Maple 9"
 # Mar 13 and Apr 12, 2010, sum->add and bug involving nestes subs resolved (WK)
 # Dec 14, 2011, qdiffeqtorecursion and qshiftrecursion added
-# Feb 01, 2012, shift for qsum2hyper added (e.g. dixon summand)
+# Feb 09, 2012, shift for qsum2hyper added (e.g. dixon summand), qrecursiontodiffeq added, solve method usage fixed
 #
 #
 # Prof. Dr. Wolfram Koepf
@@ -5145,7 +5146,7 @@ end:
 # ----------------------------------------------------------------------
 ########################################################################
 #                                                                      #
-#  qrecursionsubs: q-recurrence equation to q-difference equation      #
+#  qrecursiontodiffeq: q-recurrence equation to q-difference equation  #
 #                                                                      #
 #                                                                      #
 #                                                                      #

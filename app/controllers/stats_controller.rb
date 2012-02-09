@@ -4,23 +4,28 @@ class StatsController < ApplicationController
   
   def index
     @menu_item = 'stats'
+
     polynomials_stats
     qpolynomials_stats
+
+    # last five ip_addresses
+    n = 10
+    used_ip_addresses = []    
     latest_stats = Stat.order_by('created_at').reverse
-    n = 5
-    @latest_stats = []
-    used_ip_addresses = []
     latest_stats.each do |s|
-      if used_ip_addresses.include?(s.ip_address) 
-        index = used_ip_addresses.index(s.ip_address)
-        @latest_stats[index].count += 1 if @latest_stats.present?
-        next
+      unless used_ip_addresses.include?(s.ip_address) 
+        used_ip_addresses << s.ip_address
       end
-      s.count = 1
-      used_ip_addresses << s.ip_address
-      @latest_stats << s 
-      break if @latest_stats.count > n-1
+      break if used_ip_addresses.count > n-1
     end
+    
+    @latest_stats = used_ip_addresses.inject([]) do |s, ip|
+      ip_stats = Stat.where(ip_address: ip).order_by('created_at').reverse
+        last_ip_stat = ip_stats.first
+        last_ip_stat.count = ip_stats.count
+        s << last_ip_stat
+        s
+    end    
   end
 
   private
