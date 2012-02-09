@@ -163,9 +163,24 @@ class Polynomial
       %w{wilson continuous_dual_hahn continuous_hahn meixner_pollaczek}.include?(sid)
   end
   
-  def self.latex(term)
-    input = "latex(#{term});"
+  def plot_points
+    accuracy = 100
+    # input = "n := 5: a := -2.1: b := 2.1: points := []: term := #{self.maple}:"
+    # input += "for i from a*#{accuracy} to b*#{accuracy} do points:=[op(points),[i/#{accuracy},eval(add(subs(x=i/#{accuracy},term),k=0..n))]]; end do:" 
+    # input += "points;"
+
+    input = "N := 6: a := -2.5: b := 2.5: for j from 1 to N do points[j] := [] end do: term := #{self.maple}:"
+    input += "for j from 1 to N do for i from a*#{accuracy} to b*#{accuracy} do points[j]:=[op(points[j]),[i/#{accuracy},eval(add(subs(x=i/#{accuracy},n=j,term),k=0..j))]]; end do end do:" 
+    input += "[seq(points[j], j=1..N)];"
     
+    Polynomial.compute(input).gsub(' ','').gsub('[0.,Float(undefined)],', '')
+  end
+  
+  def self.latex(term)
+    Polynomial.compute "latex(#{term});"
+  end
+  
+  def self.compute(input)
     stamp = Time.now.to_i.to_s
     filename = 'tmp/computation' + stamp + (5*rand(9)).to_s + '.txt'
     file = File.new(filename, 'w')

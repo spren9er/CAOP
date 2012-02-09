@@ -464,7 +464,7 @@ $caop-main-color: #c8175d;
   @include stylr-button;
 }
 
-table {
+.table {
   @include stylr-table;
   @include box-shadow(#ccc, 0, 1px, 6px);
   @include border-radius(0);
@@ -595,4 +595,10 @@ h3 {
 .maple_info {
   color: #bbb;
   font-size: 70%;
+}
+
+#plot {
+  margin: 0 auto;
+  width: 600px;
+  height: 350px;
 }

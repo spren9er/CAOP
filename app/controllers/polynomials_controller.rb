@@ -44,7 +44,13 @@ class PolynomialsController < ApplicationController
       render :text => 'invalid_parameters', :status => 500
     end
   end
-  
+
+  def plot
+    nonq = Category.where(sid: 'polynomials').first
+    @polynomials = nonq.polynomials
+    @polynomial = Polynomial.where(sid: params[:id]).first
+  end
+    
   private
   
   def set_menu_item

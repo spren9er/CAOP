@@ -1,0 +1,71 @@
+<h2>Graphical Representation of <%= @polynomial.name %> Polynomials</h2>
+
+<h3><%= t('plot') %></h3>
+
+<div id="plot"></div>
+
+<h3><%= t('parameters') %></h3>
+
+<%= form_tag polynomial_path(@polynomial.sid), :remote => true, :method => 'get', :class => 'form' do %>
+  <span class="label"><%= t('range') %></span>
+  <div>
+    <div class="left_col">
+      <p>\(x_0\) <%= text_field_tag 'x_min', '-10' %></p>
+    </div>
+    <div class="right_col">
+      <p>\(x_1\) <%= text_field_tag 'x_max', '10' %></p>
+    </div>
+  </div>
+
+  <% if @polynomial.parameters.count > 0 %>
+    <span class="label"><%= t('parameters') %></span>
+    <% @polynomial.parameters.each do |parameter| %>
+      <p>
+        \(<%= parameter.latex_name %>\)
+        <%= text_field_tag parameter.name, parameter.name %>
+        \(<%= parameter.boundaries %>\)
+      </p>  
+    <% end %>
+  <% end %>
+
+  <div style="clear: both">
+    <span class="label">factor</span> <span class="maple_info">(use Maple-style input)</span>
+    <p>&nbsp;&nbsp;<%= text_field_tag 'factor', '' %> hypergeometric term in \(n\) and 
+      <% if @polynomial.type == 'continuous' %> 
+        hyperexponential term in \(x\) required
+      <% else %>
+        hypergeometric term in \(x\) required
+      <% end %>
+    </p>
+  
+    <%= submit_tag 'Submit', :class => 'button', :id => 'submit' %>
+  </div>
+<% end %>
+
+<script type="text/javascript">
+
+$(function () {  
+    var points = <%= @polynomial.plot_points %>;
+    var data = [];
+    for (i = 1; i <= points.length; i++) {
+      data.push({
+        label: '&nbsp;n=' + i,
+        data: points[i]
+      });
+    }
+    
+    $.plot($("#plot"), data, {
+      series: {
+          lines: { show: true },
+          points: { show: false }
+      },
+      grid: {
+          backgroundColor: { colors: ["#fff", "#eee"] }
+      }
+    });
+    // $.plot($("#plot"), [{
+    //   data: points,
+    //   color: '#c8175d'
+    // }]);
+});
+</script>

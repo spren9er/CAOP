@@ -10,5 +10,7 @@ en:
   definition: 'Definition'
   parameters: 'Parameters'
   variables: 'Variables'
+  range: 'Range'
   settings: 'Settings'
   stats: 'Statistics'
+  plot: 'Plot'

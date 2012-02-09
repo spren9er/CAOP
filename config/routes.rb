@@ -3,9 +3,12 @@ CAOP::Application.routes.draw do
   match 'logout' => 'application#logout'
 
   resources :polynomials do
-    get 'compute', :on => :member
-  
+    member do 
+      get 'compute'
+      get 'plot'
+    end
   end
+
   resources :qpolynomials do
     get 'compute', :on => :member
   end
