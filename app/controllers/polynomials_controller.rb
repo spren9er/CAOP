@@ -33,9 +33,7 @@ class PolynomialsController < ApplicationController
         render :text => 'maple_connection', :status => 500 
         return
       end
-      
-      puts '<<<<<< ' + result[:input]
-      
+            
       if result[:output] =~ /[e|E]{1}rror/
         render :text => 'maple_failure', :status => 500 
         return
