@@ -1,0 +1,117 @@
+// data
+var x_min = <%= @polynomial.x_min %>;
+var x_max = <%= @polynomial.x_max %>;
+var points = <%= escape_javascript(@polynomial.plot_points(@plot_params)) %>;
+var colors = ['#c7a9b5', '#c78ba3', '#c76d91', '#c7507f', '#c7326d', '#c8175d'];
+
+function getData(x0, x1) {
+  data = [];
+  newData = [];
+  for (var i = 0; i < points.length; i++) {
+    newData.push([]);
+    for (var j = 0; j < points[i].length; j++) {
+      x = points[i][j][0];
+      if (x0 < x && x < x1) newData[i].push(points[i][j]);
+    }
+    data.push({
+      label: '&nbsp;n=' + (i+1),
+      data: newData[i],
+      color: colors[i]
+    });
+  }
+  return data;
+}
+
+var startData = getData(x_min, x_max);
+
+
+// options
+var options = {
+  legend: { 
+    show: false 
+  },
+  series: {
+    lines: { 
+      show: true 
+    },
+    points: { 
+      show: false 
+    }
+  },
+  yaxis: { 
+    ticks: 4 
+  },
+  selection: { 
+    color: "#c76d91", 
+    mode: "xy" 
+  },
+  grid: {
+    backgroundColor: { 
+      colors: ["#fff", "#eee"] 
+    }
+  }
+};
+
+
+// setup plot
+var plot = $.plot($("#plot"), startData, options);
+
+
+// setup overview
+var overview = $.plot($("#plot_overview"), startData, {
+  legend: { 
+    show: true, 
+    container: $("#plot_overview_legend") 
+  },
+  series: {
+    lines: { 
+      show: true, 
+      lineWidth: 1 
+    },
+    shadowSize: 0
+  },
+  grid: { 
+    color: "#999" 
+  },
+  selection: {
+    color: "#c76d91", 
+    mode: "xy" 
+  },
+  yaxis: {
+    show: false
+  },
+  xaxis: {
+    show: true,
+    ticks: 4
+  },
+  grid: {
+    backgroundColor: { 
+      colors: ["#fff", "#eee"] 
+    }
+  }
+});
+
+// now connect the two 
+$("#plot").bind("plotselected", function (event, ranges) {
+  // clamp the zooming to prevent eternal zoom
+  if (ranges.xaxis.to - ranges.xaxis.from < 0.00001)
+      ranges.xaxis.to = ranges.xaxis.from + 0.00001;
+  if (ranges.yaxis.to - ranges.yaxis.from < 0.00001)
+      ranges.yaxis.to = ranges.yaxis.from + 0.00001;
+  
+  // do the zooming
+  plot = $.plot($("#plot"), getData(ranges.xaxis.from, ranges.xaxis.to), options);
+  
+  // don't fire event on the overview to prevent eternal loop
+  overview.setSelection(ranges, true);
+});
+
+$("#plot_overview").bind("plotselected", function (event, ranges) {
+  plot.setSelection(ranges);
+});
+
+
+// show plots again
+$("#plot_overview").fadeIn();
+$("#plot").fadeIn();
+$("#plot_overview_legend").fadeIn();

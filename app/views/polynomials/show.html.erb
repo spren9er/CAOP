@@ -2,6 +2,8 @@
   <div id="spinner"></div>
 <% end %>
 
+<%= button_to t('plot'), plot_polynomial_path(@polynomial.sid), :class => 'button', :id => 'switch_button', :method => :get %>
+
 <h2><%= @polynomial.name %> Polynomials</h2>
 
 <h3><%= t('definition') %></h3>
@@ -82,6 +84,12 @@
 
 <script type="text/javascript" charset="utf-8">
 $(function(){
+  MathJax.Hub.Register.StartupHook("End Typeset", function(){
+    $("#spinner").fadeOut();
+    $("#pagearea").fadeIn();
+    $("#footer").fadeIn();
+  });
+  
   $("#submit").click();
   
   var diffeq_flip = 0;
@@ -102,13 +110,7 @@ $(function(){
     } else {
       $(this).html('Hide Maple');      
     }
-  });
-  
-  MathJax.Hub.Register.StartupHook("End Typeset", function(){
-    $("#spinner").fadeOut();
-    $("#pagearea").fadeIn();
-    $("#footer").fadeIn();
-  });
+  });  
 });
 </script>
 

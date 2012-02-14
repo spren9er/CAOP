@@ -597,8 +597,62 @@ h3 {
   font-size: 70%;
 }
 
+#plot_overview_wrapper {
+  float: left;
+  width: 30%;
+}
+
+#plot_overview {
+  width: 200px;
+  height: 130px;
+}
+
+#plot_overview_legend {
+  margin-top: 70px;
+}
+
+#plot_wrapper {
+  float: right;
+  width: 70%;
+}
+
 #plot {
-  margin: 0 auto;
   width: 600px;
   height: 350px;
+}
+
+#switch_button {
+  margin-top: 10px;
+  float: right;
+  
+  a {
+    color: $main-text-color;    
+    
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+.plot {
+  height: 370px;
+}
+
+#plot_spinner_wrapper {
+  position: absolute;
+  left: 50%;
+  top: 500px;
+  text-align: center;
+  margin-left: 80px;
+  background-color: #e1e1e1;
+  width: 100px;
+  height: 100px; 
+  @include border-radius(10px);
+}
+
+#plot_spinner {
+  margin: 26px 0 0 26px;
+  width: 48px;
+  height: 48px;
+  background: transparent url(asset-path('computation_spinner.gif', image)) no-repeat;
 }

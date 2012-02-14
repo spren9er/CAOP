@@ -37,9 +37,9 @@ var compute = function(){
         MathJax.Hub.Typeset();  
       });
     }, 
-	error: function(data) {
-	  error_message(data, "#diffeq");
-	}
+    error: function(data) {
+      error_message(data, "#diffeq");
+    }
   });    
   
   // compute recurrence equation
@@ -62,7 +62,7 @@ var compute = function(){
       });
     }, 
     error: function(data) {
-  	  error_message(data, "#receq");
+     error_message(data, "#receq");
     }
   });  
 };

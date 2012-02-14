@@ -4,6 +4,7 @@ class Parameter
   field :name,        type: String
   field :lower_bound, type: String
   field :upper_bound, type: String
+  field :default,     type: Float, default: 1
   
   def boundaries
     case upper_bound

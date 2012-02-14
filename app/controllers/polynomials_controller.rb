@@ -14,7 +14,8 @@ class PolynomialsController < ApplicationController
     @polynomial = Polynomial.where(sid: params[:id]).first
     
     @definition = @polynomial.definition.split(' = ')
-    
+    @plot_params = @polynomial.parameters.inject({}) {|h, p| h[p.name.to_sym] = p.default; h}
+
     @diffeq = (@polynomial.type == 'continuous') ?  t('differential_equation') : t('difference_equation')
     @receq = t('recurrence_equation')
     
@@ -49,6 +50,14 @@ class PolynomialsController < ApplicationController
     nonq = Category.where(sid: 'polynomials').first
     @polynomials = nonq.polynomials
     @polynomial = Polynomial.where(sid: params[:id]).first
+    
+    @definition = @polynomial.definition.split(' = ')
+    @plot_params = params[:parameters]
+    
+    respond_to do |format|
+      format.html 
+      format.js
+    end
   end
     
   private

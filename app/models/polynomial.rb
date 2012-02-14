@@ -7,6 +7,9 @@ class Polynomial
   field :definition,  type: String
   field :maple,       type: String
   field :type,        type: String
+  field :x_min,       type: Float
+  field :x_max,       type: Float
+  field :position,    type: Integer
   
   belongs_to :category  
 
@@ -163,17 +166,26 @@ class Polynomial
       %w{wilson continuous_dual_hahn continuous_hahn meixner_pollaczek}.include?(sid)
   end
   
-  def plot_points
-    accuracy = 100
-    # input = "n := 5: a := -2.1: b := 2.1: points := []: term := #{self.maple}:"
-    # input += "for i from a*#{accuracy} to b*#{accuracy} do points:=[op(points),[i/#{accuracy},eval(add(subs(x=i/#{accuracy},term),k=0..n))]]; end do:" 
-    # input += "points;"
+  def plot_points(param)
+    numpoints = 100
 
-    input = "N := 6: a := -2.5: b := 2.5: for j from 1 to N do points[j] := [] end do: term := #{self.maple}:"
-    input += "for j from 1 to N do for i from a*#{accuracy} to b*#{accuracy} do points[j]:=[op(points[j]),[i/#{accuracy},eval(add(subs(x=i/#{accuracy},n=j,term),k=0..j))]]; end do end do:" 
-    input += "[seq(points[j], j=1..N)];"
+    # initialization
+    input = "Digits:= 50: M := 6: x0 := #{self.x_min}: x1 := #{self.x_max}:\n"
+    input += "term := #{self.maple}:\n"
+
+    # mixin parameters
+    subs = param.inject([]) do |set, p|
+      set << ["#{p[0]} = #{p[1].to_f}"] 
+      set
+    end if param.present?
+    subs_command = "term := subs(#{subs.join(', ')}, term):\n" if subs.present?
+    input += subs_command if subs_command.present?    
     
-    Polynomial.compute(input).gsub(' ','').gsub('[0.,Float(undefined)],', '')
+    input += "[seq(op(1,op(1,plot(Sum(subs(n=j,term),k=0..j),x=x0..x1,numpoints=#{numpoints}))), j=1..M)];"
+
+    points = Polynomial.compute(input)
+    points = points.gsub("HFloat(undefined)", '0').gsub("\n",'').gsub('\\','')
+    points
   end
   
   def self.latex(term)
@@ -188,6 +200,7 @@ class Polynomial
     file.close
     
     options = ' -q '
+    options += ' -c"interface(prettyprint=0, labeling=false, display_zero_complex_part=false)"'
     output = `#{MAPLE_PATH + '/maple' + options + ' < ' + filename}`.strip
     
     # delete file

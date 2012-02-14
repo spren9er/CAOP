@@ -1,71 +1,82 @@
+<%= content_for :topbar do %> 
+  <div id="spinner"></div>
+<% end %>
+
+<%= button_to t('equations'), polynomial_path(@polynomial.sid), :class => 'button', :id => 'switch_button', :method => :get %>
+
 <h2>Graphical Representation of <%= @polynomial.name %> Polynomials</h2>
+
+<h3><%= t('definition') %></h3>
+
+<p>The <%= @polynomial.name %> polynomials are defined as</p>
+
+<div id="definition">
+\[
+  \begin{align}
+    <%= @definition[0] %> &= <%= @definition[1] %>\\
+                          &= <%= @definition[2] %>
+  \end{align}
+\]
+</div>
+
 
 <h3><%= t('plot') %></h3>
 
-<div id="plot"></div>
+<div class="plot">
+  <div id="plot_spinner_wrapper">
+    <div id="plot_spinner"></div>
+  </div>
+
+  <div id="plot_overview_wrapper">
+    <div id="plot_overview"></div>
+    <div id="plot_overview_legend"></div>
+  </div>
+
+  <div id="plot_wrapper">
+    <div id="plot"></div>
+  </div>
+</div>  
 
 <h3><%= t('parameters') %></h3>
 
-<%= form_tag polynomial_path(@polynomial.sid), :remote => true, :method => 'get', :class => 'form' do %>
-  <span class="label"><%= t('range') %></span>
-  <div>
-    <div class="left_col">
-      <p>\(x_0\) <%= text_field_tag 'x_min', '-10' %></p>
-    </div>
-    <div class="right_col">
-      <p>\(x_1\) <%= text_field_tag 'x_max', '10' %></p>
-    </div>
-  </div>
-
+<%= form_tag plot_polynomial_path(@polynomial.sid, :parameters => @plot_params), :remote => true, :method => 'get', :class => 'form' do %>
   <% if @polynomial.parameters.count > 0 %>
     <span class="label"><%= t('parameters') %></span>
     <% @polynomial.parameters.each do |parameter| %>
       <p>
         \(<%= parameter.latex_name %>\)
-        <%= text_field_tag parameter.name, parameter.name %>
+        <%= text_field_tag "parameters[#{parameter.name}]", parameter.default %>
         \(<%= parameter.boundaries %>\)
       </p>  
     <% end %>
   <% end %>
-
-  <div style="clear: both">
-    <span class="label">factor</span> <span class="maple_info">(use Maple-style input)</span>
-    <p>&nbsp;&nbsp;<%= text_field_tag 'factor', '' %> hypergeometric term in \(n\) and 
-      <% if @polynomial.type == 'continuous' %> 
-        hyperexponential term in \(x\) required
-      <% else %>
-        hypergeometric term in \(x\) required
-      <% end %>
-    </p>
   
-    <%= submit_tag 'Submit', :class => 'button', :id => 'submit' %>
+  <%= submit_tag 'Submit', :class => 'button', :id => 'submit' %>
   </div>
 <% end %>
 
 <script type="text/javascript">
-
 $(function () {  
-    var points = <%= @polynomial.plot_points %>;
-    var data = [];
-    for (i = 1; i <= points.length; i++) {
-      data.push({
-        label: '&nbsp;n=' + i,
-        data: points[i]
-      });
-    }
-    
-    $.plot($("#plot"), data, {
-      series: {
-          lines: { show: true },
-          points: { show: false }
-      },
-      grid: {
-          backgroundColor: { colors: ["#fff", "#eee"] }
-      }
+    $("#plot_spinner_wrapper").hide();
+
+    MathJax.Hub.Register.StartupHook("End Typeset", function(){
+      $("#spinner").fadeOut();
+      $("#pagearea").fadeIn();
+      $("#footer").fadeIn();
+      $("#submit").click();    
     });
-    // $.plot($("#plot"), [{
-    //   data: points,
-    //   color: '#c8175d'
-    // }]);
+
+    $("#submit").bind('click', function(){
+      $("#plot_spinner_wrapper").fadeIn();
+      $("#plot").fadeOut();
+      $("#plot_overview").fadeOut();
+      $("#plot_overview_legend").fadeOut();
+    });
 });
 </script>
+
+<style type="text/css" media="screen">
+#pagearea, #footer {
+  display: none;
+}
+</style>

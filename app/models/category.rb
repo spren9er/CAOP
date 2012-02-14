@@ -3,5 +3,5 @@ class Category
   field :name,       type: String
   field :sid,        type: String
   
-  has_many :polynomials
+  has_many :polynomials, :order  => :postion
 end
