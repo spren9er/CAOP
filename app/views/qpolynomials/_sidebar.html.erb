@@ -1,5 +1,5 @@
 <ul class="navigation">
-  <% @polynomials.each do |p| %>
+  <% @polynomials.sort_by(&:position).each do |p| %>
     <li><%= link_to_polynomial p %></li>
   <% end %>  
 </ul>
