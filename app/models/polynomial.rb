@@ -13,8 +13,8 @@ class Polynomial
   
   belongs_to :category  
 
-  # MAPLE_PATH = 'usr/local/maple12/bin'
-  MAPLE_PATH = '/Library/Frameworks/Maple.framework/Versions/15/bin'
+  MAPLE_PATH = '/usr/local/maple12/bin'
+  # MAPLE_PATH = '/Library/Frameworks/Maple.framework/Versions/15/bin'
   
   def compute(param, equation_type)
     op = operator[0]
