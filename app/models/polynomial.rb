@@ -180,7 +180,6 @@ class Polynomial
     end if param.present?
     subs_command = "term := subs(#{subs.join(', ')}, term):\n" if subs.present?
     input += subs_command if subs_command.present?    
-    
     input += "[seq(op(1,op(1,plot(Sum(subs(n=j,term),k=0..j),x=x0..x1,numpoints=#{numpoints}))), j=1..M)];"
 
     points = Polynomial.compute(input)
