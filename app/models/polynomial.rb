@@ -84,7 +84,6 @@ class Polynomial
       
     stamp = Time.now.to_i.to_s
     filename = 'tmp/computation' + stamp + (5*rand(9)).to_s + '.txt'
-    puts '<<<<<<<<<' + filename
     file = File.new(filename, 'w')
     file.write input
     file.close
