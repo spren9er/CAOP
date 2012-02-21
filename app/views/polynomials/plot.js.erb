@@ -4,6 +4,7 @@ var x_max = <%= @polynomial.x_max %>;
 var points = <%= escape_javascript(@polynomial.plot_points(@plot_params)) %>;
 var colors = ['#c7a9b5', '#c78ba3', '#c76d91', '#c7507f', '#c7326d', '#c8175d'];
 
+
 function getData(x0, x1) {
   data = [];
   newData = [];
@@ -19,6 +20,7 @@ function getData(x0, x1) {
       color: colors[i]
     });
   }
+  
   return data;
 }
 
@@ -43,7 +45,7 @@ var options = {
   },
   selection: { 
     color: "#c76d91", 
-    mode: "xy" 
+    mode: null 
   },
   grid: {
     backgroundColor: { 
@@ -75,7 +77,7 @@ var overview = $.plot($("#plot_overview"), startData, {
   },
   selection: {
     color: "#c76d91", 
-    mode: "xy" 
+    mode: "x" 
   },
   yaxis: {
     show: false
@@ -91,6 +93,8 @@ var overview = $.plot($("#plot_overview"), startData, {
   }
 });
 
+var lastData = startData;
+
 // now connect the two 
 $("#plot").bind("plotselected", function (event, ranges) {
   // clamp the zooming to prevent eternal zoom
@@ -100,15 +104,47 @@ $("#plot").bind("plotselected", function (event, ranges) {
       ranges.yaxis.to = ranges.yaxis.from + 0.00001;
   
   // do the zooming
-  plot = $.plot($("#plot"), getData(ranges.xaxis.from, ranges.xaxis.to), options);
+  lastData = getData(ranges.xaxis.from, ranges.xaxis.to);
   
   // don't fire event on the overview to prevent eternal loop
   overview.setSelection(ranges, true);
+  plotAccordingToChoices();
 });
 
 $("#plot_overview").bind("plotselected", function (event, ranges) {
   plot.setSelection(ranges);
 });
+
+// checkboxes
+var i = 0;
+$.each(lastData, function(key, val) {
+    val.color = colors[i];
+    ++i;
+});
+
+// insert checkboxes 
+var choiceContainer = $("#choices");
+$.each(lastData, function(key, val) {
+    choiceContainer.append('<br/><input type="checkbox" name="' + key +
+                           '" checked="checked" id="id' + key + '">' //+
+                           //'<label for="id' + key + '">'
+                           //+ val.label + '</label>'
+                            );
+});
+choiceContainer.find("input").click(plotAccordingToChoices);
+
+
+function plotAccordingToChoices() {
+var dataset = [];
+
+choiceContainer.find("input:checked").each(function () {
+    var key = $(this).attr("name");
+    if (key && lastData[key])
+        dataset.push(lastData[key]);
+});
+
+if (dataset.length > 0) $.plot($("#plot"), dataset, options);
+}
 
 
 // show plots again

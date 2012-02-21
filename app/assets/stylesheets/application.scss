@@ -608,7 +608,20 @@ h3 {
 }
 
 #plot_overview_legend {
-  margin-top: 70px;
+  float: left;
+  margin-top: 49px;
+  
+  table {
+    tr td {
+      padding: 2px 0 3px 0;
+    }
+  }
+}
+
+#choices {
+  position: relative;
+  top: 15px;
+  left: 15px;
 }
 
 #plot_wrapper {
