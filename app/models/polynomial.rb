@@ -83,9 +83,8 @@ class Polynomial
     end
       
     stamp = Time.now.to_i.to_s
-    filename = 'tmp/computation' + stamp + (11*rand(9)).to_s + '.txt'
+    filename = 'tmp/computation' + stamp + rand(9999999999999999).to_s + '.txt'
     file = File.new(filename, 'w')
-    logger.info filename
     file.write input
     file.close
     
@@ -93,7 +92,6 @@ class Polynomial
     options = qcase ? ' -qi lib/maple/qsum15.mpl' : ' -qi lib/maple/hsum15.mpl'
     options += ' -c"interface(prettyprint=false)"'
     output = `#{MAPLE_PATH + '/maple' + options + ' < ' + filename}`    
-    logger.info output
         
     # delete file
     File.delete(filename)
@@ -137,7 +135,7 @@ class Polynomial
     end 
         
     stamp = Time.now.to_i.to_s
-    filename = 'tmp/computation' + stamp + (7*rand(9)).to_s + '.txt'
+    filename = 'tmp/computation' + stamp + rand(9999999999999999).to_s + '.txt'
     file = File.new(filename, 'w')
     file.write input
     file.close
@@ -196,7 +194,7 @@ class Polynomial
   
   def self.compute(input)
     stamp = Time.now.to_i.to_s
-    filename = 'tmp/computation' + stamp + (10*rand(9)).to_s + '.txt'
+    filename = 'tmp/computation' + stamp + rand(9999999999999999).to_s + '.txt'
     file = File.new(filename, 'w')
     file.write input
     file.close
