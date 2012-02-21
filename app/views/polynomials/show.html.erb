@@ -2,7 +2,7 @@
   <div id="spinner"></div>
 <% end %>
 
-<%= button_to t('plot'), plot_polynomial_path(@polynomial.sid), :class => 'button', :id => 'switch_button', :method => :get %>
+<%= link_to t('plot'), plot_polynomial_path(@polynomial.sid), :class => 'button', :id => 'switch_button' %>
 
 <h2><%= @polynomial.name %> Polynomials</h2>
 

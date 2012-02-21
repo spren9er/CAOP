@@ -44,6 +44,7 @@ var options = {
     ticks: 4 
   },
   selection: { 
+    show: false,
     color: "#c76d91", 
     mode: null 
   },
@@ -124,6 +125,7 @@ $.each(lastData, function(key, val) {
 
 // insert checkboxes 
 var choiceContainer = $("#choices");
+choiceContainer.html("");
 $.each(lastData, function(key, val) {
     choiceContainer.append('<br/><input type="checkbox" name="' + key +
                            '" checked="checked" id="id' + key + '">' //+
@@ -151,3 +153,4 @@ if (dataset.length > 0) $.plot($("#plot"), dataset, options);
 $("#plot_overview").fadeIn();
 $("#plot").fadeIn();
 $("#plot_overview_legend").fadeIn();
+$("#choices").fadeIn();

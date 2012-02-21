@@ -14,7 +14,7 @@ $blueprint-liquid-container-width: 100%;
 $blueprint-liquid-container-min-width: none;
 
 // Contentr
-$contentr-toolbar-background-color: #aaa;
+$contentr-toolbar-background-color: #555;
 
 // Global Imports
 @import "blueprint/reset";
@@ -279,7 +279,7 @@ ul.navigation {
     padding: 5px;
     font-size: 11px;
     @include background-image(
-      linear-gradient(#62C362, #57AA57 33%, #57AA57)
+      linear-gradient(#555, #333 33%, #555)
     );
     color: #efefef;
     text-align: center;
@@ -634,16 +634,14 @@ h3 {
   height: 350px;
 }
 
-#switch_button {
+#mainarea-wrapper #mainarea #pagearea #page #switch_button {
   margin-top: 10px;
   float: right;
   
-  a {
-    color: $main-text-color;    
-    
-    &:hover {
-      text-decoration: none;
-    }
+  color: $main-text-color;    
+  
+  &:hover {
+    text-decoration: none;
   }
 }
 
