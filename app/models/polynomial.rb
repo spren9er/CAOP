@@ -83,7 +83,7 @@ class Polynomial
     end
       
     stamp = Time.now.to_i.to_s
-    filename = 'tmp/computation' + stamp + (5*rand(9)).to_s + '.txt'
+    filename = 'tmp/computation' + stamp + (11*rand(9)).to_s + '.txt'
     file = File.new(filename, 'w')
     logger.info filename
     file.write input
@@ -137,7 +137,7 @@ class Polynomial
     end 
         
     stamp = Time.now.to_i.to_s
-    filename = 'tmp/computation' + stamp + (5*rand(9)).to_s + '.txt'
+    filename = 'tmp/computation' + stamp + (7*rand(9)).to_s + '.txt'
     file = File.new(filename, 'w')
     file.write input
     file.close
@@ -196,7 +196,7 @@ class Polynomial
   
   def self.compute(input)
     stamp = Time.now.to_i.to_s
-    filename = 'tmp/computation' + stamp + (5*rand(9)).to_s + '.txt'
+    filename = 'tmp/computation' + stamp + (10*rand(9)).to_s + '.txt'
     file = File.new(filename, 'w')
     file.write input
     file.close
