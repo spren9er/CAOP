@@ -76,7 +76,7 @@ wilson = Polynomial.new({
   maple:      'pochhammer(a+b,n)*pochhammer(a+c,n)*pochhammer(a+d,n)*pochhammer(-n,k)*pochhammer(n+a+b+c+d-1,k)*pochhammer(a+I*x,k)*pochhammer(a-I*x,k)/pochhammer(a+b,k)/pochhammer(a+c,k)/pochhammer(a+d,k)/k!',
   type:       'discrete',
   x_min:      0,
-  x_max:      5,
+  x_max:      5.4,
   position:   1
 })
 wilson.parameters.create(name: 'a', lower_bound: '-infinity', upper_bound: 'infinity', default: 1 )
@@ -96,7 +96,7 @@ racah = Polynomial.new({
   maple:      'pochhammer(-n,k)*pochhammer(n+alpha+beta+1,k)*pochhammer(-x,k)*pochhammer(x+gamma+delta+1,k)/pochhammer(alpha+1,k)/pochhammer(beta+delta+1,k)/pochhammer(gamma+1,k)/k!',
   type:       'discrete',
   x_min:      0,
-  x_max:      10,
+  x_max:      10.5,
   position:   2
 })
 racah.parameters.create(name: 'alpha', lower_bound: '-infinity', upper_bound: 'infinity', default: -11 )
@@ -116,7 +116,7 @@ continuous_dual_hahn = Polynomial.new({
   maple:      'pochhammer(a+b,n)*pochhammer(a+c,n)*pochhammer(-n,k)*pochhammer(a+I*x,k)*pochhammer(a-I*x,k)/pochhammer(a+b,k)/pochhammer(a+c,k)/k!',
   type:       'discrete',
   x_min:      0,
-  x_max:      9.7,
+  x_max:      12.8,
   position:   3
 })
 continuous_dual_hahn.parameters.create(name: 'a', lower_bound: '-infinity', upper_bound: 'infinity', default: 2 )
@@ -134,8 +134,8 @@ continuous_hahn = Polynomial.new({
   definition: 'p_n(x;a,b,c,d) = i^n\frac{(a+c)_n (a+d)_n}{n!} \sum_{k=0}^n \frac{(-n)_k (n+a+b+c+d-1)_k (a+i x)_k}{(a+c)_k (a+d)_k k!} = i^n\frac{(a+c)_n (a+d)_n}{n!} {}_3F_2 \left(\left. {-n, n+a+b+c+d-1, a+i x \atop a+c, a+d} \; \right| 1 \right)',
   maple:      'I^n*pochhammer(a+c,n)*pochhammer(a+d,n)/n!*pochhammer(-n,k)*pochhammer(n+a+b+c+d-1,k)*pochhammer(a+I*x,k)/pochhammer(a+c,k)/pochhammer(a+d,k)/k!',
   type:       'discrete',
-  x_min:      -1.6,
-  x_max:      1.6,
+  x_min:      -2.4,
+  x_max:      2.4,
   position:   4
 })
 continuous_hahn.parameters.create(name: 'a', lower_bound: '-infinity', upper_bound: 'infinity', default: 1 )
@@ -154,8 +154,8 @@ hahn = Polynomial.new({
   definition: 'Q_n(x;\alpha,\beta,N) = \sum_{k=0}^n \frac{(-n)_k (n+\alpha+\beta+1)_k (-x)_k}{(\alpha+1)_k (-N)_k k!} = {}_3F_2 \left(\left. {-n, n+\alpha+\beta+1, -x \atop \alpha+1, -N} \; \right| 1 \right)',
   maple:      'pochhammer(-n,k)*pochhammer(n+alpha+beta+1,k)*pochhammer(-x,k)/pochhammer(alpha+1,k)/pochhammer(-N,k)/k!',
   type:       'discrete',
-  x_min:      0,
-  x_max:      6,
+  x_min:      -0.1,
+  x_max:      6.1,
   position:   5
 })
 hahn.parameters.create(name: 'alpha', lower_bound: '-1', upper_bound: 'infinity', default: 2 )
@@ -174,7 +174,7 @@ dual_hahn = Polynomial.new({
   maple:      'pochhammer(-n,k)*pochhammer(-x,k)*pochhammer(x+gamma+delta+1,k)/pochhammer(gamma+1,k)/pochhammer(-N,k)/k!',
   type:       'discrete',
   x_min:      0,
-  x_max:      6,
+  x_max:      6.1,
   position:   6
 })
 dual_hahn.parameters.create(name: 'gamma', lower_bound: '-1', upper_bound: 'infinity', default: 1.0/3 )
@@ -192,8 +192,8 @@ meixner_pollaczek = Polynomial.new({
   definition: 'P_n^\lambda(x;\phi) = \frac{(2 \lambda)_n}{n!} e^{i n \phi} \sum_{k=0}^n \frac{(-n)_k (\lambda + i x)_k}{(2\lambda)_k k!} \left(1-e^{-2i\phi}\right)^k = \frac{(2 a)_n}{n!} e^{i n \phi} {}_2F_1 \left(\left. {-n, \lambda+i x \atop 2\lambda} \; \right| 1-e^{-2i \phi} \right)',
   maple:      'pochhammer(2*lambda,n)/n!*exp(I*n*phi)*pochhammer(-n,k)*pochhammer(lambda+I*x,k)/pochhammer(2*lambda,k)/k!*(1-exp(-2*I*phi))^k',
   type:       'discrete',
-  x_min:      -3.2,
-  x_max:      3.2,
+  x_min:      -3.8,
+  x_max:      3.8,
   position:   7
 })
 meixner_pollaczek.parameters.create(name: 'lambda', lower_bound: '0', upper_bound: 'infinity', default: 1 )
@@ -229,7 +229,7 @@ meixner = Polynomial.new({
   maple:      'pochhammer(-n,k)*pochhammer(-x,k)/pochhammer(beta,k)/k!*(1-1/c)^k',
   type:       'discrete',
   x_min:      0,
-  x_max:      16,
+  x_max:      18,
   position:   9
 })
 meixner.parameters.create(name: 'beta', lower_bound: '0', upper_bound: 'infinity', default: 10 )
@@ -265,7 +265,7 @@ laguerre = Polynomial.new({
   maple:      'pochhammer(alpha+1,n)/n!*pochhammer(-n,k)/pochhammer(alpha+1,k)/k!*x^k',
   type:       'continuous',
   x_min:      -1,
-  x_max:      13,
+  x_max:      16.5,
   position:   11
 })
 laguerre.parameters.create(name: 'alpha', lower_bound: '-1', upper_bound: 'infinity', default: 0 )
@@ -281,8 +281,8 @@ charlier = Polynomial.new({
   definition: 'C_n(x,a) = \sum_{k=0}^n \frac{(-n)_k (-x)_k}{k!} \left(-\frac{1}{a}\right)^k = {}_2F_0 \left(\left. {-n, -x \atop -} \; \right| -\frac{1}{a} \right)',
   maple:      'pochhammer(-n,k)*pochhammer(-x,k)/k!*(-1/a)^k',
   type:       'discrete',
-  x_min:      0,
-  x_max:      9.5,
+  x_min:      -0.25,
+  x_max:      10.75,
   position:   12
 })
 charlier.parameters.create(name: 'a', lower_bound: '0', upper_bound: 'infinity', default: 2 )
@@ -298,8 +298,8 @@ hermite = Polynomial.new({
   definition: 'H_n(x) = (2x)^n \sum_{k=0}^n \frac{(-n/2)_k - ((n-1)/2)_k}{k!} \left(-\frac{1}{x^2}\right)^k = (2x)^n {}_2F_0 \left(\left. {-n/2, -(n-1)/2 \atop -} \; \right| -\frac{1}{x^2} \right)',
   maple:      '(2*x)^n*pochhammer(-n/2,k)*pochhammer(-(n-1)/2,k)/k!*(-1/x^2)^k',
   type:       'continuous',
-  x_min:      -2.1,
-  x_max:      2.1,
+  x_min:      -2.4,
+  x_max:      2.4,
   position:   13 
 })
 hermite.category = polynomials
