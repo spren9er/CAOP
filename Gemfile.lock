@@ -20,6 +20,16 @@ GIT
       rails (> 3.1)
       sass-rails (> 3.1)
 
+PATH
+  remote: /Users/sprenger/Development/metaminded/contentr
+  specs:
+    contentr (0.1.0)
+      bson_ext (~> 1.5)
+      compass (> 0.12.alpha.0)
+      mongoid (~> 2.4)
+      mongoid-tree (~> 0.6)
+      rails (> 3.1)
+      simple_form (~> 1.5)
 GEM
   remote: http://rubygems.org/
   specs:
