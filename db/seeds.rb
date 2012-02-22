@@ -16,7 +16,7 @@ application_page.paragraphs << ParagraphParagraph.new(area_name: 'Entry_Page', b
 With the present version users can compute recurrence, differential and difference equations, without having Maple installed on
 their own computer. It is also possible to multiply the polynomial family by a scaling function, to change the argument and to give values to the parameters before doing the calculations.
 ")
-application_page.paragraphs << ParagraphParagraph.new(area_name: 'Entry_Page', body: "All computations in CAOP are performed by calling procedures either from <a href=\"http://www.mathematik.uni-kassel.de/%7Ekoepf/Publikationen/#down\">hsum15</a> (\"Hypergeometric Summation\") or <a href=\"http://www.mathematik.uni-kassel.de/%7Ekoepf/Publikationen/#down\">qsum15</a> (\"q-Hypergeometric Summation\") by <a href=\"http://www.mathematik.uni-kassel.de/%7Ekoepf/\">Wolfram Koepf</a>, University of Kassel, which are part of the book <a href=\"http://www.mathematik.uni-kassel.de/~koepf/hyper.html\">[Wolfram Koepf: Hypergeometric Summation. An Algorithmic Approach to Summation and Special Function Identities, Vieweg, 1998]</a>.")
+application_page.paragraphs << ParagraphParagraph.new(area_name: 'Entry_Page', body: "All computations in CAOP are performed by calling procedures either from <a href=\"http://www.mathematik.uni-kassel.de/%7Ekoepf/Publikationen/#down\">hsum15</a> (\"Hypergeometric Summation\") or <a href=\"http://www.mathematik.uni-kassel.de/%7Ekoepf/Publikationen/#down\">qsum15</a> (\"q-Hypergeometric Summation\") by <a href=\"http://www.mathematik.uni-kassel.de/%7Ekoepf/\">Wolfram Koepf</a>, University of Kassel, which are part of the book <a href=\"http://www.mathematik.uni-kassel.de/~koepf/hyper.html\">Hypergeometric Summation</a>.")
 application_page.paragraphs << ParagraphParagraph.new(area_name: 'Entry_Page', body: "The implementation of CAOP was originally done by <a href=\"http://www.cs.vu.nl/%7Erene/\">Ren&eacute; Swarttouw</a> as part of the <a href=\"http://www.cs.vu.nl/%7Erene/Onderzoek/AW.html\">Askey-Wilson Scheme Project</a> performed at <a href=\"http://www.riaca.win.tue.nl/\">RIACA</a> in Eindhoven in 2004. The present site is a completely revised version of this project which has been done by <a href=\"http://www.mathematik.uni-kassel.de/~sprenger\">Torsten Sprenger</a> under supervision of Wolfram Koepf in 2012 and is maintained by <a href=\"http://www.mathematik.uni-kassel.de/~koepf\">Wolfram Koepf</a>.")
 application_page.paragraphs << ParagraphParagraph.new(area_name: 'Entry_Page', body: "You can start the project by clicking on one of the two links on the top of the page.")
 application_page.save!
@@ -25,18 +25,16 @@ polynomials_page = Contentr::LinkedPage.new(name: 'Orthogonal_Polynomials_Overvi
 polynomials_page.position = 0
 polynomials_page.published = true
 polynomials_page.paragraphs << HeaderParagraph.new(area_name: 'Orthogonal_Polynomials_Overview', title: 'Orthogonal Polynomials of Askey-Wilson scheme')
-polynomials_page.paragraphs << ParagraphParagraph.new(area_name: 'Orthogonal_Polynomials_Overview', body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.')
-polynomials_page.paragraphs << MathParagraph.new(area_name: 'Orthogonal_Polynomials_Overview', math: 'x^2')
-polynomials_page.paragraphs << ParagraphParagraph.new(area_name: 'Orthogonal_Polynomials_Overview', body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.')
+polynomials_page.paragraphs << ParagraphParagraph.new(area_name: 'Orthogonal_Polynomials_Overview', body: "The classical orthogonal polynomial families of Hermite, Laguerre and Jacobi (including those of Gegenbauer and Chebyshev), and the classical discrete orthogonal polynomial families of Charlier, Krawtchouk, Meixner and Hahn are all members of the <a href=\"http://aw.twi.tudelft.nl/~koekoek/askey.html\">Askey-scheme</a> of hypergeometric orthogonal polynomials.")
+polynomials_page.paragraphs << ParagraphParagraph.new(area_name: 'Orthogonal_Polynomials_Overview', body: "This web tool uses algorithmic procedures from the book <a href=\"http://www.mathematik.uni-kassel.de/~koepf/hyper.html\">Hypergeometric Summation</a> to compute recurrence equations and differential / difference equations for those polynomial families.")
 polynomials_page.save!
 
 qpolynomials_page = Contentr::LinkedPage.new(name: 'qOrthogonal_Polynomials_Overview', linked_to: 'qpolynomials#index', parent: @site)
 qpolynomials_page.position = 0
 qpolynomials_page.published = true
 qpolynomials_page.paragraphs << HeaderParagraph.new(area_name: 'qOrthogonal_Polynomials_Overview', title: 'q-Orthogonal Polynomials of Askey-Wilson scheme')
-qpolynomials_page.paragraphs << ParagraphParagraph.new(area_name: 'qOrthogonal_Polynomials_Overview', body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.')
-qpolynomials_page.paragraphs << MathParagraph.new(area_name: 'qOrthogonal_Polynomials_Overview', math: 'x^2')
-qpolynomials_page.paragraphs << ParagraphParagraph.new(area_name: 'qOrthogonal_Polynomials_Overview', body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.')
+qpolynomials_page.paragraphs << ParagraphParagraph.new(area_name: 'qOrthogonal_Polynomials_Overview', body: "The <a href=\"http://aw.twi.tudelft.nl/~koekoek/askey.html\">Askey-Wilson scheme</a> includes all classical orthogonal polynomial families.")
+qpolynomials_page.paragraphs << ParagraphParagraph.new(area_name: 'qOrthogonal_Polynomials_Overview', body: "This web tool deals with the basic hypergeometric families of this scheme. It uses algorithmic procedures from the book <a href=\"http://www.mathematik.uni-kassel.de/~koepf/hyper.html\">Hypergeometric Summation</a> to compute q-recurrence equations and q-differential / q-difference equations for those polynomial families.")
 qpolynomials_page.save!
 
 ###
@@ -266,7 +264,7 @@ laguerre = Polynomial.new({
   name:       'Laguerre',
   sid:        'laguerre',
   # definition: 'L_n^{(\alpha)}(x) = \frac{(\alpha+1)_n}{n!} \sum_{k=0}^n \frac{(-n)_k}{(\alpha+1)_k k!} x^k = \frac{(\alpha+1)_n}{n!} {}_1F_1 \left(\left. {-n \atop \alpha+1} \; \right| x \right)',
-  definition: 'L_n^{(\alpha)}(x) = \sum_{k=0}^n (-1)^k {n+\alpha \choose n-k} \frac{1}{k!} x^k = \frac{(\alpha+1)_n}{n!} {}_1F_1 \left(\left. {-n \atop \alpha+1} \; \right| x \right)',
+  definition: 'L_n^{(\alpha)}(x) = \sum_{k=0}^n {n+\alpha \choose n-k} \frac{1}{k!} \left(-x\right)^k = \frac{(\alpha+1)_n}{n!} {}_1F_1 \left(\left. {-n \atop \alpha+1} \; \right| x \right)',
   maple:      'pochhammer(alpha+1,n)/n!*pochhammer(-n,k)/pochhammer(alpha+1,k)/k!*x^k',
   type:       'continuous',
   x_min:      -1,
@@ -284,7 +282,7 @@ charlier = Polynomial.new({
   name:       'Charlier',
   sid:        'charlier',
   # definition: 'C_n(x,a) = \sum_{k=0}^n \frac{(-n)_k (-x)_k}{k!} \left(-\frac{1}{a}\right)^k = {}_2F_0 \left(\left. {-n, -x \atop -} \; \right| -\frac{1}{a} \right)',
-  definition: 'C_n(x,a) = \sum_{k=0}^n {n \choose k} (-x)_k \left(\frac{1}{a}\right)^k = {}_2F_0 \left(\left. {-n, -x \atop -} \; \right| -\frac{1}{a} \right)',
+  definition: 'C_n(x,a) = \sum_{k=0}^n {n \choose k} {x \choose k} k! \left(-\frac{1}{a}\right)^k = {}_2F_0 \left(\left. {-n, -x \atop -} \; \right| -\frac{1}{a} \right)',
   maple:      'pochhammer(-n,k)*pochhammer(-x,k)/k!*(-1/a)^k',
   type:       'discrete',
   x_min:      -0.25,
@@ -302,7 +300,7 @@ hermite = Polynomial.new({
   name:       'Hermite',
   sid:        'hermite',
   # definition: 'H_n(x) = (2x)^n \sum_{k=0}^n \frac{(-n/2)_k - ((n-1)/2)_k}{k!} \left(-\frac{1}{x^2}\right)^k = (2x)^n {}_2F_0 \left(\left. {-n/2, -(n-1)/2 \atop -} \; \right| -\frac{1}{x^2} \right)',
-  definition: 'H_n(x) = n! \sum_{k=0}^{[n/2]} (-1)^k \frac{1}{k!(n-2k)!} (2x)^{n-2k} = (2x)^n {}_2F_0 \left(\left. {-n/2, -(n-1)/2 \atop -} \; \right| -\frac{1}{x^2} \right)',
+  definition: 'H_n(x) = n! \sum_{k=0}^{[n/2]} \frac{(-1)^k}{k!(n-2k)!} (2x)^{n-2k} = (2x)^n {}_2F_0 \left(\left. {-n/2, -(n-1)/2 \atop -} \; \right| -\frac{1}{x^2} \right)',
   maple:      '(2*x)^n*pochhammer(-n/2,k)*pochhammer(-(n-1)/2,k)/k!*(-1/x^2)^k',
   type:       'continuous',
   x_min:      -2.4,
