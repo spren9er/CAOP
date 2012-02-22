@@ -25,7 +25,7 @@ polynomials_page = Contentr::LinkedPage.new(name: 'Orthogonal_Polynomials_Overvi
 polynomials_page.position = 0
 polynomials_page.published = true
 polynomials_page.paragraphs << HeaderParagraph.new(area_name: 'Orthogonal_Polynomials_Overview', title: 'Orthogonal Polynomials of Askey-Wilson scheme')
-polynomials_page.paragraphs << ParagraphParagraph.new(area_name: 'Orthogonal_Polynomials_Overview', body: "The classical orthogonal polynomial families of Hermite, Laguerre and Jacobi (including those of Gegenbauer and Chebyshev), and the classical discrete orthogonal polynomial families of Charlier, Krawtchouk, Meixner and Hahn are all members of the <a href=\"http://aw.twi.tudelft.nl/~koekoek/askey.html\">Askey-scheme</a> of hypergeometric orthogonal polynomials.")
+polynomials_page.paragraphs << ParagraphParagraph.new(area_name: 'Orthogonal_Polynomials_Overview', body: "The classical orthogonal polynomial families of Hermite, Laguerre and Jacobi (including those of Gegenbauer, Legendre and Chebyshev), and the classical discrete orthogonal polynomial families of Charlier, Krawtchouk, Meixner and Hahn are all members of the <a href=\"http://aw.twi.tudelft.nl/~koekoek/askey.html\">Askey-scheme</a> of hypergeometric orthogonal polynomials.")
 polynomials_page.paragraphs << ParagraphParagraph.new(area_name: 'Orthogonal_Polynomials_Overview', body: "This web tool uses algorithmic procedures from the book <a href=\"http://www.mathematik.uni-kassel.de/~koepf/hyper.html\">Hypergeometric Summation</a> to compute recurrence equations and differential / difference equations for those polynomial families.")
 polynomials_page.save!
 
@@ -225,8 +225,8 @@ jacobi.save
 meixner = Polynomial.new({
   name:       'Meixner',
   sid:        'meixner',
-  definition: 'M_n(x;\beta,c) = \sum_{k=0}^n \frac{(-n)_k (-x)_k}{(\beta)_k k!}\left(1-\frac{1}{c}\right)^k = {}_2F_1 \left(\left. {-n, -x \atop \beta} \; \right| 1-\frac{1}{c} \right)',
-  # definition: 'M_n(x;\beta,c) = \sum_{k=0}^n (-1)^k {n \choose k} \frac{(-x)_k}{(\beta)_k}\left(1-\frac{1}{c}\right)^k = {}_2F_1 \left(\left. {-n, -x \atop \beta} \; \right| 1-\frac{1}{c} \right)',
+  # definition: 'M_n(x;\beta,c) = \sum_{k=0}^n \frac{(-n)_k (-x)_k}{(\beta)_k k!}\left(1-\frac{1}{c}\right)^k = {}_2F_1 \left(\left. {-n, -x \atop \beta} \; \right| 1-\frac{1}{c} \right)',
+  definition: 'M_n(x;\beta,c) = \sum_{k=0}^n {n \choose k} {x \choose k} k! (x-\beta)_{n-k} \left(-\frac{1}{c}\right)^k = {}_2F_1 \left(\left. {-n, -x \atop \beta} \; \right| 1-\frac{1}{c} \right)',
   maple:      'pochhammer(-n,k)*pochhammer(-x,k)/pochhammer(beta,k)/k!*(1-1/c)^k',
   type:       'discrete',
   x_min:      0,
@@ -244,8 +244,8 @@ meixner.save
 krawtchouk = Polynomial.new({
   name:       'Krawtchouk',
   sid:        'krawtchouk',
-  definition: 'K_n(x;p,N) = \sum_{k=0}^n \frac{(-n)_k (-x)_k}{(-N)_k k!} \left(\frac{1}{p}\right)^k = {}_2F_1 \left(\left. {-n, -x \atop -N} \; \right| \frac{1}{p} \right)',
-  # definition: 'K_n(x;p,N) = \sum_{k=0}^n (-1)^k {n \choose k} \frac{(-x)_k}{(-N)_k} \left(\frac{1}{p}\right)^k = {}_2F_1 \left(\left. {-n, -x \atop -N} \; \right| \frac{1}{p} \right)',
+  # definition: 'K_n(x;p,N) = \sum_{k=0}^n \frac{(-n)_k (-x)_k}{(-N)_k k!} \left(\frac{1}{p}\right)^k = {}_2F_1 \left(\left. {-n, -x \atop -N} \; \right| \frac{1}{p} \right)',
+  definition: 'K_n(x;p,N) = \sum_{k=0}^n (-1)^{n-k} {N-x \choose n-k} {x \choose k} p^{n-k} \left(1-p\right)^k = {}_2F_1 \left(\left. {-n, -x \atop -N} \; \right| \frac{1}{p} \right)',
   maple:      'pochhammer(-n,k)*pochhammer(-x,k)/pochhammer(-N,k)/k!*(1/p)^k',
   type:       'discrete',
   x_min:      0,
