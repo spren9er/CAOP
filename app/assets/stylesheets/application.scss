@@ -159,7 +159,7 @@ body {
 body {
   margin: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: normal;
   line-height: 18px;
   color: $main-text-color;
@@ -557,6 +557,7 @@ span.label {
 
 pre.computation {
   background-color: #efefef !important;
+  font-size: 80% !important;
 }
 
 #spinner {
@@ -599,28 +600,28 @@ h3 {
 
 #plot_overview_wrapper {
   float: left;
-  width: 30%;
+  width: 160px;
 }
 
 #plot_overview {
-  width: 200px;
-  height: 130px;
+  width: 160px;
+  height: 120px;
 }
 
 #plot_overview_legend {
   float: left;
-  margin-top: 49px;
+  margin-top: 52px;
   
   table {
     tr td {
-      padding: 2px 0 3px 0;
+      padding: 2px 0 1px 0;
     }
   }
 }
 
 #choices {
   position: relative;
-  top: 15px;
+  top: 22px;
   left: 15px;
 }
 
@@ -630,8 +631,8 @@ h3 {
 }
 
 #plot {
-  width: 600px;
-  height: 350px;
+  width: 450px;
+  height: 337px;
 }
 
 #mainarea-wrapper #mainarea #pagearea #page #switch_button {
@@ -646,6 +647,7 @@ h3 {
 }
 
 .plot {
+  width: 100%;
   height: 370px;
 }
 
