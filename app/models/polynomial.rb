@@ -166,12 +166,12 @@ class Polynomial
       %w{wilson continuous_dual_hahn continuous_hahn meixner_pollaczek}.include?(sid)
   end
   
-  def plot_points(param)
+  def plot_points(param, factor=nil)
     numpoints = 100
 
     # initialization
     input = "Digits:= 50: M := 6: x0 := #{self.x_min}: x1 := #{self.x_max}:\n"
-    input += "term := #{self.maple}:\n"
+    input += factor.present? ? "term := (#{factor})*#{self.maple}:\n" : "term := #{self.maple}:\n"
 
     # mixin parameters
     subs = param.inject([]) do |set, p|
