@@ -1,16 +1,4 @@
 GIT
-  remote: git://github.com/metaminded/contentr.git
-  revision: 7ff00d1c0c50556dfe2ce3c0e483b5f6ce231169
-  specs:
-    contentr (0.1.0)
-      bson_ext (~> 1.5)
-      compass (> 0.12.alpha.0)
-      mongoid (~> 2.4)
-      mongoid-tree (~> 0.6)
-      rails (> 3.1)
-      simple_form (~> 1.5)
-
-GIT
   remote: git@github.com:provideal/stylr.git
   revision: 80480fee78333a65477524a918ad2f67e8e41744
   specs:
@@ -21,7 +9,7 @@ GIT
       sass-rails (> 3.1)
 
 PATH
-  remote: /Users/sprenger/Development/metaminded/contentr
+  remote: /home/caop/contentr
   specs:
     contentr (0.1.0)
       bson_ext (~> 1.5)
@@ -30,6 +18,7 @@ PATH
       mongoid-tree (~> 0.6)
       rails (> 3.1)
       simple_form (~> 1.5)
+
 GEM
   remote: http://rubygems.org/
   specs:
