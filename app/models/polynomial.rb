@@ -167,7 +167,7 @@ class Polynomial
   end
   
   def plot_points(param, factor=nil)
-    numpoints = 100
+    numpoints = 150
 
     # initialization
     input = "Digits:= 50: M := 6: x0 := #{self.x_min}: x1 := #{self.x_max}:\n"
