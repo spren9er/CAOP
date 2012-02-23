@@ -1,7 +1,7 @@
 // data
 var x_min = <%= @polynomial.x_min %>;
 var x_max = <%= @polynomial.x_max %>;
-var points = <%= escape_javascript(@polynomial.plot_points(@plot_params)) %>;
+var points = <%= escape_javascript(@polynomial.plot_points(@plot_params, @plot_factor)) %>;
 var colors = ['#c7a9b5', '#c78ba3', '#c76d91', '#c7507f', '#c7326d', '#c8175d'];
 
 

@@ -53,7 +53,8 @@ class PolynomialsController < ApplicationController
     
     @definition = @polynomial.definition.split(' = ')
     @plot_params = params[:parameters]
-    
+    @plot_factor = params[:factor] || 1
+        
     respond_to do |format|
       format.html 
       format.js
