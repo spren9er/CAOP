@@ -43,11 +43,6 @@ var options = {
   yaxis: { 
     ticks: 4 
   },
-  selection: { 
-    show: false,
-    color: "#c76d91", 
-    mode: null 
-  },
   grid: {
     backgroundColor: { 
       colors: ["#fff", "#eee"] 
@@ -72,9 +67,6 @@ var overview = $.plot($("#plot_overview"), startData, {
       lineWidth: 1 
     },
     shadowSize: 0
-  },
-  grid: { 
-    color: "#999" 
   },
   selection: {
     color: "#c76d91", 
@@ -104,12 +96,12 @@ $("#plot").bind("plotselected", function (event, ranges) {
   if (ranges.yaxis.to - ranges.yaxis.from < 0.00001)
       ranges.yaxis.to = ranges.yaxis.from + 0.00001;
   
-  // do the zooming
+  // zooming
   lastData = getData(ranges.xaxis.from, ranges.xaxis.to);
+  plotAccordingToChoices();
   
   // don't fire event on the overview to prevent eternal loop
-  overview.setSelection(ranges, true);
-  plotAccordingToChoices();
+  // overview.setSelection(ranges, true);
 });
 
 $("#plot_overview").bind("plotselected", function (event, ranges) {
@@ -145,7 +137,7 @@ choiceContainer.find("input:checked").each(function () {
         dataset.push(lastData[key]);
 });
 
-if (dataset.length > 0) $.plot($("#plot"), dataset, options);
+if (dataset.length > 0) plot = $.plot($("#plot"), dataset, options);
 }
 
 
