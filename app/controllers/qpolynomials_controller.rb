@@ -12,6 +12,7 @@ class QpolynomialsController < ApplicationController
     q = Category.where(sid: 'qpolynomials').first
     @polynomials = q.polynomials
     @polynomial = Polynomial.where(sid: params[:id]).first
+    @polynomial_title = @polynomial.name
     
     @definition = @polynomial.definition.split(' = ')
     

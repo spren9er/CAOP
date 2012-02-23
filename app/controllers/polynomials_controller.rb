@@ -12,6 +12,7 @@ class PolynomialsController < ApplicationController
     nonq = Category.where(sid: 'polynomials').first
     @polynomials = nonq.polynomials
     @polynomial = Polynomial.where(sid: params[:id]).first
+    @polynomial_title = @polynomial.name
     
     @definition = @polynomial.definition.split(' = ')
     @plot_params = @polynomial.parameters.inject({}) {|h, p| h[p.name.to_sym] = p.default; h}
