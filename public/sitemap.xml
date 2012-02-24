@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<url>
+  <loc>http://www.caop.org/</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/polynomials</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/polynomials/wilson</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/polynomials/racah</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/polynomials/continuous_dual_hahn</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/polynomials/continuous_hahn</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/polynomials/hahn</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/polynomials/dual_hahn</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/polynomials/meixner_pollaczek</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/polynomials/jacobi</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/polynomials/meixner</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/polynomials/krawtchouk</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/polynomials/laguerre</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/polynomials/charlier</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/polynomials/hermite</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/askey_wilson</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/qracah</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/continuous_dual_qhahn</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/continuous_qhahn</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/big_qjacobi</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/qhahn</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/dual_qhahn</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/al_salam_chihara</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/qmeixner_pollaczek</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/continuous_qjacobi</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/big_qlaguerre</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/little_qjacobi</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/qmeixner</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/quantum_qkrawtchouk</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/qkrawtchouk</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/affine_qkrawtchouk</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/dual_qkrawtchouk</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/continuous_big_qhermite</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/continuous_qlaguerre</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/little_qlaguerre</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/qlaguerre</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/alternative_qcharlier</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/qcharlier</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/al_salam_carlitzI</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/al_salam_carlitzII</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/continuous_qhermite</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/stieltjes_wigert</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/discrete_qhermiteI</loc>
+</url>
+<url>
+  <loc>http://www.caop.org/qpolynomials/discrete_qhermiteII</loc>
+</url>
+</urlset>
