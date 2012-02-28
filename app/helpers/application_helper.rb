@@ -18,4 +18,9 @@ module ApplicationHelper
     link_to polynomial.name, polynomial.q? ? qpolynomial_path(sid) : polynomial_path(sid), sid == params[:id] ? {:class => 'active'} : nil
   end
   
+  def html_title
+    title = "CAOP - Computer Algebra & Orthogonal Polynomials"
+    @polynomial_title ? "#{title} - #{@polynomial_title} Polynomials" : title
+  end
+  
 end
