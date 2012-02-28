@@ -57,8 +57,11 @@ class Polynomial
     input += subs_command if subs_command.present?
     
     # special values
+    reg = %r{[a-zA-Z]+}
     n = param['n']
+    arg_n = reg.match(n).try('[]', 0)
     x = param['x']
+    arg_x = reg.match(x).try('[]', 0)
     q = param['q'] if qcase
     
     # special polynomials
@@ -71,14 +74,14 @@ class Polynomial
     else
       # choose appropriate commands
       case [category.sid, type, equation_type[:receq] ? 'receq' : 'diffeq']
-        when ['polynomials',  'continuous', 'diffeq'] then input += "sumdiffeq(term, k, #{op}(#{x}));"
-        when ['polynomials',  'continuous', 'receq']  then input += "sumrecursion(term, k, #{op}(#{n}));"
-        when ['polynomials',  'discrete',   'diffeq'] then input += "sumrecursion(term, k, #{op}(#{x}));"
-        when ['polynomials',  'discrete',   'receq']  then input += "sumrecursion(term, k, #{op}(#{n}));"
-        when ['qpolynomials', 'continuous', 'diffeq'] then input += "qsumdiffeq(term, #{q}, k, #{op}(#{x}));"
-        when ['qpolynomials', 'continuous', 'receq']  then input += "qsumrecursion(term, #{q}, k, #{op}(#{n}), recursion = up);"
-        when ['qpolynomials', 'discrete',   'diffeq'] then input += "term := subs(#{q}^(-#{x}) = #{x}, term):\nDE := qsumdiffeq(term, #{q}, k, #{op}(#{x})):\nRE := qdiffeqtorecursion(DE, #{q}):\nRE := qshiftrecursion(RE, #{q}):\nqrecursiontodiffeq(RE, #{q});"
-        when ['qpolynomials', 'discrete',   'receq']  then input += "qsumrecursion(term, #{q}, k, #{op}(#{n}), recursion = up);"
+        when ['polynomials',  'continuous', 'diffeq'] then input += "sumdiffeq(term, k, #{op}(#{arg_x}));"
+        when ['polynomials',  'continuous', 'receq']  then input += "sumrecursion(term, k, #{op}(#{arg_n}));"
+        when ['polynomials',  'discrete',   'diffeq'] then input += "sumrecursion(term, k, #{op}(#{arg_x}));"
+        when ['polynomials',  'discrete',   'receq']  then input += "sumrecursion(term, k, #{op}(#{arg_n}));"
+        when ['qpolynomials', 'continuous', 'diffeq'] then input += "qsumdiffeq(term, #{q}, k, #{op}(#{arg_x}));"
+        when ['qpolynomials', 'continuous', 'receq']  then input += "qsumrecursion(term, #{q}, k, #{op}(#{arg_n}), recursion = up);"
+        when ['qpolynomials', 'discrete',   'diffeq'] then input += "term := subs(#{q}^(-#{x}) = #{arg_x}, term):\nDE := qsumdiffeq(term, #{q}, k, #{op}(#{arg_x})):\nRE := qdiffeqtorecursion(DE, #{q}):\nRE := qshiftrecursion(RE, #{q}):\nqrecursiontodiffeq(RE, #{q});"
+        when ['qpolynomials', 'discrete',   'receq']  then input += "qsumrecursion(term, #{q}, k, #{op}(#{arg_n}), recursion = up);"
       end
     end
       
@@ -87,7 +90,7 @@ class Polynomial
     file = File.new(filename, 'w')
     file.write input
     file.close
-    
+        
     # compute
     options = qcase ? ' -qi lib/maple/qsum15.mpl' : ' -qi lib/maple/hsum15.mpl'
     options += ' -c"interface(prettyprint=false)"'
