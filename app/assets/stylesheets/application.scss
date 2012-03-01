@@ -56,6 +56,8 @@ $menu-dropdown-voff: 40px;
 $menu-dropdown-hoff: 0;
 $menu-dropdown-z-index: 1000;
 
+$caop-main-color: #c8175d;
+
 @mixin menu {
 
   @include float-left;
@@ -71,11 +73,12 @@ $menu-dropdown-z-index: 1000;
   li {
     display: block;
     @include float-left;
-    margin: 0;
+    margin: 0 5px;
     padding: 0 6px;
 
     &:hover {
-      background-color: darken($menu-dropdown-background-color, 5%);
+//      background-color: darken($menu-dropdown-background-color, 5%);
+      background-color: darken($caop-main-color, 10%);
     }
 
     &.raw:hover {
@@ -224,7 +227,7 @@ ul.navigation {
   margin-bottom: 15px;
   background-color: $topbar-background-color;
   @include background-image($topbar-background-gradient);
-  @include single-text-shadow(darken($topbar-background-color, 30%), 1px, 1px, 2px);
+//  @include single-text-shadow(darken($topbar-background-color, 30%), 1px, 1px, 2px);
   @include box-shadow(darken($main-background-color, 30%) 0 3px 5px);
 
   a {
@@ -363,8 +366,6 @@ ul.navigation {
 
 // ADMIN BASE END
 
-$caop-main-color: #c8175d;
-
 #mainarea-wrapper {
   margin-bottom: 15px;
 
@@ -434,24 +435,31 @@ $caop-main-color: #c8175d;
 #topbar-wrapper #topbar {
   h1 {
     a {
-      color: #dedede;          
+      color: #efefef;          
     }
     margin-bottom: 10px;
   }
   
   .menu li {
+    @include border-top-radius(10px);
+    position: relative;
+    top: 5px;
+    height: 35px;
+    background-color: $caop-main-color;
+
     a {
-      margin: 0 10px;
-      color: #dedede;
+      margin: 0 5px;
+      color: #efefef;
     }
 
     &.active {
-      background-color: lighten($topbar-background-color, 10%);
+      background-color: $caop-main-color;
       
       a {
-        color: #ffffff;
+        color: #efefef;
+        border-bottom: 1px solid #eee;
       }
-    }
+    }    
   } 
 }
 

@@ -40,10 +40,12 @@
       <%= menu_item :item => "qpolynomials", :label => t('qorthogonal_polynomials'), :url => qpolynomials_path() %></li>
     </ul>
 
-    <ul class="menu secondary">
-      <%= menu_item :item => "stats", :label => t('stats'), :url => stats_path() if session[:authorized] %></li>
-      <li><%= link_to(t('logout'), logout_path) if session[:authorized] %></li>
-    </ul>
+    <% if session[:authorized] %>
+      <ul class="menu secondary">
+        <%= menu_item :item => "stats", :label => t('stats'), :url => stats_path() %></li>
+        <li><%= link_to(t('logout'), logout_path) %></li>
+      </ul>
+    <% end %>
   <% end %>
 
   <% content_for(:sidebar) do %>

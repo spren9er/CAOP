@@ -9,10 +9,6 @@
 <body>
   <% content_for(:topbar) do %>
     <h1><%= link_to "CAOP", root_path %></h1>
-
-    <ul class="menu secondary">
-      <li><%= link_to(t('logout'), logout_path) if session[:authorized] %></li>
-    </ul>
   <% end %>
 
   <% content_for(:footer) do %>
