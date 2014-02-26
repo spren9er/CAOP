@@ -467,7 +467,7 @@ al_salam_chihara.save
 qmeixner_pollaczek = Polynomial.new({
   name:       'q-Meixner Pollaczek',
   sid:        'qmeixner_pollaczek',
-  definition: 'P_n(x;a|q) = a^{-n} e^{-inu} \frac{(a^2;q)_n}{(q;q)_n} \sum_{k=0}^\infty \frac{(q^{-n};q)_k (a e^{i(t+2u)};q)_k (a e^{-it};q)_k}{(a^2;q)_k (q;q)_k} q^k =  a^{-n} e^{-inu} \frac{(a^2;q)_n}{(q;q)_n} {}_{3}\phi_{2}\!\left(\left. {q^{-n}, a e^{i(t+2u)}, a e^{-it} \atop a^2, 0} \; \right| q ; q \right),\quad x=\cos(t)',
+  definition: 'P_n(x;a|q) = a^{-n} e^{-inu} \frac{(a^2;q)_n}{(q;q)_n} \sum_{k=0}^\infty \frac{(q^{-n};q)_k (a e^{i(t+2u)};q)_k (a e^{-it};q)_k}{(a^2;q)_k (q;q)_k} q^k =  a^{-n} e^{-inu} \frac{(a^2;q)_n}{(q;q)_n} {}_{3}\phi_{2}\!\left(\left. {q^{-n}, a e^{i(t+2u)}, a e^{-it} \atop a^2, 0} \; \right| q ; q \right),\quad x=\cos(t+u)',
   maple:      'a^(-n)*exp(-I*n*u)*qpochhammer(a^2,q,n)/qpochhammer(q,q,n)*qpochhammer(q^(-n),q,k)*qpochhammer(a*exp(I*(t+2*u)),q,k)*qpochhammer(a*exp(-I*t),q,k)/qpochhammer(a^2,q,k)/qpochhammer(q,q,k)*q^k',
   type:       'continuous',
   position:   9
