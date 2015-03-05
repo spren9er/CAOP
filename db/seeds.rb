@@ -323,7 +323,7 @@ legendre = Polynomial.new({
   name:       'Legendre',
   sid:        'legendre',
   definition: 'P_n(x) = \frac{1}{2^n}\sum_{k=0}^{[n/2]} \frac{(-1)^k (2n-2k)!}{(n-k)!(n-2k)!k!} x^{n-2k} = {}_2F_1 \left(\left. {-n, n+1 \atop 1} \; \right| \frac{1-x}{2} \right)',
-  maple:      '1/2^n*(-1)^k*factorial(2*n-2*k)/(n-k)!/(n-2*k)!/k!*x^(n-2*k)',
+  maple:      '1/2^n*(-1)^k*(2*n-2*k)!/(n-k)!/(n-2*k)!/k!*x^(n-2*k)',
   type:       'continuous',
   x_min:      -1,
   x_max:      1,
