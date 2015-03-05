@@ -316,6 +316,54 @@ hermite = Polynomial.new({
 hermite.category = polynomials
 hermite.save
 
+#
+# Legendre
+#
+legendre = Polynomial.new({
+  name:       'Legendre',
+  sid:        'legendre',
+  definition: 'P_n(x) = \frac{1}{2^n}\sum_{k=0}^{[n/2]} \frac{(-1)^k (2n-2k)!}{(n-k)!(n-2k)!k!} x^{n-2k} = {}_2F_1 \left(\left. {-n, n+1 \atop 1} \; \right| \frac{1-x}{2} \right)',
+  maple:      '1/2^n*(-1)^k*factorial(2*n-2*k)/(n-k)!/(n-2*k)!/k!*x^(n-2*k)',
+  type:       'continuous',
+  x_min:      -1,
+  x_max:      1,
+  position:   14
+})
+legendre.category = polynomials
+legendre.save
+
+#
+# ChebyshevT
+#
+chebyshevt = Polynomial.new({
+  name:       'ChebyshevT',
+  sid:        'chebyshevt',
+  definition: 'T_n(x) = n \sum_{k=0}^n \frac{(-2)^k (n+k-1)!}{(n-k)!(2k)!}(1-x)^k = {}_2F_1 \left(\left. {-n, n \atop \frac{1}{2}} \; \right| \frac{1-x}{2} \right)',
+  maple:      'n*(-2)^k*(n+k-1)!/(n-k)!/(2*k)!*(1-x)^k',
+  type:       'continuous',
+  x_min:      -1,
+  x_max:      1,
+  position:   15
+})
+chebyshevt.category = polynomials
+chebyshevt.save
+
+#
+# ChebyshevU
+#
+chebyshevu = Polynomial.new({
+  name:       'ChebyshevU',
+  sid:        'chebyshevu',
+  definition: 'U_n(x) = \sum_{k=0}^n \frac{(-2)^k (n+k+1)!}{(n-k)!(2k+1)!}(1-x)^k = (n+1){}_2F_1 \left(\left. {-n, n+2 \atop \frac{3}{2}} \; \right| \frac{1-x}{2} \right)',
+  maple:      '(-2)^k*(n+k+1)!/(n-k)!/(2*k+1)!*(1-x)^k',
+  type:       'continuous',
+  x_min:      -1,
+  x_max:      1,
+  position:   16
+})
+chebyshevu.category = polynomials
+chebyshevu.save
+
 
 ###
 #
