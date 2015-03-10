@@ -221,6 +221,77 @@ jacobi.category = polynomials
 jacobi.save
 
 #
+# Gegenbauer
+#
+gegenbauer = Polynomial.new({
+  name:       'Gegenbauer',
+  sid:        'gegenbauer',
+  definition: 'C_n^{(\alpha)}(x) = \frac{1}{\Gamma(\alpha)}\,\sum_{k=0}^{[n/2]} \frac{(-1)^k\,\Gamma(\alpha+n-k)}{k!\,(n-2k)!}\,(2x)^{n-2k} = {}_2F_1 \left(\left. {-n, n+2\alpha \atop \alpha+1/2} \; \right| \frac{1-x}{2} \right)',
+  maple:      '1/GAMMA(alpha)*(-1)^k*GAMMA(alpha+n-k)/k!/(n-2*k)!*(2*x)^(n-2*k)',
+  type:       'continuous',
+  x_min:      -1,
+  x_max:      1,
+  position:   9
+})
+gegenbauer.parameters.create(name: 'alpha', lower_bound: '-infinity', upper_bound: 'infinity', default: 1.0/2 )
+gegenbauer.category = polynomials
+gegenbauer.save
+
+#
+# Legendre
+#
+legendre = Polynomial.new({
+  name:       'Legendre',
+  sid:        'legendre',
+  # definition: 'P_n(x) = \frac{1}{2^n}\sum_{k=0}^{[n/2]} \frac{(-1)^k (2n-2k)!}{(n-k)!(n-2k)!k!} x^{n-2k} = {}_2F_1 \left(\left. {-n, n+1 \atop 1} \; \right| \frac{1-x}{2} \right)',
+  definition: 'P_n(x) = \frac{1}{2^n}\,\sum_{k=0}^{[n/2]} (-1)^k\,{n\choose k}\,{2n-2k\choose n}\,x^{n-2k} = {}_2F_1 \left(\left. {-n, n+1 \atop 1} \; \right| \frac{1-x}{2} \right)',
+  # maple:      '1/2^n*(-1)^k*(2*n-2*k)!/(n-k)!/(n-2*k)!/k!*x^(n-2*k)',
+  maple:      '1/2^n*(-1)^k*binomial(n,k)*binomial(2*n-2*k,n)*x^(n-2*k)',
+  type:       'continuous',
+  x_min:      -1,
+  x_max:      1,
+  position:   10
+})
+legendre.category = polynomials
+legendre.save
+
+#
+# ChebyshevT
+#
+chebyshevt = Polynomial.new({
+  name:       'ChebyshevT',
+  sid:        'chebyshevt',
+  # definition: 'T_n(x) = n \sum_{k=0}^n \frac{(-2)^k (n+k-1)!}{(n-k)!(2k)!}(1-x)^k = {}_2F_1 \left(\left. {-n, n \atop \frac{1}{2}} \; \right| \frac{1-x}{2} \right)',
+  definition: 'T_n(x) = \frac{n}{2}\,\sum_{k=0}^{[n/2]} \frac{(-1)^k\,(n-k-1)!}{k!\,(n-2k)!}\,(2x)^{n-2k} = {}_2F_1 \left(\left. {-n, n \atop \frac{1}{2}} \; \right| \frac{1-x}{2} \right)',
+  # maple:      'n*(-2)^k*(n+k-1)!/(n-k)!/(2*k)!*(1-x)^k',
+  maple:      'n/2*(-1)^k*(n-k-1)!/k!/(n-2*k)!*(2*x)^(n-2*k)',
+  type:       'continuous',
+  x_min:      -1,
+  x_max:      1,
+  position:   11
+})
+chebyshevt.category = polynomials
+chebyshevt.save
+
+#
+# ChebyshevU
+#
+chebyshevu = Polynomial.new({
+  name:       'ChebyshevU',
+  sid:        'chebyshevu',
+  # definition: 'U_n(x) = \sum_{k=0}^n \frac{(-2)^k (n+k+1)!}{(n-k)!(2k+1)!}(1-x)^k = (n+1){}_2F_1 \left(\left. {-n, n+2 \atop \frac{3}{2}} \; \right| \frac{1-x}{2} \right)',
+  definition: 'U_n(x) = \sum_{k=0}^{[n/2]} \frac{(-1)^k\,(n-k)!}{k!\,(n-2k)!}\,(2x)^{n-2k} = (n+1){}_2F_1 \left(\left. {-n, n+2 \atop \frac{3}{2}} \; \right| \frac{1-x}{2} \right)',
+  # maple:      '(-2)^k*(n+k+1)!/(n-k)!/(2*k+1)!*(1-x)^k',
+  maple:      '(-1)^k*(n-k)!/k!/(n-2*k)!*(2*x)^(n-2*k)',
+  type:       'continuous',
+  x_min:      -1,
+  x_max:      1,
+  position:   12
+})
+chebyshevu.category = polynomials
+chebyshevu.save
+
+#
 # Meixner
 #
 meixner = Polynomial.new({
@@ -233,7 +304,7 @@ meixner = Polynomial.new({
   type:       'discrete',
   x_min:      0,
   x_max:      18,
-  position:   9
+  position:   13
 })
 meixner.parameters.create(name: 'beta', lower_bound: '0', upper_bound: 'infinity', default: 10 )
 meixner.parameters.create(name: 'c', lower_bound: '0', upper_bound: 1, default: 1.0/4)
@@ -253,7 +324,7 @@ krawtchouk = Polynomial.new({
   type:       'discrete',
   x_min:      0,
   x_max:      6,
-  position:   10
+  position:   14
 })
 krawtchouk.parameters.create(name: 'p', lower_bound: '0', upper_bound: 1, default: 1.0/2)
 krawtchouk.parameters.create(name: 'N', lower_bound: '0', upper_bound: 'infinity', default: 6 )
@@ -273,7 +344,7 @@ laguerre = Polynomial.new({
   type:       'continuous',
   x_min:      -1,
   x_max:      16.5,
-  position:   11
+  position:   15
 })
 laguerre.parameters.create(name: 'alpha', lower_bound: '-1', upper_bound: 'infinity', default: 0 )
 laguerre.category = polynomials
@@ -292,7 +363,7 @@ charlier = Polynomial.new({
   type:       'discrete',
   x_min:      -0.25,
   x_max:      10.75,
-  position:   12
+  position:   16
 })
 charlier.parameters.create(name: 'a', lower_bound: '0', upper_bound: 'infinity', default: 2 )
 charlier.category = polynomials
@@ -311,58 +382,10 @@ hermite = Polynomial.new({
   type:       'continuous',
   x_min:      -2.4,
   x_max:      2.4,
-  position:   13 
+  position:   17
 })
 hermite.category = polynomials
 hermite.save
-
-#
-# Legendre
-#
-legendre = Polynomial.new({
-  name:       'Legendre',
-  sid:        'legendre',
-  definition: 'P_n(x) = \frac{1}{2^n}\sum_{k=0}^{[n/2]} \frac{(-1)^k (2n-2k)!}{(n-k)!(n-2k)!k!} x^{n-2k} = {}_2F_1 \left(\left. {-n, n+1 \atop 1} \; \right| \frac{1-x}{2} \right)',
-  maple:      '1/2^n*(-1)^k*(2*n-2*k)!/(n-k)!/(n-2*k)!/k!*x^(n-2*k)',
-  type:       'continuous',
-  x_min:      -1,
-  x_max:      1,
-  position:   14
-})
-legendre.category = polynomials
-legendre.save
-
-#
-# ChebyshevT
-#
-chebyshevt = Polynomial.new({
-  name:       'ChebyshevT',
-  sid:        'chebyshevt',
-  definition: 'T_n(x) = n \sum_{k=0}^n \frac{(-2)^k (n+k-1)!}{(n-k)!(2k)!}(1-x)^k = {}_2F_1 \left(\left. {-n, n \atop \frac{1}{2}} \; \right| \frac{1-x}{2} \right)',
-  maple:      'n*(-2)^k*(n+k-1)!/(n-k)!/(2*k)!*(1-x)^k',
-  type:       'continuous',
-  x_min:      -1,
-  x_max:      1,
-  position:   15
-})
-chebyshevt.category = polynomials
-chebyshevt.save
-
-#
-# ChebyshevU
-#
-chebyshevu = Polynomial.new({
-  name:       'ChebyshevU',
-  sid:        'chebyshevu',
-  definition: 'U_n(x) = \sum_{k=0}^n \frac{(-2)^k (n+k+1)!}{(n-k)!(2k+1)!}(1-x)^k = (n+1){}_2F_1 \left(\left. {-n, n+2 \atop \frac{3}{2}} \; \right| \frac{1-x}{2} \right)',
-  maple:      '(-2)^k*(n+k+1)!/(n-k)!/(2*k+1)!*(1-x)^k',
-  type:       'continuous',
-  x_min:      -1,
-  x_max:      1,
-  position:   16
-})
-chebyshevu.category = polynomials
-chebyshevu.save
 
 
 ###
